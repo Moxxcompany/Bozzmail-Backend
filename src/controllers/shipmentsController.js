@@ -25,6 +25,8 @@ const createNewShipment = async (req, res) => {
       case 'easypost':
         response = await newEasypostShipment(payload)
         break;
+      default:
+        res.status(500).json({ error: 'URL is not Valid.' });
     }
     if (response.data) {
       res.status(200).json({ data: response.data });

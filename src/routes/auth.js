@@ -6,8 +6,8 @@ const {
   verifyEmailAddress
 } = require('../controllers/authController')
 
-router.post("/send-mobile-otp", sendMobileVerificationCode)
-router.post("/verify-mobile-otp", verifyMobileCode)
+router.post("/send-otp", sendMobileVerificationCode)
+router.post("/verify-otp", verifyMobileCode)
 router.post("/verify-email", verifyEmailAddress)
 
 module.exports = router;

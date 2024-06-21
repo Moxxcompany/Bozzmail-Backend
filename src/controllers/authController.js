@@ -1,18 +1,18 @@
 const {
-  sendMobileVerificationCode,
+  sendMobileVerificationOTP,
   verifyMobileOTP
 } = require('../services/telynxServices');
 const {
   verifyEmailId
 } = require('../services/infobipServices')
 
-const sendMobileVerificationCodeHandler = async (req, res) => {
+const sendMobileVerificationCode = async (req, res) => {
   const { phoneNumber } = req.body;
   try {
     if (!phoneNumber || !phoneNumber.length) {
       return res.status(400).json({ error: 'Phone number is required' });
     }
-    const response = await sendMobileVerificationCode(phoneNumber);
+    const response = await sendMobileVerificationOTP(phoneNumber);
     if (response.data) {
       res.status(200).json({ message: 'Verification code sent', data: response.data });
     } else {
@@ -23,7 +23,7 @@ const sendMobileVerificationCodeHandler = async (req, res) => {
   }
 };
 
-const verifyMobileCodeHandler = async (req, res) => {
+const verifyMobileCode = async (req, res) => {
   const { phoneNumber, otp } = req.body;
   try {
     if (!phoneNumber || !phoneNumber.length) {
@@ -61,7 +61,7 @@ const verifyEmailAddress = async (req, res) => {
 }
 
 module.exports = {
-  sendMobileVerificationCode: sendMobileVerificationCodeHandler,
-  verifyMobileCode: verifyMobileCodeHandler,
+  sendMobileVerificationCode,
+  verifyMobileCode,
   verifyEmailAddress
 };

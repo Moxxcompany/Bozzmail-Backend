@@ -1,5 +1,5 @@
 const { post } = require('../utils/axios')
-const baseUrl = process.env.EASYPOST_BASEURL
+const baseUrl = process.env.EASYPOST_BASE_URL
 const apiKey = process.env.EASYPOST_API_KEY
 
 const generateNewShipment = async (payload) => {

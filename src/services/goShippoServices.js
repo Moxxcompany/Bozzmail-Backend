@@ -1,5 +1,5 @@
 const { post } = require('../utils/axios')
-const baseUrl = process.env.GOSHIPPO_BASEURL
+const baseUrl = process.env.GOSHIPPO_BASE_URL
 const token = `ShippoToken ${process.env.GOSHIPPO_API_KEY}`
 
 const generateNewShipment = async (data) => {

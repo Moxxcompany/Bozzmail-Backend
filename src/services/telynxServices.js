@@ -1,9 +1,9 @@
 const { post } = require('../utils/axios')
-const telynxBaseUrl = process.env.TELNYX_BASEURL
+const telynxBaseUrl = process.env.TELNYX_BASE_URL
 const verifyProfileId = process.env.TELNYX_VERIFIED_PROFILE_ID;
 const telnyxToken = `Bearer ${process.env.TELNYX_API_KEY}`
 
-const sendMobileVerificationCode = async (phoneNumber) => {
+const sendMobileVerificationOTP = async (phoneNumber) => {
   const url = `${telynxBaseUrl}/v2/verifications/sms`;
   try {
     const payload = {
@@ -35,4 +35,4 @@ const verifyMobileOTP = async (phoneNumber, otp) => {
   }
 }
 
-module.exports = { sendMobileVerificationCode, verifyMobileOTP };
+module.exports = { sendMobileVerificationOTP, verifyMobileOTP };

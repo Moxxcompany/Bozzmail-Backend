@@ -1,6 +1,6 @@
 const { post } = require('../utils/axios')
-const baseUrl = process.env.FLAVOURCLOUD_BASEURL
-const appID = process.env.FLAVOURCLOUD_APPID
+const baseUrl = process.env.FLAVOURCLOUD_BASE_URL
+const appID = process.env.FLAVOURCLOUD_APP_ID
 const apiKey = process.env.FLAVOURCLOUD_API_KEY
 
 const generateNewShipment = async (payload) => {

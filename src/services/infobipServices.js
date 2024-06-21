@@ -1,5 +1,5 @@
 const { post } = require('../utils/axios')
-const infobipBaseUrl = process.env.INFOBIP_BASEURL
+const infobipBaseUrl = process.env.INFOBIP_BASE_URL
 const infobipToken = `App ${process.env.INFOBIP_API_KEY}`
 
 const verifyEmailId = async (emailId) => {

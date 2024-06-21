@@ -6,15 +6,23 @@ const authRoutes = require('./src/routes/auth')
 const shipmentsRoutes = require('./src/routes/shipments')
 const app = express()
 
-connectDB()
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+const startServer = async () => {
+  try {
+    await connectDB();
+    app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({ extended: true }));
 
-//routes
-app.use('/auth', authRoutes)
-app.use('/shipments', shipmentsRoutes)
+    //routes
+    app.use('/auth', authRoutes)
+    app.use('/shipments', shipmentsRoutes)
+    const port = process.env.PORT || '3001';
+    app.listen(port, () => {
+      console.log(`Example app listening at http://localhost:${port}`);
+    });
+  } catch (error) {
+    console.error("Failed to connect to the database:", error);
+    process.exit(1);
+  }
+};
 
-const port = process.env.PORT || '3001';
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
-});
+startServer();
