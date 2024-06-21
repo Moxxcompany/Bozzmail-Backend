@@ -1,8 +1,13 @@
 const express = require('express')
-const axios = require('axios');
 const router = express.Router()
-const { sendMobileVerificationCode } = require('../controllers/authController')
+const {
+  sendMobileVerificationCode,
+  verifyMobileCode,
+  verifyEmailAddress
+} = require('../controllers/authController')
 
-router.post("/send-otp", sendMobileVerificationCode)
+router.post("/send-mobile-otp", sendMobileVerificationCode)
+router.post("/verify-mobile-otp", verifyMobileCode)
+router.post("/verify-email", verifyEmailAddress)
 
 module.exports = router;
