@@ -1,12 +1,28 @@
 const express = require("express")
+const bodyParser = require('body-parser')
+const connectDB = require('./src/config/database')
 require('dotenv').config()
+const authRoutes = require('./src/routes/auth')
+const shipmentsRoutes = require('./src/routes/shipments')
 const app = express()
-const port = 3000;
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.get('/', (req, res) => {
-    res.send('Hello World!');
-  });
-  app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`);
-  });
+
+const startServer = async () => {
+  try {
+    await connectDB();
+    app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({ extended: true }));
+
+    //routes
+    app.use('/auth', authRoutes)
+    app.use('/shipments', shipmentsRoutes)
+    const port = process.env.PORT || '3001';
+    app.listen(port, () => {
+      console.log(`Example app listening at http://localhost:${port}`);
+    });
+  } catch (error) {
+    console.error("Failed to connect to the database:", error);
+    process.exit(1);
+  }
+};
+
+startServer();
