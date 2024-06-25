@@ -53,6 +53,7 @@ const signIn = async (req, res) => {
     switch (action) {
       case 'request':
         res.status(200).json({ data: userData });
+        break;
       case 'password':
         const { password } = req.body
         if (!password || !password.length) {
@@ -70,12 +71,12 @@ const signIn = async (req, res) => {
           return res.status(400).json({ error: 'OTP Code is required' });
         }
         const response = await verifyMobileOTP(existingUser.phoneNumber, otp);
-        console.log(response)
         if (response.data && response.data.response_code === 'accepted') {
           res.status(200).json({ message: 'Verification Complete', data: userData, token: token });
         } else {
           res.status(500).json({ error: 'OTP code is not correct' });
         }
+        break;
       default:
         res.status(500).json({ error: 'URL is not Valid.' });
     }
