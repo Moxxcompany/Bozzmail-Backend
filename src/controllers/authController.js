@@ -1,3 +1,11 @@
+const bcrypt = require("bcrypt");
+const {
+  fetchUserByEmail,
+  createNewUser
+} = require('../helper/user')
+const {
+  createToken
+} = require('../utils/jwt')
 const {
   sendMobileVerificationOTP,
   verifyMobileOTP
@@ -5,6 +13,73 @@ const {
 const {
   verifyEmailId
 } = require('../services/infobipServices')
+
+const signUp = async (req, res) => {
+  const { email, password, phoneNumber } = req.body;
+  try {
+    const existingUser = await fetchUserByEmail(email);
+    if (existingUser) {
+      return res.status(400).json({ message: { email: 'Email Address already in use' } });
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const data = {
+      email,
+      password: hashedPassword,
+      phoneNumber
+    };
+    const user = await createNewUser(data)
+    if (user) {
+      res.status(200).json({ message: 'User created Successfully', data: user });
+    } else {
+      res.status(500).json({ message: 'Failed to create a new user' });
+    }
+  } catch (error) {
+    res.status(error.status || 500).json({ error });
+  }
+};
+
+const signIn = async (req, res) => {
+  const { email } = req.body;
+  const action = req.params.action;
+  try {
+    const existingUser = await fetchUserByEmail(email);
+    if (!existingUser) {
+      return res.status(400).json({ message: { error: 'Email is incorrect' } });
+    }
+    const token = createToken(existingUser._id);
+    switch (action) {
+      case 'request':
+        res.status(200).json({ data: userData });
+      case 'password':
+        const { password } = req.body
+        if (!password || !password.length) {
+          return res.status(400).json({ message: { error: 'Password is required' } });
+        }
+        const isPasswordMatch = await bcrypt.compare(password, existingUser.password);
+        if (!isPasswordMatch) {
+          return res.status(400).json({ message: { error: 'Email or password is incorrect' } });
+        }
+        res.status(200).json({ message: 'User successfully logged in', data: existingUser, token: token });
+        break;
+      case "otp":
+        const { otp } = req.body;
+        if (!otp || !otp.length) {
+          return res.status(400).json({ error: 'OTP Code is required' });
+        }
+        const response = await verifyMobileOTP(existingUser.phoneNumber, otp);
+        console.log(response)
+        if (response.data && response.data.response_code === 'accepted') {
+          res.status(200).json({ message: 'Verification Complete', data: existingUser, token: token });
+        } else {
+          res.status(500).json({ error: 'OTP code is not correct' });
+        }
+      default:
+        res.status(500).json({ error: 'URL is not Valid.' });
+    }
+  } catch (error) {
+    res.status(error.status || 500).json({ error });
+  }
+};
 
 const sendMobileVerificationCode = async (req, res) => {
   const { phoneNumber } = req.body;
@@ -63,5 +138,7 @@ const verifyEmailAddress = async (req, res) => {
 module.exports = {
   sendMobileVerificationCode,
   verifyMobileCode,
-  verifyEmailAddress
+  verifyEmailAddress,
+  signUp,
+  signIn
 };
