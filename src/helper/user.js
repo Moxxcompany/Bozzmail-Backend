@@ -11,7 +11,18 @@ const createNewUser = async (data) => {
   return userData
 }
 
+const getUserData = async (data) => {
+  const user = {
+    id: data._id,
+    email: data.email,
+    phoneNumber: data.phoneNumber,
+    is_profile_verified: data.is_profile_verified
+  }
+  return user
+}
+
 module.exports = {
   fetchUserByEmail,
-  createNewUser
+  createNewUser,
+  getUserData
 }

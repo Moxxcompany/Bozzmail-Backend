@@ -1,7 +1,8 @@
 const bcrypt = require("bcrypt");
 const {
   fetchUserByEmail,
-  createNewUser
+  createNewUser,
+  getUserData
 } = require('../helper/user')
 const {
   createToken
@@ -28,8 +29,9 @@ const signUp = async (req, res) => {
       phoneNumber
     };
     const user = await createNewUser(data)
+    const userData = await getUserData(user)
     if (user) {
-      res.status(200).json({ message: 'User created Successfully', data: user });
+      res.status(200).json({ message: 'User created Successfully', data: userData });
     } else {
       res.status(500).json({ message: 'Failed to create a new user' });
     }
@@ -47,6 +49,7 @@ const signIn = async (req, res) => {
       return res.status(400).json({ message: { error: 'Email is incorrect' } });
     }
     const token = createToken(existingUser._id);
+    const userData = await getUserData(existingUser)
     switch (action) {
       case 'request':
         res.status(200).json({ data: userData });
@@ -59,7 +62,7 @@ const signIn = async (req, res) => {
         if (!isPasswordMatch) {
           return res.status(400).json({ message: { error: 'Email or password is incorrect' } });
         }
-        res.status(200).json({ message: 'User successfully logged in', data: existingUser, token: token });
+        res.status(200).json({ message: 'User successfully logged in', data: userData, token: token });
         break;
       case "otp":
         const { otp } = req.body;
@@ -69,7 +72,7 @@ const signIn = async (req, res) => {
         const response = await verifyMobileOTP(existingUser.phoneNumber, otp);
         console.log(response)
         if (response.data && response.data.response_code === 'accepted') {
-          res.status(200).json({ message: 'Verification Complete', data: existingUser, token: token });
+          res.status(200).json({ message: 'Verification Complete', data: userData, token: token });
         } else {
           res.status(500).json({ error: 'OTP code is not correct' });
         }
