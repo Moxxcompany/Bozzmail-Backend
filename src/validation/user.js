@@ -1,21 +1,33 @@
 const { body } = require('express-validator');
-const { validateError } = require('../utils/validation')
+const { validateError, validateNewPassword } = require('../utils/validation')
 
 const signupSchema = [
   body('email').isEmail().withMessage('Enter a valid email address'),
-  body('password')
-    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\W_]).{8,}$/)
-    .withMessage('Password must have min. 8 characters, mix of letters and numbers/special characters'),
+  validateNewPassword('password'),
   validateError
 ];
 
-const signInSchema = [
+const emailRequired = [
   body('email').isEmail().withMessage('Enter a valid email address'),
   validateError
 ];
+
+const resetPasswordSchema = [
+  body('token').not().isEmpty().withMessage('Reset Token is required'),
+  validateNewPassword('newPassword'),
+  validateError
+]
+
+const changePasswordSchema = [
+  body('currentPassword').not().isEmpty().withMessage('Current Password is wrong'),
+  validateNewPassword('newPassword'),
+  validateError
+]
 
 
 module.exports = {
   signupSchema,
-  signInSchema
+  emailRequired,
+  changePasswordSchema,
+  resetPasswordSchema
 };

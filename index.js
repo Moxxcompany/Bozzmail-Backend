@@ -3,7 +3,9 @@ const bodyParser = require('body-parser')
 const connectDB = require('./src/config/database')
 require('dotenv').config()
 const authRoutes = require('./src/routes/auth')
+const userRoutes = require('./src/routes/user')
 const shipmentsRoutes = require('./src/routes/shipments')
+const jwtMiddlewareValidation = require('./src/middleware/validateToken')
 const app = express()
 
 const startServer = async () => {
@@ -14,6 +16,7 @@ const startServer = async () => {
 
     //routes
     app.use('/auth', authRoutes)
+    app.use('/user', jwtMiddlewareValidation, userRoutes)
     app.use('/shipments', shipmentsRoutes)
     const port = process.env.PORT || '3001';
     app.listen(port, () => {

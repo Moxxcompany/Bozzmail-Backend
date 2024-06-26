@@ -1,4 +1,4 @@
-const { validationResult } = require('express-validator');
+const { body, validationResult } = require('express-validator');
 
 const validateError = (req, res, next) => {
   const errors = validationResult(req);
@@ -12,6 +12,14 @@ const validateError = (req, res, next) => {
   next();
 }
 
+const validateNewPassword = (key) => {
+  return body(key)
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\W_]).{8,}$/)
+    .withMessage('Password must have min. 8 characters, mix of letters and numbers/special characters');
+};
+
+
 module.exports = {
-  validateError
+  validateError,
+  validateNewPassword
 };
