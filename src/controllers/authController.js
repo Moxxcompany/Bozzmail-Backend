@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const uuid = require('uuid').v4;
+const crypto = require('crypto');
 const {
   fetchUserByEmail,
   createNewUser,
@@ -53,7 +53,7 @@ const signIn = async (req, res) => {
   const action = req.params.action;
   try {
     const existingUser = await fetchUserByEmail(email, true);
-    if (!existingUser) {
+    if (!existingUser || !existingUser.is_active) {
       return res.status(400).json({ message: { error: 'Email is incorrect' } });
     }
     const token = createToken(existingUser._id);
@@ -105,10 +105,10 @@ const sendPasswordLink = async (req, res) => {
   const { email } = req.body;
   try {
     const existingUser = await fetchUserByEmail(email);
-    if (!existingUser) {
+    if (!existingUser || !existingUser.is_active) {
       return res.status(400).json({ message: { error: 'Email is incorrect' } });
     }
-    const token = uuid();
+    const token = crypto.randomBytes(bytes).toString('hex');
     let expiresAt = new Date();
     expiresAt.setHours(expiresAt.getHours() + 1);
     const data = {

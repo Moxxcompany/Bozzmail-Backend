@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const PasswordReset = require("../model/passwordReset")
 
 const createPasswordReset = async (data) => {
@@ -11,7 +12,8 @@ const fetchPasswordToken = async (token) => {
 }
 
 const deleteToken = async (_id) => {
-  await PasswordReset.findByIdAndRemove(_id)
+  const objectId = mongoose.Types.ObjectId(_id);
+  await PasswordReset.findByIdAndRemove(objectId)
   return true
 }
 

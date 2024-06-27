@@ -1,11 +1,10 @@
 const User = require("../model/user");
-const PasswordReset = require("../model/passwordReset")
 const bcrypt = require("bcrypt");
 
 const fetchUserByEmail = async (email, withPassword) => {
   let userData = {}
   if (withPassword) {
-    userData = await User.findOne({ email, is_active: true });
+    userData = await User.findOne({ email });
   } else {
     userData = await User.findOne({ email }).select('-password')
   }
@@ -20,7 +19,7 @@ const createNewUser = async (data) => {
 const fetchUserById = async (_id, withPassword) => {
   let userData = {}
   if (withPassword) {
-    userData = await User.findOne({ _id, is_active: true });
+    userData = await User.findOne({ _id });
   } else {
     userData = await User.findOne({ _id }).select('-password')
   }

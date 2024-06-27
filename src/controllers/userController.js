@@ -1,10 +1,14 @@
 const bcrypt = require("bcrypt");
-const fs = require('fs').promises;
-const path = require('path');
+const crypto = require('crypto');
 const {
   fetchUserById,
   updateUserPassword,
 } = require('../helper/user')
+const {
+  uploadFile,
+  deleteFile,
+  getObjectSignedUrl
+} = require('../utils/s3')
 
 const fetchUserDetails = async (req, res) => {
   const id = req.params.userId;
@@ -24,7 +28,7 @@ const changeUserPassword = async (req, res) => {
   const { currentPassword, newPassword } = req.body
   try {
     const user = await fetchUserById(id, true);
-    if (!user) {
+    if (!user || !user.is_active) {
       return res.status(400).json({ message: { error: 'User Not found. Check again' } });
     }
     const isPasswordMatch = await bcrypt.compare(currentPassword, user.password);
@@ -64,7 +68,7 @@ const deleteUser = async (req, res) => {
       return res.status(400).json({ message: { error: 'User Not found. Check again' } });
     }
     user.is_active = false,
-    await user.save();
+      await user.save();
     res.status(200).json({ message: 'User data Deleted Successfully' })
   } catch (error) {
     res.status(error.status || 500).json({ error });
@@ -73,8 +77,9 @@ const deleteUser = async (req, res) => {
 
 const updateUserProfileImg = async (req, res) => {
   const userId = req.params.userId;
+  const file = req.file
   try {
-    if (!req.file) {
+    if (!file) {
       return res.status(400).json({ message: { error: '' } });
     }
     const user = await fetchUserById(userId);
@@ -82,16 +87,17 @@ const updateUserProfileImg = async (req, res) => {
       return res.status(400).json({ message: { error: 'User Not found. Check again' } });
     }
     if (user.profile_img) {
-      try {
-        const oldPicPath = path.join(__dirname, '..', user.profile_img);
-        await fs.unlink(oldPicPath);
-        console.log('Old profile pic deleted successfully');
-      } catch (err) {
-        console.error('Failed to delete old profile pic:', err);
-      }
+      const parsedUrl = new URL(user.profile_img);
+      const pathname = parsedUrl.pathname;
+      const filename = pathname.split('/').pop();
+      await deleteFile(`user-profile/${filename}`)
     }
-    user.profile_img = path.join('uploads', req.file.filename);
+    const imageName = crypto.randomBytes(32).toString('hex')
+    await uploadFile(file.buffer, `user-profile/${imageName}`, file.mimetype)
+    const url = await getObjectSignedUrl(`user-profile/${imageName}`)
+    user.profile_img = url;
     await user.save();
+
     res.status(200).json({ message: 'Profile Pic updated', data: user })
   } catch (error) {
     res.status(error.status || 500).json({ error });
