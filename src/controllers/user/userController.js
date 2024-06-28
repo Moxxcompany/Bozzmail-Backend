@@ -3,12 +3,12 @@ const crypto = require('crypto');
 const {
   fetchUserById,
   updateUserPassword,
-} = require('../helper/user')
+} = require('../../helper/user')
 const {
   uploadFile,
   deleteFile,
   getObjectSignedUrl
-} = require('../utils/s3')
+} = require('../../utils/s3')
 
 const fetchUserDetails = async (req, res) => {
   const id = req.params.userId;
@@ -79,8 +79,8 @@ const updateUserProfileImg = async (req, res) => {
   const userId = req.params.userId;
   const file = req.file
   try {
-    if (!file) {
-      return res.status(400).json({ message: { error: '' } });
+    if (!file  || !file.mimetype.startsWith('image')) {
+      return res.status(400).json({ message: { error: 'Please upload an image file' } });
     }
     const user = await fetchUserById(userId);
     if (!user) {

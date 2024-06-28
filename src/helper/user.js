@@ -34,7 +34,8 @@ const getUserData = async (data) => {
     is_profile_verified: data.is_profile_verified,
     fullName: data.fullName,
     address: data.address,
-    is_active: data.is_active
+    is_active: data.is_active,
+    profile_img: data.profile_img
   }
   return user
 }

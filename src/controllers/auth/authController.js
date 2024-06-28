@@ -6,22 +6,31 @@ const {
   getUserData,
   fetchUserById,
   updateUserPassword
-} = require('../helper/user')
+} = require('../../helper/user')
 const {
   createPasswordReset,
   fetchPasswordToken,
   deleteToken
-} = require('../helper/passwordReset')
+} = require('../../helper/passwordReset')
+const {
+  saveOtpDetails,
+  fetchOtp,
+  updateOtpDetails,
+  verifyEmailOtp
+} = require('../../helper/otp')
 const {
   createToken
-} = require('../utils/jwt')
+} = require('../../utils/jwt')
+const {
+  sendMail
+} = require('../../utils/sendEmail')
 const {
   sendMobileVerificationOTP,
   verifyMobileOTP
-} = require('../services/telynxServices');
+} = require('../../services/telynxServices');
 const {
   verifyEmailId
-} = require('../services/infobipServices')
+} = require('../../services/infobipServices')
 
 const signUp = async (req, res) => {
   const { email, password, phoneNumber } = req.body;
@@ -49,7 +58,7 @@ const signUp = async (req, res) => {
 };
 
 const signIn = async (req, res) => {
-  const { email } = req.body;
+  const { email, otp, password } = req.body;
   const action = req.params.action;
   try {
     const existingUser = await fetchUserByEmail(email, true);
@@ -63,7 +72,6 @@ const signIn = async (req, res) => {
         res.status(200).json({ data: userData });
         break;
       case 'password':
-        const { password } = req.body
         if (!password || !password.length) {
           return res.status(400).json({ message: { error: 'Password is required' } });
         }
@@ -77,7 +85,6 @@ const signIn = async (req, res) => {
         res.status(200).json({ message: 'User successfully logged in', data: userData, token: token });
         break;
       case "otp":
-        const { otp } = req.body;
         if (!otp || !otp.length) {
           return res.status(400).json({ error: 'OTP Code is required' });
         }
@@ -90,6 +97,21 @@ const signIn = async (req, res) => {
           res.status(200).json({ message: 'Verification Complete', data: userData, token: token });
         } else {
           res.status(500).json({ error: 'OTP is not correct' });
+        }
+        break;
+      case "email":
+        if (!otp || !otp.length) {
+          return res.status(400).json({ error: 'OTP Code is required' });
+        }
+        const emailResponse = await verifyEmailOtp(email, otp);
+        if (!existingUser.is_profile_verified) {
+          existingUser.is_profile_verified = true
+        }
+        await existingUser.save();
+        if (emailResponse) {
+          res.status(200).json({ message: 'Verification Complete', data: userData, token: token });
+        } else {
+          res.status(500).json({ error: 'OTP is not valid or expired.' });
         }
         break;
       default:
@@ -108,7 +130,7 @@ const sendPasswordLink = async (req, res) => {
     if (!existingUser || !existingUser.is_active) {
       return res.status(400).json({ message: { error: 'Email is incorrect' } });
     }
-    const token = crypto.randomBytes(bytes).toString('hex');
+    const token = crypto.randomBytes(32).toString('hex');
     let expiresAt = new Date();
     expiresAt.setHours(expiresAt.getHours() + 1);
     const data = {
@@ -117,7 +139,16 @@ const sendPasswordLink = async (req, res) => {
       expiresAt: expiresAt
     }
     await createPasswordReset(data)
-    res.status(200).json({ message: 'Password Verification link sent on email', token: token });
+    const resetLink = `http:localhost:3000/verify-reset-password/${token}`
+    sendMail({
+      to: existingUser.email,
+      subject: 'Password Reset',
+      text: `You requested for a password reset. Click on this link to reset your password: ${resetLink}`,
+      title: 'Password reset token',
+      subheading: 'Password Reset',
+      content: `<p>You requested for a password reset. Click on this <a href="${resetLink}">reset link</a> to reset your password.</p>`
+    })
+    res.status(200).json({ message: 'Password Verification link sent on registered email' });
   } catch (error) {
     res.status(error.status || 500).json({ error });
   }
@@ -200,6 +231,44 @@ const verifyEmailAddress = async (req, res) => {
   }
 }
 
+const sentVerificationEmailCode = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await fetchUserByEmail(email);
+    if (!user) {
+      return res.status(400).json({ message: { email: 'Email Address not found' } });
+    }
+    const existingToken = await fetchOtp(email)
+    const otpDetails = existingToken ? await updateOtpDetails(email) : await saveOtpDetails(email);
+    sendMail({
+      to: existingUser.email,
+      subject: 'Email Verification Code',
+      text: `You requested for a email verification code.`,
+      title: 'Email verification code',
+      subheading: 'Verify your profile',
+      content: `<p>You requested for a email verifcation. The OTP for your account is ${otpDetails.otp}. These is valid upto 5 min</p>`
+    })
+    res.status(200).json({ message: 'Email Verification code sent on registered email', data: otpDetails });
+  } catch (error) {
+    res.status(error.status || 500).json({ error });
+  }
+}
+
+const googleLoginSuccess = async (req, res) => {
+  if (req.user) {
+    const token = createToken(req.user._id);
+    res.status(200).json({ message: "user Login", data: req.user, token: token })
+  } else {
+    res.status(400).json({ message: "Not Authorized" })
+  }
+}
+
+const logout = async (req, res) => {
+  req.logout(function (err) {
+    if (err) { return next(err) }
+  })
+}
+
 module.exports = {
   sendMobileVerificationCode,
   verifyMobileCode,
@@ -207,5 +276,8 @@ module.exports = {
   signUp,
   signIn,
   sendPasswordLink,
-  resetUserPassword
+  resetUserPassword,
+  sentVerificationEmailCode,
+  googleLoginSuccess,
+  logout
 };

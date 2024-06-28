@@ -7,7 +7,7 @@ const {
   updateUserDetails,
   deleteUser,
   updateUserProfileImg
-} = require('../controllers/userController')
+} = require('../controllers/user/userController')
 
 const {
   changePasswordSchema
