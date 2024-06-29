@@ -18,16 +18,24 @@ const resetPasswordValidations = [
   validateError
 ]
 
-const changePasswordSchema = [
+const changePasswordValidations = [
   body('currentPassword').not().isEmpty().withMessage('Current Password is wrong'),
   validateNewPassword('newPassword'),
   validateError
 ]
 
+const paymentMethodValidation = [
+  body('cardholderName').not().isEmpty().withMessage('Card holder Name is required'),
+  body('cardNumber').not().isEmpty().withMessage('Card Number is required'),
+  body('expiryDate').not().isEmpty().withMessage('Card Expiry Date is required'),
+  body('cvv').not().isEmpty().withMessage('Card cvv number is required'),
+  validateError
+];
 
 module.exports = {
   signupValidations,
   emailRequired,
-  changePasswordSchema,
-  resetPasswordValidations
+  changePasswordValidations,
+  resetPasswordValidations,
+  paymentMethodValidation
 };

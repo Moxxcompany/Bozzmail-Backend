@@ -50,9 +50,9 @@ const updateUserDetails = async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: { error: 'User Not found. Check again' } });
     }
-    user.fullName = fullName
-    user.phoneNumber = phoneNumber
-    user.address = address
+    user.fullName = fullName ? fullName : user.fullName;
+    user.phoneNumber = phoneNumber ? phoneNumber : user.phoneNumber
+    user.address = address ? address : user.address
     await user.save();
     res.status(200).json({ message: 'User details updated Successfully' })
   } catch (error) {

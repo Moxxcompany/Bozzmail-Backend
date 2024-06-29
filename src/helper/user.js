@@ -26,16 +26,7 @@ const fetchUserById = async (_id, withPassword) => {
 }
 
 const getUserData = async (data) => {
-  const user = {
-    _id: data._id,
-    email: data.email,
-    phoneNumber: data.phoneNumber,
-    is_profile_verified: data.is_profile_verified,
-    fullName: data.fullName,
-    address: data.address,
-    is_active: data.is_active,
-    profile_img: data.profile_img
-  }
+  const { password, ...user } = data._doc;
   return user
 }
 
