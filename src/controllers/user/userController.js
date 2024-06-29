@@ -10,7 +10,7 @@ const {
   getObjectSignedUrl
 } = require('../../utils/s3')
 
-const fetchUserDetails = async (req, res) => {
+const getUserById = async (req, res) => {
   const id = req.params.userId;
   try {
     const user = await fetchUserById(id);
@@ -50,9 +50,9 @@ const updateUserDetails = async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: { error: 'User Not found. Check again' } });
     }
-    user.fullName = fullName,
-      user.phoneNumber = phoneNumber,
-      user.address = address
+    user.fullName = fullName
+    user.phoneNumber = phoneNumber
+    user.address = address
     await user.save();
     res.status(200).json({ message: 'User details updated Successfully' })
   } catch (error) {
@@ -67,8 +67,8 @@ const deleteUser = async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: { error: 'User Not found. Check again' } });
     }
-    user.is_active = false,
-      await user.save();
+    user.is_active = false
+    await user.save();
     res.status(200).json({ message: 'User data Deleted Successfully' })
   } catch (error) {
     res.status(error.status || 500).json({ error });
@@ -79,7 +79,7 @@ const updateUserProfileImg = async (req, res) => {
   const userId = req.params.userId;
   const file = req.file
   try {
-    if (!file  || !file.mimetype.startsWith('image')) {
+    if (!file || !file.mimetype.startsWith('image')) {
       return res.status(400).json({ message: { error: 'Please upload an image file' } });
     }
     const user = await fetchUserById(userId);
@@ -105,7 +105,7 @@ const updateUserProfileImg = async (req, res) => {
 };
 
 module.exports = {
-  fetchUserDetails,
+  getUserById,
   changeUserPassword,
   updateUserDetails,
   deleteUser,

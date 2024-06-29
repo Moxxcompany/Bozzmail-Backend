@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const crypto = require('crypto');
+const moment = require('moment');
 const {
   fetchUserByEmail,
   createNewUser,
@@ -25,12 +26,15 @@ const {
   sendMail
 } = require('../../utils/sendEmail')
 const {
-  sendMobileVerificationOTP,
-  verifyMobileOTP
+  sendSMSVerificationOTP,
+  verifySMSOTP
 } = require('../../services/telynxServices');
 const {
   verifyEmailId
 } = require('../../services/infobipServices')
+const {
+  PASSWORD_RESET_TOKEN_EXPIRE_TIME
+} = require('../../constant/constants')
 
 const signUp = async (req, res) => {
   const { email, password, phoneNumber } = req.body;
@@ -58,7 +62,7 @@ const signUp = async (req, res) => {
 };
 
 const signIn = async (req, res) => {
-  const { email, otp, password } = req.body;
+  const { email, otp, password, verificationCode } = req.body;
   const action = req.params.action;
   try {
     const existingUser = await fetchUserByEmail(email, true);
@@ -68,10 +72,10 @@ const signIn = async (req, res) => {
     const token = createToken(existingUser._id);
     const userData = await getUserData(existingUser)
     switch (action) {
-      case 'request':
+      case 'request': // to prompt user details for login methods available to the user
         res.status(200).json({ data: userData });
         break;
-      case 'password':
+      case 'password': // to login with password
         if (!password || !password.length) {
           return res.status(400).json({ message: { error: 'Password is required' } });
         }
@@ -84,11 +88,11 @@ const signIn = async (req, res) => {
         }
         res.status(200).json({ message: 'User successfully logged in', data: userData, token: token });
         break;
-      case "otp":
+      case "otp": // to login with the SMS OTP
         if (!otp || !otp.length) {
           return res.status(400).json({ error: 'OTP Code is required' });
         }
-        const response = await verifyMobileOTP(existingUser.phoneNumber, otp);
+        const response = await verifySMSOTP(existingUser.phoneNumber, otp);
         if (!existingUser.is_profile_verified) {
           existingUser.is_profile_verified = true
         }
@@ -99,11 +103,11 @@ const signIn = async (req, res) => {
           res.status(500).json({ error: 'OTP is not correct' });
         }
         break;
-      case "email":
-        if (!otp || !otp.length) {
-          return res.status(400).json({ error: 'OTP Code is required' });
+      case "email": // to login with email verification code
+        if (!verificationCode || !verificationCode.length) {
+          return res.status(400).json({ error: 'Varification Code is required' });
         }
-        const emailResponse = await verifyEmailOtp(email, otp);
+        const emailResponse = await verifyEmailOtp(email, verificationCode);
         if (!existingUser.is_profile_verified) {
           existingUser.is_profile_verified = true
         }
@@ -111,11 +115,11 @@ const signIn = async (req, res) => {
         if (emailResponse) {
           res.status(200).json({ message: 'Verification Complete', data: userData, token: token });
         } else {
-          res.status(500).json({ error: 'OTP is not valid or expired.' });
+          res.status(500).json({ error: 'Verification Code is not valid or expired.' });
         }
         break;
       default:
-        res.status(500).json({ error: 'URL is not Valid.' });
+        res.status(500).json({ error: 'Something went wrong.' });
     }
   } catch (error) {
     res.status(error.status || 500).json({ error });
@@ -123,7 +127,7 @@ const signIn = async (req, res) => {
 };
 
 
-const sendPasswordLink = async (req, res) => {
+const sendResetPasswordLink = async (req, res) => {
   const { email } = req.body;
   try {
     const existingUser = await fetchUserByEmail(email);
@@ -131,24 +135,23 @@ const sendPasswordLink = async (req, res) => {
       return res.status(400).json({ message: { error: 'Email is incorrect' } });
     }
     const token = crypto.randomBytes(32).toString('hex');
-    let expiresAt = new Date();
-    expiresAt.setHours(expiresAt.getHours() + 1);
+    let expiresAt = moment().add(PASSWORD_RESET_TOKEN_EXPIRE_TIME, 'hour');
     const data = {
       userId: existingUser._id,
       token: token,
       expiresAt: expiresAt
     }
     await createPasswordReset(data)
-    const resetLink = `http:localhost:3000/verify-reset-password/${token}`
+    const resetLink = `${process.env.FE_APP_BASE_URL}/verify-reset-password/${token}`
     sendMail({
       to: existingUser.email,
       subject: 'Password Reset',
       text: `You requested for a password reset. Click on this link to reset your password: ${resetLink}`,
       title: 'Password reset token',
       subheading: 'Password Reset',
-      content: `<p>You requested for a password reset. Click on this <a href="${resetLink}">reset link</a> to reset your password.</p>`
+      content: `<p>You requested for a password reset. Click on this <a href="${resetLink}" target="_blank">reset link</a> to reset your password.</p>`
     })
-    res.status(200).json({ message: 'Password Verification link sent on registered email' });
+    res.status(200).json({ message: 'Password Verification link sent to registered email' });
   } catch (error) {
     res.status(error.status || 500).json({ error });
   }
@@ -177,13 +180,13 @@ const resetUserPassword = async (req, res) => {
   }
 };
 
-const sendMobileVerificationCode = async (req, res) => {
+const sendSMSVerificationCode = async (req, res) => {
   const { phoneNumber } = req.body;
   try {
     if (!phoneNumber || !phoneNumber.length) {
       return res.status(400).json({ error: 'Phone number is required' });
     }
-    const response = await sendMobileVerificationOTP(phoneNumber);
+    const response = await sendSMSVerificationOTP(phoneNumber);
     if (response.data) {
       res.status(200).json({ message: 'Verification code sent', data: response.data });
     } else {
@@ -194,7 +197,7 @@ const sendMobileVerificationCode = async (req, res) => {
   }
 };
 
-const verifyMobileCode = async (req, res) => {
+const verifySMSCode = async (req, res) => {
   const { phoneNumber, otp } = req.body;
   try {
     if (!phoneNumber || !phoneNumber.length) {
@@ -203,7 +206,7 @@ const verifyMobileCode = async (req, res) => {
     if (!otp || !otp.length) {
       return res.status(400).json({ error: 'OTP Code is required' });
     }
-    const response = await verifyMobileOTP(phoneNumber, otp);
+    const response = await verifySMSOTP(phoneNumber, otp);
     if (response.data && response.data.response_code === 'accepted') {
       res.status(200).json({ message: 'Verification Complete', data: response.data });
     } else {
@@ -255,7 +258,7 @@ const sentVerificationEmailCode = async (req, res) => {
 }
 
 const googleLoginSuccess = async (req, res) => {
-  if (req.user) {
+  if (req.user && req.user._id) {
     const token = createToken(req.user._id);
     res.status(200).json({ message: "user Login", data: req.user, token: token })
   } else {
@@ -270,12 +273,12 @@ const logout = async (req, res) => {
 }
 
 module.exports = {
-  sendMobileVerificationCode,
-  verifyMobileCode,
+  sendSMSVerificationCode,
+  verifySMSCode,
   verifyEmailAddress,
   signUp,
   signIn,
-  sendPasswordLink,
+  sendResetPasswordLink,
   resetUserPassword,
   sentVerificationEmailCode,
   googleLoginSuccess,

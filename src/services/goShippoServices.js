@@ -1,9 +1,17 @@
 const { post } = require('../utils/axios')
-const baseUrl = process.env.GOSHIPPO_BASE_URL
-const token = `ShippoToken ${process.env.GOSHIPPO_API_KEY}`
+const GOSHIPPO_BASE_URL = process.env.GOSHIPPO_BASE_URL
+const GOSHIPPO_API_KEY = process.env.GOSHIPPO_API_KEY
+const GOSHIPPO_TOKEN = `ShippoToken ${GOSHIPPO_API_KEY}`
+
+if (
+  !GOSHIPPO_BASE_URL ||
+  !GOSHIPPO_API_KEY
+) {
+  throw new Error('Environment variables for goshippo are not set.');
+}
 
 const generateNewShipment = async (data) => {
-  const url = `${baseUrl}/shipments/`;
+  const url = `${GOSHIPPO_BASE_URL}/shipments/`;
   try {
     const payload = {
       address_from: data.address_from,
@@ -11,13 +19,13 @@ const generateNewShipment = async (data) => {
       parcels: data.parcels,
       async: false
     }
-    const response = await post(url, payload, token)
+    const response = await post(url, payload, GOSHIPPO_TOKEN)
     return response;
   } catch (error) {
     throw error;
   }
 };
 
-module.exports = { 
+module.exports = {
   newShipmentShippo: generateNewShipment,
 };

@@ -8,7 +8,7 @@ const authRoutes = require('./src/routes/auth')
 const userRoutes = require('./src/routes/user')
 const shipmentsRoutes = require('./src/routes/shipments')
 const jwtMiddlewareValidation = require('./src/middleware/validateToken')
-const passportSessionSecret = process.env.PASSPORT_SESSION_SECRET
+const PASSPORT_SESSION_SECRET = process.env.PASSPORT_SESSION_SECRET
 
 const app = express()
 
@@ -23,14 +23,14 @@ const startServer = async () => {
       credentials: true
     }));
     app.use(session({
-      secret: passportSessionSecret,
+      secret: PASSPORT_SESSION_SECRET,
       resave: false,
       saveUninitialized: true
     }))
 
     //routes
     app.use('/auth', authRoutes)
-    app.use('/user', userRoutes)
+    app.use('/user', jwtMiddlewareValidation, userRoutes)
     app.use('/shipments', shipmentsRoutes)
     const port = process.env.PORT || '3001';
     app.listen(port, () => {

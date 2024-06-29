@@ -1,16 +1,24 @@
 const passport = require("passport");
 const OAuth2Strategy = require("passport-google-oauth2").Strategy;
-const { 
+const {
   fetchUserByEmail,
   createNewUser
 } = require('../../helper/user')
-const clientid = process.env.GOOGLE_CLIENT_ID
-const clientsecret = process.env.GOOGLE_CLIENT_SECRET
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET
+
+if (
+  !GOOGLE_CLIENT_ID ||
+  !GOOGLE_CLIENT_SECRET
+) {
+  throw new Error('Environment variables for google authentication are not set.');
+}
+
 
 passport.use(
   new OAuth2Strategy({
-    clientID: clientid,
-    clientSecret: clientsecret,
+    clientID: GOOGLE_CLIENT_ID,
+    clientSecret: GOOGLE_CLIENT_SECRET,
     callbackURL: "/auth/google/callback",
     scope: ["profile", "email"]
   },

@@ -12,8 +12,7 @@ const fetchUserByEmail = async (email, withPassword) => {
 }
 
 const createNewUser = async (data) => {
-  const newUser = await User(data).save()
-  return newUser
+  return await User(data).save()
 }
 
 const fetchUserById = async (_id, withPassword) => {

@@ -1,14 +1,21 @@
 const nodemailer = require("nodemailer");
 
-const fromEmailId = process.env.NODEMAILER_FROM_EMAIL_ID
-const fromEmailPassword = process.env.NODEMAILER_FROM_EMAIL_PASSWORD
+const NODEMAILER_FROM_EMAIL_ID = process.env.NODEMAILER_FROM_EMAIL_ID
+const NODEMAILER_FROM_EMAIL_PASSWORD = process.env.NODEMAILER_FROM_EMAIL_PASSWORD
+
+if (
+  !NODEMAILER_FROM_EMAIL_ID ||
+  !NODEMAILER_FROM_EMAIL_PASSWORD
+) {
+  throw new Error('Environment variables for nodemailer are not set.');
+}
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
   secure: true,
   auth: {
-    user: fromEmailId,
-    pass: fromEmailPassword,
+    user: NODEMAILER_FROM_EMAIL_ID,
+    pass: NODEMAILER_FROM_EMAIL_PASSWORD,
   },
 });
 
@@ -22,7 +29,7 @@ const sendMail = async ({
 }) => {
 
   const mailOptions = {
-    from: fromEmailId,
+    from: NODEMAILER_FROM_EMAIL_ID,
     to: to,
     subject: subject,
     text: text,

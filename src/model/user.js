@@ -9,7 +9,7 @@ const AddressSchema = new mongoose.Schema({
   postalCode: { type: String },
 });
 
-const user = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
   email: {
     type: String,
     allowNull: false,
@@ -37,5 +37,5 @@ const user = new mongoose.Schema({
   },
   address: AddressSchema
 });
-const User = mongoose.model("User", user);
+const User = mongoose.model("User", userSchema);
 module.exports = User;

@@ -4,17 +4,17 @@ const passport = require('passport');
 require('../utils/auth/passport');
 
 const {
-  signupSchema,
+  signupValidations,
   emailRequired,
-  resetPasswordSchema
+  resetPasswordValidations
 } = require('../validation/user')
 const {
-  sendMobileVerificationCode,
-  verifyMobileCode,
+  sendSMSVerificationCode,
+  verifySMSCode,
   verifyEmailAddress,
   signUp,
   signIn,
-  sendPasswordLink,
+  sendResetPasswordLink,
   resetUserPassword,
   googleLoginSuccess,
   logout,
@@ -24,13 +24,13 @@ const {
 router.use(passport.initialize());
 router.use(passport.session());
 
-router.post("/signup", signupSchema, signUp)
+router.post("/signup", signupValidations, signUp)
 router.post("/signin/:action", emailRequired, signIn)
-router.post("/send-otp", sendMobileVerificationCode)
+router.post("/send-otp", sendSMSVerificationCode)
 router.post("/send-email-otp", emailRequired, sentVerificationEmailCode)
-router.post("/forgot-password", emailRequired, sendPasswordLink)
-router.post("/reset-password", resetPasswordSchema, resetUserPassword)
-router.post("/verify-otp", verifyMobileCode)
+router.post("/forgot-password", emailRequired, sendResetPasswordLink)
+router.post("/reset-password", resetPasswordValidations, resetUserPassword)
+router.post("/verify-otp", verifySMSCode)
 router.post("/verify-email", verifyEmailAddress)
 
 //google authentication

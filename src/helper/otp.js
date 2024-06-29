@@ -1,22 +1,22 @@
-const mongoose = require('mongoose');
 const moment = require('moment');
 const Otp = require("../model/otp")
+const {
+
+} = require('../constant/constants')
 
 const generateOtp = () => {
   const otp = Math.floor(10000 + Math.random() * 90000).toString();
-  const expiresAt = moment().add(5, 'minutes').toISOString();
+  const expiresAt = moment().add(OTP_EXPIRE_TIME, 'minutes').toISOString();
   return { otp, expiresAt };
 }
 
 const saveOtpDetails = async (email) => {
   const { otp, expiresAt } = generateOtp();
-  const otpDoc = await Otp({ email, otp, expiresAt }).save()
-  return otpDoc;
+  return await Otp({ email, otp, expiresAt }).save()
 }
 
 const fetchOtp = async (email) => {
-  const otpData = await Otp.findOne({ email })
-  return otpData
+  return await Otp.findOne({ email })
 }
 
 const updateOtpDetails = async (email) => {

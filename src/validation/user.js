@@ -1,7 +1,7 @@
 const { body } = require('express-validator');
 const { validateError, validateNewPassword } = require('../utils/validation')
 
-const signupSchema = [
+const signupValidations = [
   body('email').isEmail().withMessage('Enter a valid email address'),
   validateNewPassword('password'),
   validateError
@@ -12,7 +12,7 @@ const emailRequired = [
   validateError
 ];
 
-const resetPasswordSchema = [
+const resetPasswordValidations = [
   body('token').not().isEmpty().withMessage('Reset Token is required'),
   validateNewPassword('newPassword'),
   validateError
@@ -26,8 +26,8 @@ const changePasswordSchema = [
 
 
 module.exports = {
-  signupSchema,
+  signupValidations,
   emailRequired,
   changePasswordSchema,
-  resetPasswordSchema
+  resetPasswordValidations
 };
