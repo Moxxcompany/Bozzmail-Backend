@@ -32,10 +32,18 @@ const paymentMethodValidation = [
   validateError
 ];
 
+const telegramSignUpValidations = [
+  body('first_name').not().isEmpty().withMessage('First Name is required'),
+  body('last_name').not().isEmpty().withMessage('Last Name is required'),
+  body('id').not().isEmpty().withMessage('Telegram ID is required'),
+  validateError
+]
+
 module.exports = {
   signupValidations,
   emailRequired,
   changePasswordValidations,
   resetPasswordValidations,
-  paymentMethodValidation
+  paymentMethodValidation,
+  telegramSignUpValidations
 };

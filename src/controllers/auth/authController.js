@@ -6,7 +6,8 @@ const {
   createNewUser,
   getUserData,
   fetchUserById,
-  updateUserPassword
+  updateUserPassword,
+  findUserByTelegramId
 } = require('../../helper/user')
 const {
   createPasswordReset,
@@ -266,6 +267,27 @@ const googleLoginSuccess = async (req, res) => {
   }
 }
 
+const telegramLoginSuccess = async (req, res) => {
+  const { first_name, last_name, id } = req.body;
+  try {
+    const user = await findUserByTelegramId(id)
+    if (user) {
+      const token = createToken(user._id);
+      res.status(200).json({ message: "user Login", data: user, token: token })
+    }
+    const data = {
+      telegramId: id,
+      fullName: `${first_name} ${last_name}`
+    }
+    const newUser = await createNewUser(data)
+    const token = createToken(newUser._id);
+    res.status(200).json({ message: "user Login", data: newUser, token: token })
+  } catch (error) {
+    res.status(error.status || 500).json({ error: error.errors });
+  }
+}
+
+
 const logout = async (req, res) => {
   req.logout(function (err) {
     if (err) { return next(err) }
@@ -282,5 +304,6 @@ module.exports = {
   resetUserPassword,
   sentVerificationEmailCode,
   googleLoginSuccess,
+  telegramLoginSuccess,
   logout
 };

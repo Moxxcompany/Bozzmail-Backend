@@ -6,7 +6,8 @@ require('../utils/auth/passport');
 const {
   signupValidations,
   emailRequired,
-  resetPasswordValidations
+  resetPasswordValidations,
+  telegramSignUpValidations
 } = require('../validation/user')
 const {
   sendSMSVerificationCode,
@@ -18,7 +19,8 @@ const {
   resetUserPassword,
   googleLoginSuccess,
   logout,
-  sentVerificationEmailCode
+  sentVerificationEmailCode,
+  telegramLoginSuccess
 } = require('../controllers/auth/authController')
 
 router.use(passport.initialize());
@@ -32,6 +34,7 @@ router.post("/forgot-password", emailRequired, sendResetPasswordLink)
 router.post("/reset-password", resetPasswordValidations, resetUserPassword)
 router.post("/verify-otp", verifySMSCode)
 router.post("/verify-email", verifyEmailAddress)
+router.post("/telegram/callback", telegramSignUpValidations, telegramLoginSuccess)
 
 //google authentication
 router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));

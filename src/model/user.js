@@ -12,7 +12,6 @@ const AddressSchema = new mongoose.Schema({
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
-    allowNull: false,
     unique: true,
   },
   password: {
@@ -33,6 +32,9 @@ const userSchema = new mongoose.Schema({
     default: true
   },
   profile_img: {
+    type: String
+  },
+  telegramId: {
     type: String
   },
   address: AddressSchema

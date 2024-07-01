@@ -36,10 +36,15 @@ const updateUserPassword = async (id, password) => {
   return true
 }
 
+const findUserByTelegramId = async(id) => {
+  return await User.findOne({telegramId: id})
+}
+
 module.exports = {
   fetchUserByEmail,
   createNewUser,
   fetchUserById,
   getUserData,
-  updateUserPassword
+  updateUserPassword,
+  findUserByTelegramId
 }
