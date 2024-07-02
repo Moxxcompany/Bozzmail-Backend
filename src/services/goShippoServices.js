@@ -1,14 +1,9 @@
 const { post } = require('../utils/axios')
-const GOSHIPPO_BASE_URL = process.env.GOSHIPPO_BASE_URL
-const GOSHIPPO_API_KEY = process.env.GOSHIPPO_API_KEY
+const {
+  GOSHIPPO_API_KEY,
+  GOSHIPPO_BASE_URL
+} = require('../constant/constants')
 const GOSHIPPO_TOKEN = `ShippoToken ${GOSHIPPO_API_KEY}`
-
-if (
-  !GOSHIPPO_BASE_URL ||
-  !GOSHIPPO_API_KEY
-) {
-  throw new Error('Environment variables for goshippo are not set.');
-}
 
 const generateNewShipment = async (data) => {
   const url = `${GOSHIPPO_BASE_URL}/shipments/`;

@@ -4,16 +4,10 @@ const {
   fetchUserByEmail,
   createNewUser
 } = require('../../helper/user')
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID
-const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET
-
-if (
-  !GOOGLE_CLIENT_ID ||
-  !GOOGLE_CLIENT_SECRET
-) {
-  throw new Error('Environment variables for google authentication are not set.');
-}
-
+const {
+  GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET
+} = require('../../constant/constants')
 
 passport.use(
   new OAuth2Strategy({

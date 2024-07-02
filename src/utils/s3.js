@@ -1,20 +1,11 @@
 const { S3Client, GetObjectCommand, PutObjectCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
-
-const S3_BUCKET_NAME = process.env.S3_BUCKET_NAME
-const S3_REGION = process.env.S3_REGION
-const S3_ACCESS_KEY_ID = process.env.S3_ACCESS_KEY_ID
-const S3_SECRET_ACCESS_KEY = process.env.S3_SECRET_ACCESS_KEY
-
-if (
-  !S3_BUCKET_NAME ||
-  !S3_REGION ||
-  !S3_ACCESS_KEY_ID ||
-  !S3_SECRET_ACCESS_KEY
-) {
-  throw new Error('Environment variables for aws storage are not set.');
-}
-
+const {
+  S3_ACCESS_KEY_ID,
+  S3_REGION,
+  S3_BUCKET_NAME,
+  S3_SECRET_ACCESS_KEY
+} = require('../constant/constants')
 
 const s3Client = new S3Client({
   S3_REGION,

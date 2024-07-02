@@ -1,7 +1,7 @@
 const moment = require('moment');
 const Otp = require("../model/otp")
 const {
-
+  OTP_EXPIRE_TIME
 } = require('../constant/constants')
 
 const generateOtp = () => {

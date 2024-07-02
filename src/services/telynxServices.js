@@ -1,16 +1,11 @@
 const { post } = require('../utils/axios')
-const TELNYX_BASE_URL = process.env.TELNYX_BASE_URL
-const TELNYX_VERIFIED_PROFILE_ID = process.env.TELNYX_VERIFIED_PROFILE_ID;
-const TELNYX_API_KEY = process.env.TELNYX_API_KEY
+const {
+  TELNYX_BASE_URL,
+  TELNYX_API_KEY,
+  TELNYX_VERIFIED_PROFILE_ID,
+  TELYNX_SEND_MESSAGE_NUMBER
+} = require('../constant/constants')
 const TELNYX_TOKEN = `Bearer ${TELNYX_API_KEY}`
-
-if (
-  !TELNYX_BASE_URL ||
-  !TELNYX_VERIFIED_PROFILE_ID ||
-  !TELNYX_API_KEY
-) {
-  throw new Error('Environment variables for telynx are not set.');
-}
 
 const sendSMSVerificationOTP = async (phoneNumber) => {
   const url = `${TELNYX_BASE_URL}/v2/verifications/sms`;
@@ -44,4 +39,21 @@ const verifySMSOTP = async (phoneNumber, otp) => {
   }
 }
 
-module.exports = { sendSMSVerificationOTP, verifySMSOTP };
+const sendSMS = async (phoneNumber, message) => {
+  const url = `${TELNYX_BASE_URL}/v2/messages`
+  try {
+    const payload = {
+      from: TELYNX_SEND_MESSAGE_NUMBER,
+      to: phoneNumber,
+      text: message
+    }
+    const response = await post(url, payload, TELNYX_TOKEN)
+    return response.data;
+  } catch (error) {
+    const errorMessage = error.response ? error.response.data : error.message;
+    const errorStatus = error.response ? error.response.status : 500;
+    throw { errors: errorMessage.errors, status: errorStatus };
+  }
+}
+
+module.exports = { sendSMSVerificationOTP, verifySMSOTP, sendSMS };

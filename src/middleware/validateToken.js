@@ -1,11 +1,5 @@
 const jwt = require('jsonwebtoken');
-const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY
-
-if (
-  !JWT_SECRET_KEY
-) {
-  throw new Error('Environment variables for jwt authentication are not set.');
-}
+const { JWT_SECRET_KEY } = require('../constant/constants')
 
 module.exports = function (req, res, next) {
   const token = req.headers.token;
