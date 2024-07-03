@@ -24,14 +24,6 @@ const changePasswordValidations = [
   validateError
 ]
 
-const paymentMethodValidation = [
-  body('cardholderName').not().isEmpty().withMessage('Card holder Name is required'),
-  body('cardNumber').not().isEmpty().withMessage('Card Number is required'),
-  body('expiryDate').not().isEmpty().withMessage('Card Expiry Date is required'),
-  body('cvv').not().isEmpty().withMessage('Card cvv number is required'),
-  validateError
-];
-
 const telegramSignUpValidations = [
   body('first_name').not().isEmpty().withMessage('First Name is required'),
   body('last_name').not().isEmpty().withMessage('Last Name is required'),
@@ -44,6 +36,5 @@ module.exports = {
   emailRequired,
   changePasswordValidations,
   resetPasswordValidations,
-  paymentMethodValidation,
   telegramSignUpValidations
 };

@@ -5,7 +5,6 @@ const session = require("express-session");
 const connectDB = require('./src/config/database')
 const authRoutes = require('./src/routes/auth')
 const userRoutes = require('./src/routes/user')
-const paymentMethodsRoute = require('./src/routes/paymentMethods')
 const shipmentsRoutes = require('./src/routes/shipments')
 const jwtMiddlewareValidation = require('./src/middleware/validateToken')
 const {
@@ -36,7 +35,6 @@ const startServer = async () => {
     //routes
     app.use('/auth', authRoutes)
     app.use('/user', jwtMiddlewareValidation, userRoutes)
-    app.use('/payment-methods', paymentMethodsRoute)
     app.use('/shipments', shipmentsRoutes)
     const port = PORT || '3001';
     app.listen(port, () => {
