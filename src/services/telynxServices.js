@@ -39,7 +39,7 @@ const verifySMSOTP = async (phoneNumber, otp) => {
   }
 }
 
-const sendSMS = async (phoneNumber, message) => {
+const sendSMS = async ({ phoneNumber, message }) => {
   const url = `${TELNYX_BASE_URL}/v2/messages`
   try {
     const payload = {
@@ -50,9 +50,7 @@ const sendSMS = async (phoneNumber, message) => {
     const response = await post(url, payload, TELNYX_TOKEN)
     return response.data;
   } catch (error) {
-    const errorMessage = error.response ? error.response.data : error.message;
-    const errorStatus = error.response ? error.response.status : 500;
-    throw { errors: errorMessage.errors, status: errorStatus };
+    console.log(error)
   }
 }
 

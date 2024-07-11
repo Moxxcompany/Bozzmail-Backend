@@ -28,7 +28,8 @@ const {
 } = require('../../utils/sendEmail')
 const {
   sendSMSVerificationOTP,
-  verifySMSOTP
+  verifySMSOTP,
+  sendSMS
 } = require('../../services/telynxServices');
 const {
   verifyEmailId
@@ -40,8 +41,11 @@ const {
 const { sendTelegramSms } = require("../../services/telegramServices");
 
 const signUp = async (req, res) => {
-  const { email, password, phoneNumber } = req.body;
+  const { email, password, phoneNumber, notify_mobile } = req.body;
   try {
+    if (notify_mobile && !phoneNumber && !phoneNumber.length) {
+      return res.status(400).json({ message: 'Phone Number is required for notifications.' });
+    }
     const existingUser = await fetchUserByEmail(email);
     if (existingUser) {
       return res.status(400).json({ message: 'Email Address already in use' });
@@ -50,7 +54,8 @@ const signUp = async (req, res) => {
     const data = {
       email,
       password: hashedPassword,
-      phoneNumber
+      phoneNumber,
+      notify_mobile
     };
     const user = await createNewUser(data)
     const userData = await getUserData(user)
@@ -64,6 +69,12 @@ const signUp = async (req, res) => {
         heading: 'Signup Success',
         content: `<p>Congrats! You have successfully signed up for Bozzmail. The verification code for your email is ${otpDetails.otp}. The code is valid upto 5 min. Click on this <a href="${verificationLink}" target="_blank">verifcation link</a> to verify your email.</p>`
       })
+      if (notify_mobile) {
+        await sendSMS({
+          phoneNumber: phoneNumber,
+          message: `Congrats! You have successfully signed up for Bozzmail. The verification code has been to sent to you registered email. The code is valid upto 5 min.`
+        })
+      }
       res.status(200).json({ message: 'User created Successfully', data: userData });
     } else {
       res.status(500).json({ message: 'Failed to create a new user' });
@@ -105,6 +116,12 @@ const signIn = async (req, res) => {
           heading: 'Signin Success',
           content: `<p>Congrats! You have successfully logged in for Bozzmail.</p>`
         })
+        if (existingUser.notify_mobile && existingUser.phoneNumber) {
+          await sendSMS({
+            phoneNumber: existingUser.phoneNumber,
+            message: `Congrats! You have successfully logged in for Bozzmail.`
+          })
+        }
         res.status(200).json({ message: 'User successfully logged in', data: userData, token: token });
         break;
       case "otp": // to login with the SMS OTP after providing email
@@ -124,6 +141,12 @@ const signIn = async (req, res) => {
             heading: 'Signin Success',
             content: `<p>Congrats! You have successfully logged in for Bozzmail.</p>`
           })
+          if (existingUser.notify_mobile && existingUser.phoneNumber) {
+            await sendSMS({
+              phoneNumber: existingUser.phoneNumber,
+              message: `Congrats! You have successfully logged in for Bozzmail.`
+            })
+          }
           res.status(200).json({ message: 'Verification Complete', data: userData, token: token });
         } else {
           res.status(500).json({ message: 'OTP is not correct' });
@@ -146,6 +169,12 @@ const signIn = async (req, res) => {
             heading: 'Signin Success',
             content: `<p>Congrats! You have successfully logged in for Bozzmail.</p>`
           })
+          if (existingUser.notify_mobile && existingUser.phoneNumber) {
+            await sendSMS({
+              phoneNumber: existingUser.phoneNumber,
+              message: `Congrats! You have successfully logged in for Bozzmail.`
+            })
+          }
           res.status(200).json({ message: 'Verification Complete', data: userData, token: token });
         } else {
           res.status(500).json({ message: 'Verification Code is not valid or expired.' });
@@ -183,6 +212,12 @@ const sendResetPasswordLink = async (req, res) => {
       heading: 'Password Reset',
       content: `<p>You requested for a password reset. Click on this <a href="${resetLink}" target="_blank">reset link</a> to reset your password.</p>`
     })
+    if (existingUser.notify_mobile && existingUser.phoneNumber) {
+      await sendSMS({
+        phoneNumber: existingUser.phoneNumber,
+        message: `<p>You requested for a password reset. Click on this <a href="${resetLink}" target="_blank">reset link</a> to reset your password.</p>`
+      })
+    }
     res.status(200).json({ message: 'Password Verification link sent to registered email' });
   } catch (error) {
     res.status(error.status || 500).json({ mesaage: error });
@@ -211,9 +246,15 @@ const resetUserPassword = async (req, res) => {
       subject: 'Account Password reset successfuly',
       text: `You have successfully changed your password`,
       heading: 'Password successfully changed',
-      content: `<p>Your password for your account has been changed successfully.</p>`
+      content: `<p>Your password for your account has been reset successfully.</p>`
     })
-    res.status(200).json({ message: 'Password Changed successfully' });
+    if (userData.notify_mobile && userData.phoneNumber) {
+      await sendSMS({
+        phoneNumber: userData.phoneNumber,
+        message: `Your password for your account has been reset successfully.`
+      })
+    }
+    res.status(200).json({ message: 'Password reset successfully' });
   } catch (error) {
     res.status(error.status || 500).json({ message: error });
   }

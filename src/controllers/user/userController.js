@@ -8,7 +8,10 @@ const {
   uploadFile,
   deleteFile,
   getObjectSignedUrl
-} = require('../../utils/s3')
+} = require('../../utils/s3');
+const {
+  sendSMS
+} = require("../../services/telynxServices");
 
 const getUserById = async (req, res) => {
   const id = req.params.userId;
@@ -46,6 +49,12 @@ const changeUserPassword = async (req, res) => {
       heading: 'Password successfully changed',
       content: `<p>Your password for your account has been changed successfully.</p>`
     })
+    if (user.notify_mobile && user.phoneNumber) {
+      await sendSMS({
+        phoneNumber: user.phoneNumber,
+        message: `Your password for your account has been changed successfully.`
+      })
+    }
     res.status(200).json({ message: 'Password Changed Successfully' })
   } catch (error) {
     res.status(error.status || 500).json({ message: error });
@@ -77,6 +86,12 @@ const updateUserDetails = async (req, res) => {
         heading: 'Account detail successfully updated',
         content: `<p>Your details for your account has been updated successfully.</p>`
       })
+      if (user.notify_mobile && user.phoneNumber) {
+        await sendSMS({
+          phoneNumber: user.phoneNumber,
+          message: `Your details for your account has been updated successfully.`
+        })
+      }
     }
     res.status(200).json({ message: 'User details updated Successfully' })
   } catch (error) {
@@ -106,6 +121,12 @@ const deleteUser = async (req, res) => {
         heading: 'Boozmail Account deactivated',
         content: `<p>Your bozzmail account has been deactivated.</p>`
       })
+      if (user.notify_mobile && user.phoneNumber) {
+        await sendSMS({
+          phoneNumber: user.phoneNumber,
+          message: `Your bozzmail account has been deactivated.`
+        })
+      }
     }
     res.status(200).json({ message: 'User data Deleted Successfully' })
   } catch (error) {
@@ -148,6 +169,12 @@ const updateUserProfileImg = async (req, res) => {
         heading: 'Account profile picture successfully updated',
         content: `<p>Your profile picture for your account has been updated successfully.</p>`
       })
+      if (user.notify_mobile && user.phoneNumber) {
+        await sendSMS({
+          phoneNumber: user.phoneNumber,
+          message: `Your profile picture for your account has been updated successfully.`
+        })
+      }
     }
     res.status(200).json({ message: 'Profile Pic updated', data: user })
   } catch (error) {

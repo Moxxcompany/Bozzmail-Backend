@@ -27,6 +27,10 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  notify_mobile: {
+    type: Boolean,
+    default: false
+  },
   is_active: {
     type: Boolean,
     default: true
