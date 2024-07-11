@@ -14,7 +14,7 @@ const {
 } = require("../../services/telynxServices");
 
 const getUserById = async (req, res) => {
-  const id = req.params.userId;
+  const id = req.userId;
   try {
     const user = await fetchUserById(id);
     if (!user) {
