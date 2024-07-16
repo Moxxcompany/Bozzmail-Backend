@@ -1,9 +1,18 @@
 const express = require("express")
+const cors = require("cors");
 const bodyParser = require('body-parser')
+const session = require("express-session");
 const connectDB = require('./src/config/database')
-require('dotenv').config()
 const authRoutes = require('./src/routes/auth')
+const userRoutes = require('./src/routes/user')
 const shipmentsRoutes = require('./src/routes/shipments')
+const jwtMiddlewareValidation = require('./src/middleware/validateToken')
+const {
+  PASSPORT_SESSION_SECRET,
+  PORT,
+  CORS_ORIGIN
+} = require('./src/constant/constants')
+
 const app = express()
 
 const startServer = async () => {
@@ -11,11 +20,23 @@ const startServer = async () => {
     await connectDB();
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(cors({
+      origin: CORS_ORIGIN,
+      methods: "GET,POST,PUT,DELETE",
+      allowedHeaders: 'Content-Type,Authorization',
+      credentials: true
+    }));
+    app.use(session({
+      secret: PASSPORT_SESSION_SECRET,
+      resave: false,
+      saveUninitialized: true
+    }))
 
     //routes
     app.use('/auth', authRoutes)
+    app.use('/user', jwtMiddlewareValidation, userRoutes)
     app.use('/shipments', shipmentsRoutes)
-    const port = process.env.PORT || '3001';
+    const port = PORT || '3001';
     app.listen(port, () => {
       console.log(`Example app listening at http://localhost:${port}`);
     });

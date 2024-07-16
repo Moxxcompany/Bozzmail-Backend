@@ -1,11 +1,13 @@
 const { post } = require('../utils/axios')
-const baseUrl = process.env.EASYPOST_BASE_URL
-const apiKey = process.env.EASYPOST_API_KEY
+const {
+  EASYPOST_BASE_URL,
+  EASYPOST_API_KEY
+} = require('../constant/constants')
 
 const generateNewShipment = async (payload) => {
-  const url = `${baseUrl}/v2/shipments`;
+  const url = `${EASYPOST_BASE_URL}/v2/shipments`;
   try {
-    const token = `Basic ${Buffer.from(apiKey + ':').toString('base64')}`
+    const token = `Basic ${Buffer.from(EASYPOST_API_KEY + ':').toString('base64')}`
     const response = await post(url, payload, token);
     return response;
   } catch (error) {

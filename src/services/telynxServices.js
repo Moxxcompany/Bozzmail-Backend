@@ -1,16 +1,20 @@
 const { post } = require('../utils/axios')
-const telynxBaseUrl = process.env.TELNYX_BASE_URL
-const verifyProfileId = process.env.TELNYX_VERIFIED_PROFILE_ID;
-const telnyxToken = `Bearer ${process.env.TELNYX_API_KEY}`
+const {
+  TELNYX_BASE_URL,
+  TELNYX_API_KEY,
+  TELNYX_VERIFIED_PROFILE_ID,
+  TELYNX_SEND_MESSAGE_NUMBER
+} = require('../constant/constants')
+const TELNYX_TOKEN = `Bearer ${TELNYX_API_KEY}`
 
-const sendMobileVerificationOTP = async (phoneNumber) => {
-  const url = `${telynxBaseUrl}/v2/verifications/sms`;
+const sendSMSVerificationOTP = async (phoneNumber) => {
+  const url = `${TELNYX_BASE_URL}/v2/verifications/sms`;
   try {
     const payload = {
       phone_number: phoneNumber,
-      verify_profile_id: verifyProfileId,
+      verify_profile_id: TELNYX_VERIFIED_PROFILE_ID,
     }
-    const response = await post(url, payload, telnyxToken)
+    const response = await post(url, payload, TELNYX_TOKEN)
     return response.data;
   } catch (error) {
     const errorMessage = error.response ? error.response.data : error.message;
@@ -19,14 +23,14 @@ const sendMobileVerificationOTP = async (phoneNumber) => {
   }
 };
 
-const verifyMobileOTP = async (phoneNumber, otp) => {
-  const url = `${telynxBaseUrl}/v2/verifications/by_phone_number/${phoneNumber}/actions/verify`
+const verifySMSOTP = async (phoneNumber, otp) => {
+  const url = `${TELNYX_BASE_URL}/v2/verifications/by_phone_number/${phoneNumber}/actions/verify`
   try {
     const payload = {
       code: otp,
-      verify_profile_id: verifyProfileId,
+      verify_profile_id: TELNYX_VERIFIED_PROFILE_ID,
     }
-    const response = await post(url, payload, telnyxToken)
+    const response = await post(url, payload, TELNYX_TOKEN)
     return response.data;
   } catch (error) {
     const errorMessage = error.response ? error.response.data : error.message;
@@ -35,4 +39,19 @@ const verifyMobileOTP = async (phoneNumber, otp) => {
   }
 }
 
-module.exports = { sendMobileVerificationOTP, verifyMobileOTP };
+const sendSMS = async ({ phoneNumber, message }) => {
+  const url = `${TELNYX_BASE_URL}/v2/messages`
+  try {
+    const payload = {
+      from: TELYNX_SEND_MESSAGE_NUMBER,
+      to: phoneNumber,
+      text: message
+    }
+    const response = await post(url, payload, TELNYX_TOKEN)
+    return response.data;
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+module.exports = { sendSMSVerificationOTP, verifySMSOTP, sendSMS };

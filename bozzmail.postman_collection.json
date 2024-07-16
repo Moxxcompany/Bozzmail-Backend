@@ -1,0 +1,613 @@
+{
+	"info": {
+		"_postman_id": "30f4123e-7e83-48fb-9b73-944f989943a7",
+		"name": "bozzmail",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "7103822"
+	},
+	"item": [
+		{
+			"name": "telynxphoneverification",
+			"item": [
+				{
+					"name": "send-code",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"phoneNumber\" : \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3030/auth/send-otp"
+					},
+					"response": []
+				},
+				{
+					"name": "verify-code",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"phoneNumber\" : \"\",\r\n    \"otp\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3030/auth/verify-otp"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "infobipemailverify",
+			"item": [
+				{
+					"name": "email-verify",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"emailId\" : \"abc@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3030/auth/verify-email"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "shipment",
+			"item": [
+				{
+					"name": "goShippo",
+					"item": [
+						{
+							"name": "create-shipment",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"address_from\": {\r\n        \"name\": \"Shawn Ippotle\",\r\n        \"street1\": \"215 Clayton St.\",\r\n        \"city\": \"San Francisco\",\r\n        \"state\": \"CA\",\r\n        \"zip\": \"94117\",\r\n        \"country\": \"US\"\r\n      },\r\n      \"address_to\": {\r\n        \"name\": \"Mr Hippo\",\r\n        \"street1\": \"Broadway 1\",\r\n        \"city\": \"New York\",\r\n        \"state\": \"NY\",\r\n        \"zip\": \"10007\",\r\n        \"country\": \"US\"\r\n      },\r\n      \"parcels\": [\r\n        {\r\n          \"length\": \"5\",\r\n          \"width\": \"5\",\r\n          \"height\": \"5\",\r\n          \"distance_unit\": \"in\",\r\n          \"weight\": \"2\",\r\n          \"mass_unit\": \"lb\"\r\n        }\r\n      ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:3030/shipments/goshippo/create-new"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "easypost",
+					"item": [
+						{
+							"name": "create-shipment",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"shipment\": {\r\n      \"to_address\": {\r\n        \"name\": \"Dr. Steve Brule\",\r\n        \"street1\": \"179 N Harbor Dr\",\r\n        \"city\": \"Redondo Beach\",\r\n        \"state\": \"CA\",\r\n        \"zip\": \"90277\",\r\n        \"country\": \"US\",\r\n        \"phone\": \"8573875756\",\r\n        \"email\": \"dr_steve_brule@gmail.com\"\r\n      },\r\n      \"from_address\": {\r\n        \"name\": \"EasyPost\",\r\n        \"street1\": \"417 Montgomery Street\",\r\n        \"street2\": \"5th Floor\",\r\n        \"city\": \"San Francisco\",\r\n        \"state\": \"CA\",\r\n        \"zip\": \"94104\",\r\n        \"country\": \"US\",\r\n        \"phone\": \"4153334445\",\r\n        \"email\": \"support@easypost.com\"\r\n      },\r\n      \"parcel\": {\r\n        \"length\": \"20.2\",\r\n        \"width\": \"10.9\",\r\n        \"height\": \"5\",\r\n        \"weight\": \"65.9\"\r\n      },\r\n      \"customs_info\": {\r\n        \"id\": \"cstinfo_557343fb723048d796cd218cc8018168\"\r\n      }\r\n    }\r\n  }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:3030/shipments/easypost/create-new"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "flavourCloud",
+					"item": [
+						{
+							"name": "create-shipment",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"Reference\": \"abc123\",\r\n  \"ServiceCode\": \"STANDARD\",\r\n  \"ReasonForExport\": \"merchandise\",\r\n  \"WeightUnit\": \"LB\",\r\n  \"Currency\": \"USD\",\r\n  \"DimensionUnit\": \"IN\",\r\n  \"TermsOfTrade\": \"DDP\",\r\n  \"ShipFromAddress\": {\r\n    \"Name\": \"Jake Krachman\",\r\n    \"AttentionName\": \"Flavorcloud Inc.\",\r\n    \"AddressLine1\": \"200 Townsend Street\",\r\n    \"City\": \"San Francisco\",\r\n    \"Country\": \"US\",\r\n    \"State\": \"CA\",\r\n    \"Zip\": \"94107\",\r\n    \"Phone\": \"5555555555\",\r\n    \"Email\": \"jake.krachman@flavorcloud.com\"\r\n  },\r\n  \"ShipToAddress\": {\r\n    \"Name\": \"Company Name\",\r\n    \"AttentionName\": \"Reciever Name\",\r\n    \"AddressLine1\": \"2412A Victoria Ave.\",\r\n    \"City\": \"Brandon\",\r\n    \"State\": \"MB\",\r\n    \"Country\": \"CA\",\r\n    \"Zip\": \"R7B 0M5\",\r\n    \"Phone\": \"5555555555\",\r\n    \"Email\": \"contact@flavorcloud.com\"\r\n  },\r\n  \"Shipments\": [\r\n    {\r\n      \"Piece\": [\r\n        {\r\n          \"Quantity\": 1,\r\n          \"Weight\": 0.4,\r\n          \"SalePrice\": 29,\r\n          \"HSCode\": \"610910\",\r\n          \"SKU\": \"1234\",\r\n          \"OriginCountryCode\": \"US\",\r\n          \"Description\": \"Blue Polyester T-Shirt \"\r\n        }\r\n      ],\r\n      \"Package\": {\r\n        \"Reference\": \"124\",\r\n        \"Weight\": 1.25,\r\n        \"Length\": 1,\r\n        \"Width\": 1,\r\n        \"Height\": 1\r\n      }\r\n    }\r\n  ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:3030/shipments/flavourcloud/create-new"
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "google",
+					"item": [
+						{
+							"name": "google link",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "http://localhost:3030/auth/google/callback"
+							},
+							"response": []
+						},
+						{
+							"name": "login-success",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "htttp://localhost:3030/auth/login/success"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "telegram",
+					"item": [
+						{
+							"name": "signin with telegram",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"first_name\" : \"\",\r\n    \"last_name\" : \"\",\r\n    \"id\" : \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:3030/auth/telegram/callback"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "signUp",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"\",\r\n    \"password\": \"\",\r\n    \"phoneNumber\" : \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3030/auth/signup"
+					},
+					"response": []
+				},
+				{
+					"name": "signIn-with-password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"\",\r\n    \"password\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3030/auth/signin/password"
+					},
+					"response": []
+				},
+				{
+					"name": "signIn-request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"test123b@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3030/auth/signin/request"
+					},
+					"response": []
+				},
+				{
+					"name": "signIn-with-otp",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"\",\r\n    \"otp\" : \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3030/auth/signin/otp"
+					},
+					"response": []
+				},
+				{
+					"name": "signIn-with-email",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"\",\r\n    \"verificationCode\" : \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3030/auth/signin/email"
+					},
+					"response": []
+				},
+				{
+					"name": "forgot-password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3030/auth/forgot-password"
+					},
+					"response": []
+				},
+				{
+					"name": "reset-password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"token\" : \"\",\r\n    \"newPassword\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3030/auth/reset-password"
+					},
+					"response": []
+				},
+				{
+					"name": "send-otp-email",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3030/auth/send-email-otp"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "paymentMethods",
+					"item": [
+						{
+							"name": "user payments",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "token",
+										"value": "",
+										"type": "text"
+									}
+								],
+								"url": "http://localhost:3030/payment-methods/667fcbfcddf54c74a90410d3"
+							},
+							"response": []
+						},
+						{
+							"name": "add user payment method",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "token",
+										"value": "",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"cardholderName\" : \"111\",\r\n    \"cardNumber\" : \"111\",\r\n    \"expiryDate\" : \"22-05-2000\",\r\n    \"cvv\" : \"11\",\r\n    \"isDefault\" : false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3030/payment-methods/:userId",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3030",
+									"path": [
+										"payment-methods",
+										":userId"
+									],
+									"variable": [
+										{
+											"key": "userId",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update user payment method Copy",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "token",
+										"value": "",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"cardholderName\" : \"111\",\r\n    \"cardNumber\" : \"111\",\r\n    \"expiryDate\" : \"22-05-2000\",\r\n    \"cvv\" : \"11\",\r\n    \"isDefault\" : false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3030/payment-methods/:userId/:paymentMethodId",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3030",
+									"path": [
+										"payment-methods",
+										":userId",
+										":paymentMethodId"
+									],
+									"variable": [
+										{
+											"key": "userId",
+											"value": ""
+										},
+										{
+											"key": "paymentMethodId",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete payment method",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "token",
+										"value": "",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3030/payment-methods/:userId/:paymentMethodId",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3030",
+									"path": [
+										"payment-methods",
+										":userId",
+										":paymentMethodId"
+									],
+									"variable": [
+										{
+											"key": "userId",
+											"value": ""
+										},
+										{
+											"key": "paymentMethodId",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "user details",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": "http://localhost:3030/user/details"
+					},
+					"response": []
+				},
+				{
+					"name": "change-password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"currentPassword\" : \"\",\r\n    \"newPassword\" : \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3030/user/change-password"
+					},
+					"response": []
+				},
+				{
+					"name": "update user",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fullName\": \"\",\r\n    \"phoneNumber\": \"\",\r\n    \"address\": {\r\n        \"street1\": \"\",\r\n        \"street2\": \"\",\r\n        \"city\": \"\",\r\n        \"state\": \"\",\r\n        \"country\": \"\",\r\n        \"postalCode\": \"\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3030/user/update"
+					},
+					"response": []
+				},
+				{
+					"name": "upload profile",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "profileImg",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": "http://localhost:3030/user/update-profile-pic"
+					},
+					"response": []
+				},
+				{
+					"name": "delete user",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3030/user/delete"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
