@@ -95,7 +95,7 @@ const fetchShipmentById = async (id) => {
 }
 
 const createPickupShipment = async (data) => {
-  const url = `${EASYPOST_BASE_URL}/pickups`
+  const url = `${GOSHIPPO_BASE_URL}/pickups`
   const payload = {
     carrier_account: data.carrier_account,
     location: {
@@ -115,8 +115,9 @@ const createPickupShipment = async (data) => {
       }
     },
     transactions: [data.transaction_id],
-    requested_start_time: data.min_datetime,  //2020-05-12T12:00:00Z
-    requested_end_time: data.max_datetime
+    requested_start_time: data.min_datetime, 
+    requested_end_time: data.max_datetime,
+    is_test: data.is_test
   }
   try {
     return await post(url, payload, GOSHIPPO_TOKEN);

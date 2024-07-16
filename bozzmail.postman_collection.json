@@ -83,7 +83,7 @@
 								"header": [
 									{
 										"key": "token",
-										"value": "",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjhmNzgyMzg4MDUwMTJiNjdjMWM1ZWUiLCJpYXQiOjE3MjExMjQ0NTAsImV4cCI6MTcyMTEyODA1MH0.Rf7N1txgJ-DsXqPL0Vv_N-u5JMd4GvkhTJ3P4l6CybU",
 										"type": "text"
 									}
 								],
@@ -107,13 +107,13 @@
 								"header": [
 									{
 										"key": "token",
-										"value": "",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjhmNzgyMzg4MDUwMTJiNjdjMWM1ZWUiLCJpYXQiOjE3MjExMjQ0NTAsImV4cCI6MTcyMTEyODA1MH0.Rf7N1txgJ-DsXqPL0Vv_N-u5JMd4GvkhTJ3P4l6CybU",
 										"type": "text"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"rateId\" : \"51b3827188694943be307244d3ce55ec\"\r\n}",
+									"raw": "{\r\n    \"rateId\" : \"19699afa9f8440f889e931447548ca8d\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -136,7 +136,7 @@
 								"header": [
 									{
 										"key": "token",
-										"value": "",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjhmNzgyMzg4MDUwMTJiNjdjMWM1ZWUiLCJpYXQiOjE3MjExMjQ0NTAsImV4cCI6MTcyMTEyODA1MH0.Rf7N1txgJ-DsXqPL0Vv_N-u5JMd4GvkhTJ3P4l6CybU",
 										"type": "text"
 									}
 								],
@@ -160,13 +160,13 @@
 								"header": [
 									{
 										"key": "token",
-										"value": "",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjhmNzgyMzg4MDUwMTJiNjdjMWM1ZWUiLCJpYXQiOjE3MjExMjQ0NTAsImV4cCI6MTcyMTEyODA1MH0.Rf7N1txgJ-DsXqPL0Vv_N-u5JMd4GvkhTJ3P4l6CybU",
 										"type": "text"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"shipmentId\" : \"shp_c06c05a81ee04e1ba93253d2f62f60bf\",\r\n    \"rateId\" : \"rate_84a46c5b7cdf4c6aa6957382ef179547\",\r\n    \"insurance\" : {\r\n        \"amount\" : 30.0\r\n    }\r\n}",
+									"raw": "{\r\n    \"shipmentId\" : \"shp_bfdb9804ece7478fb2a7bf70a5a9ca01\",\r\n    \"rateId\" : \"rate_709825529c2a417db4bc0cce23ffea04\",\r\n    \"insurance\" : {\r\n        \"amount\" : 30.0\r\n    }\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -712,13 +712,13 @@
 								"header": [
 									{
 										"key": "token",
-										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjhmNzgyMzg4MDUwMTJiNjdjMWM1ZWUiLCJpYXQiOjE3MjA3OTE4MjYsImV4cCI6MTcyMDc5NTQyNn0.am-pB9_6z6xwBRLRx1yDhxqajuZQAvPFuzEaR_ZHjQg",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjhmNzgyMzg4MDUwMTJiNjdjMWM1ZWUiLCJpYXQiOjE3MjExMjQ0NTAsImV4cCI6MTcyMTEyODA1MH0.Rf7N1txgJ-DsXqPL0Vv_N-u5JMd4GvkhTJ3P4l6CybU",
 										"type": "text"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"reference\": \"my-first-pickup\",\r\n    \"min_datetime\": \"2024-10-01 10:30:00\",\r\n    \"max_datetime\": \"2024-10-02 10:30:00\",\r\n    \"shipment_id\": \"shp_25280f26b2b94126bc6126221c4e557e\",\r\n    \"address_id\": \"adr_793dd7d3404211efbe0dac1f6bc539ae\",\r\n    \"is_account_address\": true,\r\n    \"instructions\": \"true pickup instructions\",\r\n    \"carrier_accounts\" : [ \"ca_81c63543343e46cbbb53e138954a2492\"]\r\n}",
+									"raw": "{\r\n    \"reference\": \"my-first-pickup\",\r\n    \"min_datetime\": \"2024-10-01 10:30:00\",\r\n    \"max_datetime\": \"2024-10-02 10:30:00\",\r\n    \"shipment_id\": \"shp_bfdb9804ece7478fb2a7bf70a5a9ca01\",\r\n    \"address_id\": \"adr_4a57a008435e11efa8c0ac1f6bc539aa\",\r\n    \"is_account_address\": true,\r\n    \"instructions\": \"true pickup instructions\",\r\n    \"carrier_accounts\" : [ \"ca_ca3d92ead8734d10ac1fc5ffbd89802b\"]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -741,13 +741,13 @@
 								"header": [
 									{
 										"key": "token",
-										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjhmNzgyMzg4MDUwMTJiNjdjMWM1ZWUiLCJpYXQiOjE3MjA2Nzg0NTgsImV4cCI6MTcyMDY4MjA1OH0.jiuZt30XGHKrCARzSaPC-kfeuYBBX8qTHX9uiN7FAbs",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjhmNzgyMzg4MDUwMTJiNjdjMWM1ZWUiLCJpYXQiOjE3MjExMjQ0NTAsImV4cCI6MTcyMTEyODA1MH0.Rf7N1txgJ-DsXqPL0Vv_N-u5JMd4GvkhTJ3P4l6CybU",
 										"type": "text"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"carrier_account\": \"6c51273296864869829b96a80fb13ea1\",\r\n    \"building_location_type\": \"Other\",\r\n    \"building_type\": \"suite\",\r\n    \"instructions\": \"Behind screen door\",\r\n    \"address\": {\r\n        \"name\": \"Mrs Hippo\",\r\n        \"company\": \"Hungry Hippos\",\r\n        \"street1\": \"965 Mission St #201\",\r\n        \"city\": \"San Francisco\",\r\n        \"state\": \"CA\",\r\n        \"zip\": \"95122\",\r\n        \"country\": \"US\",\r\n        \"phone\": \"+14159876543\",\r\n        \"email\": \"mrshippo@shippo.com\"\r\n    },\r\n    \"transaction_id\": \"7439c279b374494c9a80ca24f59e6fc5\",\r\n    \"min_datetime\": \"2024-08-12T12:00:00Z\",\r\n    \"max_datetime\": \"2024-08-12T16:00:00Z\"\r\n}",
+									"raw": "{\r\n    \"carrier_account\": \"b3ec4cc034f24e7e978a71dcdd283c47\",\r\n    \"building_location_type\": \"Other\",\r\n    \"building_type\": \"suite\",\r\n    \"instructions\": \"Behind screen door\",\r\n    \"address\": {\r\n        \"name\": \"Shawn Ippotle\",\r\n        \"company\": \"Hungry Hippos\",\r\n        \"street1\": \"965 Mission St #201\",\r\n        \"city\": \"San Francisco\",\r\n        \"state\": \"CA\",\r\n        \"zip\": \"95122\",\r\n        \"country\": \"US\",\r\n        \"phone\": \"+14159876543\",\r\n        \"email\": \"mrshippo@shippo.com\"\r\n    },\r\n    \"transaction_id\": \"1f096a1fa7494674a22dd5f9a35893d4\",\r\n    \"min_datetime\": \"2024-08-12T12:00:00Z\",\r\n    \"max_datetime\": \"2024-08-12T16:00:00Z\",\r\n    \"is_test\": true\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -759,6 +759,38 @@
 							"response": []
 						}
 					]
+				},
+				{
+					"name": "get-pickup",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjhmNzgyMzg4MDUwMTJiNjdjMWM1ZWUiLCJpYXQiOjE3MjExMjg0OTUsImV4cCI6MTcyMTEzMjA5NX0.XQ0n5_NgXXd1wDWiBwhdllmXVRKT-O0_HXQNU-upFrA",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3030/pickup/getPickup?service=easypost",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"pickup",
+								"getPickup"
+							],
+							"query": [
+								{
+									"key": "service",
+									"value": "easypost"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
