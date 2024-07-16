@@ -6,6 +6,9 @@ const connectDB = require('./src/config/database')
 const authRoutes = require('./src/routes/auth')
 const userRoutes = require('./src/routes/user')
 const shipmentsRoutes = require('./src/routes/shipments')
+const customsRoutes = require('./src/routes/customs')
+const hsCodeRoutes = require('./src/routes/hscode')
+const pickupRoutes = require('./src/routes/pickup')
 const jwtMiddlewareValidation = require('./src/middleware/validateToken')
 const {
   PASSPORT_SESSION_SECRET,
@@ -35,7 +38,10 @@ const startServer = async () => {
     //routes
     app.use('/auth', authRoutes)
     app.use('/user', jwtMiddlewareValidation, userRoutes)
-    app.use('/shipments', shipmentsRoutes)
+    app.use('/shipments', jwtMiddlewareValidation, shipmentsRoutes)
+    app.use('/customs', jwtMiddlewareValidation, customsRoutes)
+    app.use('/hscode', jwtMiddlewareValidation, hsCodeRoutes)
+    app.use('/pickup', jwtMiddlewareValidation, pickupRoutes)
     const port = PORT || '3001';
     app.listen(port, () => {
       console.log(`Example app listening at http://localhost:${port}`);

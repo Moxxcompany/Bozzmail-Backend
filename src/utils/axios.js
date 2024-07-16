@@ -17,4 +17,20 @@ const post = async (url, payload, token) => {
   }
 }
 
-module.exports = { post }
+const get = async (url, token) => {
+  try {
+    const response = await axios.get(url,
+      {
+        headers: {
+          'Authorization': token,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        }
+      });
+    return response;
+  } catch (error) {
+    throw error
+  }
+}
+
+module.exports = { post, get }

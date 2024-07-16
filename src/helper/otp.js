@@ -11,42 +11,57 @@ const generateOtp = () => {
 }
 
 const saveOtpDetails = async (email) => {
-  const { otp, expiresAt } = generateOtp();
-  return await Otp({ email, otp, expiresAt }).save()
+  try {
+    const { otp, expiresAt } = generateOtp();
+    return await Otp({ email, otp, expiresAt }).save()
+  } catch (error) {
+    throw error
+  }
 }
 
 const fetchOtp = async (email) => {
-  return await Otp.findOne({ email })
+  try {
+    return await Otp.findOne({ email })
+  } catch (error) {
+    throw error
+  }
 }
 
 const updateOtpDetails = async (email) => {
-  const { otp, expiresAt } = generateOtp();
-  const data = {
-    otp,
-    expiresAt,
-    email
-  }
-  await Otp.updateOne(
-    { email },
-    {
+  try {
+    const { otp, expiresAt } = generateOtp();
+    const data = {
       otp,
-      expiresAt
+      expiresAt,
+      email
     }
-  );
-  return data
+    await Otp.updateOne(
+      { email },
+      {
+        otp,
+        expiresAt
+      }
+    );
+    return data
+  } catch (error) {
+    throw error
+  }
 }
 
 const verifyEmailOtp = async (email, otp) => {
-  const otpData = await Otp.findOne({ email, otp })
-  if (!otpData) {
-    return false;
+  try {
+    const otpData = await Otp.findOne({ email, otp })
+    if (!otpData) {
+      return false;
+    }
+    if (moment().isAfter(otpData.expiresAt)) {
+      return false
+    }
+    await Otp.deleteOne({ _id: otpDoc._id });
+    return true
+  } catch (error) {
+    throw error
   }
-  if (moment().isAfter(otpData.expiresAt)) {
-    return false
-  }
-
-  await Otp.deleteOne({ _id: otpDoc._id });
-  return true
 }
 
 module.exports = {
