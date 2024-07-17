@@ -9,7 +9,6 @@ const shipmentsRoutes = require('./src/routes/shipments')
 const customsRoutes = require('./src/routes/customs')
 const hsCodeRoutes = require('./src/routes/hscode')
 const pickupRoutes = require('./src/routes/pickup')
-const addressRoutes = require('./src/routes/address')
 
 const jwtMiddlewareValidation = require('./src/middleware/validateToken')
 const {
@@ -44,7 +43,6 @@ const startServer = async () => {
     app.use('/customs', jwtMiddlewareValidation, customsRoutes)
     app.use('/hscode', jwtMiddlewareValidation, hsCodeRoutes)
     app.use('/pickup', jwtMiddlewareValidation, pickupRoutes)
-    app.use('/address', jwtMiddlewareValidation, addressRoutes)
     const port = PORT || '3001';
     app.listen(port, () => {
       console.log(`Example app listening at http://localhost:${port}`);
