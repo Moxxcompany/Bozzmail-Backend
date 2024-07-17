@@ -912,6 +912,157 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "print and mail",
+			"item": [
+				{
+					"name": "send letter",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"address_from\": {\r\n        \"first_name\": \"Shawn\",\r\n        \"last_name\": \"Ippotle\",\r\n        \"company_name\": \"Postgrid\",\r\n        \"street1\": \"215 Clayton St.\",\r\n        \"city\": \"San Francisco\",\r\n        \"state\": \"CA\",\r\n        \"zip\": \"94117\",\r\n        \"country\": \"US\"\r\n    },\r\n    \"address_to\": {\r\n        \"first_name\": \"Test\",\r\n        \"last_name\": \"Customer\",\r\n        \"company_name\": \"Test Customer\",\r\n        \"street1\": \"305 Water St\",\r\n        \"city\": \"Vancouver\",\r\n        \"state\": \"BC\",\r\n        \"country\": \"CA\",\r\n        \"zip\": \"V6B 1B9\"\r\n    },\r\n    \"html\": \"<b>Hello</b>!\",\r\n    \"addressPlacement\": \"top_first_page\",\r\n    \"doubleSided\": true,\r\n    \"perforatedPage\": 1,\r\n    \"extraService\": \"certified\",\r\n    \"envelopeType\": \"flat\",\r\n    \"description\": \"My HTML letter\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3030/print-mail/send/letter"
+					},
+					"response": []
+				},
+				{
+					"name": "send postcard",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjhmNzgyMzg4MDUwMTJiNjdjMWM1ZWUiLCJpYXQiOjE3MjEyMjA0NDUsImV4cCI6MTcyMTIyNDA0NX0.d-2VMimsWIQ0uM1KfQRBlwzUQ5sjR47X0NT5anvIru8",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"address_to\": {\r\n        \"first_name\": \"Test\",\r\n        \"last_name\": \"Customer\",\r\n        \"company_name\": \"Test Customer\",\r\n        \"street1\": \"305 Water St\",\r\n        \"city\": \"Vancouver\",\r\n        \"state\": \"BC\",\r\n        \"country\": \"CA\",\r\n        \"zip\": \"V6B 1B9\"\r\n    },\r\n    \"frontHTML\": \"Hello\",\r\n    \"backHTML\": \"Hello again\",\r\n    \"size\": \"6x4\",\r\n    \"description\" : \"First post card\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3030/print-mail/send/postcard"
+					},
+					"response": []
+				},
+				{
+					"name": "add webhook",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"url\" : \"http://localhost:3030/print-mail/webhooks\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3030/print-mail/add-webhook"
+					},
+					"response": []
+				},
+				{
+					"name": "cancel mail",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"note\": \"Cancelled due to template changes\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3030/print-mail/:id/cancel",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"print-mail",
+								":id",
+								"cancel"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "fetch user printmail",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjhmNzgyMzg4MDUwMTJiNjdjMWM1ZWUiLCJpYXQiOjE3MjEyMjA0NDUsImV4cCI6MTcyMTIyNDA0NX0.d-2VMimsWIQ0uM1KfQRBlwzUQ5sjR47X0NT5anvIru8",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3030/print-mail",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"print-mail"
+							],
+							"query": [
+								{
+									"key": "mailType",
+									"value": "letter",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }

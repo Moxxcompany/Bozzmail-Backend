@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-const post = async (url, payload, token) => {
+const post = async (url, payload, token, headers) => {
   try {
     const response = await axios.post(url,
       payload,
@@ -9,6 +9,7 @@ const post = async (url, payload, token) => {
           'Authorization': token,
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          ...headers
         }
       });
     return response;

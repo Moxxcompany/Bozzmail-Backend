@@ -33,7 +33,11 @@ const constants = {
     JWT_TOKEN_EXPIRE_TIME: 3600, //JWT token expires in 1hr
     FLAVOURCLOUD_SERVICE: 'flavourcloud',
     EASYPOST_SERVICE: 'easypost',
-    GOSHIPPO_SERVICE: 'goshippo'
+    GOSHIPPO_SERVICE: 'goshippo',
+    POSTGRID_API_KEY: process.env.POSTGRID_API_KEY,
+    POSTGRID_BASE_URL: process.env.POSTGRID_BASE_URL,
+    SEND_MAIL_LETTER_TYPE: 'letter',
+    SEND_MAIL_POSTCARD_TYPE: 'postcard'
 };
 
 Object.keys(constants).forEach(key => {

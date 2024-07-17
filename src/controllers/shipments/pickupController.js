@@ -20,7 +20,7 @@ const createNewPickup = async (req, res) => {
     switch (service) {
       case EASYPOST_SERVICE:
         response = await newPickUpEasypost(payload);
-        if(response?.data){
+        if (response?.data) {
           let pickupData = {
             userId: userId,
             service: EASYPOST_SERVICE,
@@ -35,7 +35,7 @@ const createNewPickup = async (req, res) => {
         break;
       case GOSHIPPO_SERVICE:
         response = await newPickupShippo(payload);
-        if(response?.data){
+        if (response?.data) {
           let pickupData = {
             userId: userId,
             service: GOSHIPPO_SERVICE,
@@ -61,14 +61,13 @@ const createNewPickup = async (req, res) => {
   }
 };
 
-const getPickup = async (req, res) =>{
-  try{
+const getPickup = async (req, res) => {
+  try {
     const id = req.userId;
     const { service } = req.query;
     const response = await fetchPickUpByUserId(id, service);
     return res.status(200).json({ data: response })
-
-  }catch(error){
+  } catch (error) {
     return res.status(500).json({ message: error?.response?.data?.error || error?.response?.data });
 
   }

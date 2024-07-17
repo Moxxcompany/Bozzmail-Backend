@@ -9,14 +9,16 @@ const savePickupData = async (data) => {
 }
 
 const fetchPickUpByUserId = async (userId, service) => {
-    try {
-        const userData = await Pickup.findOne({ userId: userId, service: service });
-        return userData
-    } catch (error) {
-      throw error
+  try {
+    if (service) {
+      return await Pickup.find({ userId, service })
     }
+    return await Pickup.find({ userId: userId })
+  } catch (error) {
+    throw error
   }
+}
 module.exports = {
-    savePickupData,
-    fetchPickUpByUserId
+  savePickupData,
+  fetchPickUpByUserId
 }
