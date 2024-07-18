@@ -9,9 +9,6 @@ const {
   deleteFile,
   getObjectSignedUrl
 } = require('../../utils/s3');
-const {
-  sendSMS
-} = require("../../services/telynxServices");
 
 const getUserById = async (req, res) => {
   const id = req.userId;
@@ -42,19 +39,12 @@ const changeUserPassword = async (req, res) => {
       return res.status(400).json({ message: 'Password is incorrect' });
     }
     await updateUserPassword(user._id, newPassword)
-    await sendMail({
-      to: user.email,
-      subject: 'Account Password reset successfuly',
-      text: `You have successfully changed your password`,
-      heading: 'Password successfully changed',
-      content: `<p>Your password for your account has been changed successfully.</p>`
+    await sendNotification({
+      user: user,
+      message: 'Your password for your account has been changed successfully.',
+      emailMessage: `<p>Your password for your account has been changed successfully.</p>`,
+      emailSubject: 'Account Password reset successfuly'
     })
-    if (user.notify_mobile && user.phoneNumber) {
-      await sendSMS({
-        phoneNumber: user.phoneNumber,
-        message: `Your password for your account has been changed successfully.`
-      })
-    }
     res.status(200).json({ message: 'Password Changed Successfully' })
   } catch (error) {
     res.status(error.status || 500).json({ message: error });
@@ -73,26 +63,12 @@ const updateUserDetails = async (req, res) => {
     user.phoneNumber = phoneNumber ? phoneNumber : user.phoneNumber
     user.address = address ? address : user.address
     await user.save();
-    if (user.telegramId) {
-      await sendTelegramSms({
-        id: user.telegramId,
-        message: `Your details for your account has been updated successfully`
-      })
-    } else {
-      await sendMail({
-        to: user.email,
-        subject: 'Updated Account Details',
-        text: `You have successfully updated your account details`,
-        heading: 'Account detail successfully updated',
-        content: `<p>Your details for your account has been updated successfully.</p>`
-      })
-      if (user.notify_mobile && user.phoneNumber) {
-        await sendSMS({
-          phoneNumber: user.phoneNumber,
-          message: `Your details for your account has been updated successfully.`
-        })
-      }
-    }
+    await sendNotification({
+      user: user,
+      message: 'Your details for your account has been updated successfully',
+      emailMessage: `<p>Your details for your account has been updated successfully.</p>`,
+      emailSubject: 'Updated Account Details'
+    })
     res.status(200).json({ message: 'User details updated Successfully' })
   } catch (error) {
     res.status(error.status || 500).json({ message: error });
@@ -108,26 +84,12 @@ const deleteUser = async (req, res) => {
     }
     user.is_active = false
     await user.save();
-    if (user.telegramId) {
-      await sendTelegramSms({
-        id: user.telegramId,
-        message: `Your account has been deactivated successfully.`
-      })
-    } else {
-      await sendMail({
-        to: user.email,
-        subject: 'Bozzmail account deactivation',
-        text: `Your bozzmail account has been deactivated successfully.`,
-        heading: 'Boozmail Account deactivated',
-        content: `<p>Your bozzmail account has been deactivated.</p>`
-      })
-      if (user.notify_mobile && user.phoneNumber) {
-        await sendSMS({
-          phoneNumber: user.phoneNumber,
-          message: `Your bozzmail account has been deactivated.`
-        })
-      }
-    }
+    await sendNotification({
+      user: user,
+      message: 'Your account has been deactivated successfully.',
+      emailMessage: `<p>Your bozzmail account has been deactivated.</p>`,
+      emailSubject: 'Bozzmail account deactivation'
+    })
     res.status(200).json({ message: 'User data Deleted Successfully' })
   } catch (error) {
     res.status(error.status || 500).json({ message: error });
@@ -156,36 +118,44 @@ const updateUserProfileImg = async (req, res) => {
     const url = await getObjectSignedUrl(`user-profile/${imageName}`)
     user.profile_img = url;
     await user.save();
-    if (user.telegramId) {
-      await sendTelegramSms({
-        id: user.telegramId,
-        message: `Your profile picture for your account has been updated successfully`
-      })
-    } else {
-      await sendMail({
-        to: user.email,
-        subject: 'Updated Account Details',
-        text: `You have successfully updated your account profile picture`,
-        heading: 'Account profile picture successfully updated',
-        content: `<p>Your profile picture for your account has been updated successfully.</p>`
-      })
-      if (user.notify_mobile && user.phoneNumber) {
-        await sendSMS({
-          phoneNumber: user.phoneNumber,
-          message: `Your profile picture for your account has been updated successfully.`
-        })
-      }
-    }
+    await sendNotification({
+      user: user,
+      message: 'Your profile picture for your account has been updated successfully.',
+      emailMessage: `<p>Your profile picture for your account has been updated successfully.</p>`,
+      emailSubject: 'Updated Account Details'
+    })
     res.status(200).json({ message: 'Profile Pic updated', data: user })
   } catch (error) {
     res.status(error.status || 500).json({ message: error });
   }
 };
 
+const deleteUserProfileImg = async (req, res) => {
+  const userId = req.userId;
+  try {
+    const user = await fetchUserById(userId);
+    if (!user) {
+      return res.status(400).json({ message: 'User not found. Check again' });
+    }
+    user.profile_img = null;
+    await user.save();
+    await sendNotification({
+      user: user,
+      message: 'Your profile picture for your account has been deleted successfully',
+      emailMessage: `<p>Your profile picture for your account has been deleted successfully.</p>`,
+      emailSubject: 'Deleted profile picture'
+    })
+    res.status(200).json({ message: 'Profile Pic deleted' })
+  } catch (error) {
+    res.status(error.status || 500).json({ message: error });
+  }
+}
+
 module.exports = {
   getUserById,
   changeUserPassword,
   updateUserDetails,
   deleteUser,
-  updateUserProfileImg
+  updateUserProfileImg,
+  deleteUserProfileImg
 };

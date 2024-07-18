@@ -1,0 +1,89 @@
+const NotificationMessage = require("../model/notificationMessage")
+const { sendSMS } = require("../services/telynxServices")
+const { sendTelegramSms } = require("../services/telegramServices");
+const { sendMail } = require('../utils/sendEmail')
+
+const sendNotification = async ({
+  user,
+  message,
+  emailMessage,
+  emailSubject
+}) => {
+  try {
+    // const userId = mongoose.Types.ObjectId(user._id)
+    let data = {
+      userId: user._id,
+      message: message
+    }
+    await NotificationMessage(data).save()
+    if (user.telegramId) {
+      await sendTelegramSms({
+        id: user.telegramId,
+        message: message
+      })
+    } else {
+      if (emailMessage && user.notify_email) {
+        await sendMail({
+          to: user.email,
+          subject: emailSubject,
+          text: message,
+          content: emailMessage
+        })
+      }
+      if (user.notify_mobile && user.phoneNumber) {
+        await sendSMS({
+          phoneNumber: user.phoneNumber,
+          message: message
+        })
+      }
+    }
+  } catch (error) {
+    throw error
+  }
+}
+
+const fetchUserNotifications = async (userId, page, limit) => {
+  try {
+    const query = {}
+    query.userId = userId
+    if (!limit && !page) {
+      return await NotificationMessage.find(query).sort({ created_at: -1 })
+    }
+    const validLimit = limit > 0 ? parseInt(limit) : 10;
+    const validPage = page > 0 ? parseInt(page) : 1;
+    return await NotificationMessage.find(query)
+      .limit(validLimit)
+      .skip((validPage - 1) * validLimit)
+  } catch (error) {
+    throw error
+  }
+}
+
+const markNotificationsAsRead = async (ids) => {
+  try {
+    return await NotificationMessage.updateMany(
+      { _id: { $in: ids } },
+      { $set: { is_read: true } }
+    );
+  } catch (error) {
+    throw error
+  }
+}
+
+const deleteNotifications = async (userId, ids) => {
+  try {
+    return await NotificationMessage.deleteMany({
+      _id: { $in: ids },
+      userId: userId
+    });
+  } catch (error) {
+    throw error
+  }
+}
+
+module.exports = {
+  sendNotification,
+  fetchUserNotifications,
+  markNotificationsAsRead,
+  deleteNotifications
+}

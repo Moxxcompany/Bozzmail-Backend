@@ -16,15 +16,20 @@ const {
   PASSPORT_SESSION_SECRET,
   PORT,
   CORS_ORIGIN
-} = require('./src/constant/constants')
+} = require('./src/constant/constants');
+const { listenWebhookevents } = require("./src/controllers/printMail/printMailController");
 
 const app = express()
 
 const startServer = async () => {
   try {
     await connectDB();
-    app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(bodyParser.json({
+      verify: (req, res, buf) => {
+        req.rawBody = buf;
+      }
+    }));
     app.use(cors({
       origin: CORS_ORIGIN,
       methods: "GET,POST,PUT,DELETE",
@@ -45,6 +50,7 @@ const startServer = async () => {
     app.use('/hscode', jwtMiddlewareValidation, hsCodeRoutes)
     app.use('/pickup', jwtMiddlewareValidation, pickupRoutes)
     app.use('/print-mail', jwtMiddlewareValidation, printMailRoutes)
+    app.use('/webhooks/print-mail', express.raw({ type: "application/json" }), listenWebhookevents)
     const port = PORT || '3001';
     app.listen(port, () => {
       console.log(`Example app listening at http://localhost:${port}`);

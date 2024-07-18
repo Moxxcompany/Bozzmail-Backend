@@ -38,7 +38,7 @@ const {
   PASSWORD_RESET_TOKEN_EXPIRE_TIME,
   FE_APP_BASE_URL
 } = require('../../constant/constants');
-const { sendTelegramSms } = require("../../services/telegramServices");
+const { sendNotification } = require("../../helper/sendNotification");
 
 const signUp = async (req, res) => {
   const { email, password, phoneNumber, notify_mobile } = req.body;
@@ -55,26 +55,20 @@ const signUp = async (req, res) => {
       email,
       password: hashedPassword,
       phoneNumber,
-      notify_mobile
+      notify_mobile,
+      notify_email: true
     };
     const user = await createNewUser(data)
     const userData = await getUserData(user)
     if (user) {
       const otpDetails = await saveOtpDetails(email);
       const verificationLink = `${FE_APP_BASE_URL}/verify-email`
-      await sendMail({
-        to: user.email,
-        subject: 'Sign Up successful. Verify your email',
-        text: `You have successfully signed up for bozzmail`,
-        heading: 'Signup Success',
-        content: `<p>Congrats! You have successfully signed up for Bozzmail. The verification code for your email is ${otpDetails.otp}. The code is valid upto 5 min. Click on this <a href="${verificationLink}" target="_blank">verifcation link</a> to verify your email.</p>`
+      await sendNotification({
+        user: userData,
+        message: 'Congrats! You have successfully signed up for Bozzmail. The verification code has been to sent to you registered email. The code is valid upto 5 min.',
+        emailMessage: `<p>Congrats! You have successfully signed up for Bozzmail. The verification code for your email is ${otpDetails.otp}. The code is valid upto 5 min. Click on this <a href="${verificationLink}" target="_blank">verifcation link</a> to verify your email.</p>`,
+        emailSubject: 'Sign Up successful. Verify your email'
       })
-      if (notify_mobile) {
-        await sendSMS({
-          phoneNumber: phoneNumber,
-          message: `Congrats! You have successfully signed up for Bozzmail. The verification code has been to sent to you registered email. The code is valid upto 5 min.`
-        })
-      }
       res.status(200).json({ message: 'User created Successfully', data: userData });
     } else {
       res.status(500).json({ message: 'Failed to create a new user' });
@@ -109,19 +103,12 @@ const signIn = async (req, res) => {
         if (!isPasswordMatch) {
           return res.status(400).json({ message: 'Email or password is incorrect' });
         }
-        await sendMail({
-          to: existingUser.email,
-          subject: 'Logged in for bozzmail successful.',
-          text: `You have successfully logged in for bozzmail`,
-          heading: 'Signin Success',
-          content: `<p>Congrats! You have successfully logged in for Bozzmail.</p>`
+        await sendNotification({
+          user: existingUser,
+          message: 'Congrats! You have successfully logged in for Bozzmail.',
+          emailMessage: `<p>Congrats! You have successfully logged in for Bozzmail.</p>`,
+          emailSubject: 'Logged in for bozzmail successful.'
         })
-        if (existingUser.notify_mobile && existingUser.phoneNumber) {
-          await sendSMS({
-            phoneNumber: existingUser.phoneNumber,
-            message: `Congrats! You have successfully logged in for Bozzmail.`
-          })
-        }
         res.status(200).json({ message: 'User successfully logged in', data: userData, token: token });
         break;
       case "otp": // to login with the SMS OTP after providing email
@@ -134,19 +121,12 @@ const signIn = async (req, res) => {
         }
         await existingUser.save();
         if (response.data && response.data.response_code === 'accepted') {
-          await sendMail({
-            to: existingUser.email,
-            subject: 'Logged in for bozzmail successful.',
-            text: `You have successfully logged in for bozzmail`,
-            heading: 'Signin Success',
-            content: `<p>Congrats! You have successfully logged in for Bozzmail.</p>`
+          await sendNotification({
+            user: existingUser,
+            message: 'Congrats! You have successfully logged in for Bozzmail.',
+            emailMessage: `<p>Congrats! You have successfully logged in for Bozzmail.</p>`,
+            emailSubject: 'Logged in for bozzmail successful.'
           })
-          if (existingUser.notify_mobile && existingUser.phoneNumber) {
-            await sendSMS({
-              phoneNumber: existingUser.phoneNumber,
-              message: `Congrats! You have successfully logged in for Bozzmail.`
-            })
-          }
           res.status(200).json({ message: 'Verification Complete', data: userData, token: token });
         } else {
           res.status(500).json({ message: 'OTP is not correct' });
@@ -162,19 +142,12 @@ const signIn = async (req, res) => {
         }
         await existingUser.save();
         if (emailResponse) {
-          await sendMail({
-            to: existingUser.email,
-            subject: 'Logged in for bozzmail successful.',
-            text: `You have successfully logged in for bozzmail`,
-            heading: 'Signin Success',
-            content: `<p>Congrats! You have successfully logged in for Bozzmail.</p>`
+          await sendNotification({
+            user: existingUser,
+            message: 'Congrats! You have successfully logged in for Bozzmail.',
+            emailMessage: `<p>Congrats! You have successfully logged in for Bozzmail.</p>`,
+            emailSubject: 'Logged in for bozzmail successful.'
           })
-          if (existingUser.notify_mobile && existingUser.phoneNumber) {
-            await sendSMS({
-              phoneNumber: existingUser.phoneNumber,
-              message: `Congrats! You have successfully logged in for Bozzmail.`
-            })
-          }
           res.status(200).json({ message: 'Verification Complete', data: userData, token: token });
         } else {
           res.status(500).json({ message: 'Verification Code is not valid or expired.' });
@@ -212,12 +185,10 @@ const sendResetPasswordLink = async (req, res) => {
       heading: 'Password Reset',
       content: `<p>You requested for a password reset. Click on this <a href="${resetLink}" target="_blank">reset link</a> to reset your password.</p>`
     })
-    if (existingUser.notify_mobile && existingUser.phoneNumber) {
-      await sendSMS({
-        phoneNumber: existingUser.phoneNumber,
-        message: `<p>You requested for a password reset. Click on this <a href="${resetLink}" target="_blank">reset link</a> to reset your password.</p>`
-      })
-    }
+    await sendNotification({
+      user: existingUser,
+      message: 'You requested for a password reset. Check your email for the reset link.',
+    })
     res.status(200).json({ message: 'Password Verification link sent to registered email' });
   } catch (error) {
     res.status(error.status || 500).json({ mesaage: error });
@@ -241,19 +212,12 @@ const resetUserPassword = async (req, res) => {
     }
     await updateUserPassword(userData._id, newPassword)
     await deleteToken(tokenData._id)
-    await sendMail({
-      to: userData.email,
-      subject: 'Account Password reset successfuly',
-      text: `You have successfully changed your password`,
-      heading: 'Password successfully changed',
-      content: `<p>Your password for your account has been reset successfully.</p>`
+    await sendNotification({
+      user: existingUser,
+      message: 'Your password for your account has been reset successfully.',
+      emailMessage: `<p>Your password for your account has been reset successfully.</p>`,
+      emailSubject: 'Account Password reset successfuly'
     })
-    if (userData.notify_mobile && userData.phoneNumber) {
-      await sendSMS({
-        phoneNumber: userData.phoneNumber,
-        message: `Your password for your account has been reset successfully.`
-      })
-    }
     res.status(200).json({ message: 'Password reset successfully' });
   } catch (error) {
     res.status(error.status || 500).json({ message: error });
@@ -328,7 +292,11 @@ const sentVerificationEmailCode = async (req, res) => {
       subject: 'Email Verification Code',
       text: `You requested for a email verification code.`,
       heading: 'Verify your profile',
-      content: `<p>You requested for a email verifcation. The OTP for your account is ${otpDetails.otp}. These is valid upto 5 min</p>`
+      content: `<p>You requested for a email verification. The OTP for your account is ${otpDetails.otp}. These is valid upto 5 min</p>`
+    })
+    await sendNotification({
+      user: existingUser,
+      message: 'You requested for a email verification.. Check your email for code.',
     })
     res.status(200).json({ message: 'Email Verification code sent on registered email', data: otpDetails });
   } catch (error) {
@@ -339,12 +307,11 @@ const sentVerificationEmailCode = async (req, res) => {
 const googleLoginSuccess = async (req, res) => {
   if (req.user && req.user._id) {
     const token = createToken(req.user._id);
-    await sendMail({
-      to: req.user.email,
-      subject: 'Login successful in bozzmail',
-      text: `Successful login `,
-      heading: 'Logged in Bozzmail',
-      content: `<p>You have successful logged in for bozzmail.</p>`
+    await sendNotification({
+      user: req.user,
+      message: 'You have successful logged in for bozzmail.',
+      emailMessage: `<p>You have successful logged in for bozzmail.</p>`,
+      emailSubject: 'Login successful in bozzmail'
     })
     res.status(200).json({ message: "User login", data: req.user, token: token })
   } else {
@@ -358,18 +325,23 @@ const telegramLoginSuccess = async (req, res) => {
     const user = await findUserByTelegramId(id)
     if (user) {
       const token = createToken(user._id);
+      await sendNotification({
+        user: user,
+        message: 'Welcome to bozzmail. Your have successfuly logged in.',
+      })
       res.status(200).json({ message: "User login", data: user, token: token })
     }
     const data = {
       telegramId: id,
       fullName: `${first_name} ${last_name}`,
-      is_profile_verified: true
+      is_profile_verified: true,
+      notify_email: false
     }
     const newUser = await createNewUser(data)
     const token = createToken(newUser._id);
-    await sendTelegramSms({
-      id: id,
-      message: `Welcome to bozzmail. Your account has been created successfully.`
+    await sendNotification({
+      user: newUser,
+      message: 'Welcome to bozzmail. Your account has been created successfully.',
     })
     res.status(200).json({ message: "User login", data: newUser, token: token })
   } catch (error) {

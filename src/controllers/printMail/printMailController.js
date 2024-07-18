@@ -18,14 +18,15 @@ const sendNewPrintMail = async (req, res) => {
   const payload = req.body;
   const mailType = req.params.mailType;
   const userId = req.userId;
+  const file = req.file
   try {
     let response;
     switch (mailType) {
       case SEND_MAIL_LETTER_TYPE:
-        response = await sendPostGridLetter(payload, userId);
+        response = await sendPostGridLetter(payload, userId, file);
         break;
       case SEND_MAIL_POSTCARD_TYPE:
-        response = await sendPostGridPostCard(payload, userId);
+        response = await sendPostGridPostCard(payload, userId, file);
         break;
       default:
         return res.status(500).json({ message: 'Something went wrong.' });
@@ -84,7 +85,7 @@ const createWebHook = async (req, res) => {
 const listenWebhookevents = async (req, res) => {
   try {
     console.log(req, '11111111111111111111111111111111111')
-    return res.status(200).json({ data: req.body })
+    // return res.status(200).json({ data: req.body })
   } catch (error) {
     return res.status(500).json({ message: error?.response?.data?.error || error?.response?.data });
   }
@@ -92,9 +93,9 @@ const listenWebhookevents = async (req, res) => {
 
 const fetchUserPrintMail = async (req, res) => {
   const userId = req.userId;
-  const mailType = req.query.mailType;
+  const { mailType, limit, page } = req.query;
   try {
-    const data = await fetchPrintMailByUserId(userId, mailType);
+    const data = await fetchPrintMailByUserId(userId, mailType, limit, page);
     res.status(200).json({ data: data })
   } catch (error) {
     res.status(error.status || 500).json({ message: error });

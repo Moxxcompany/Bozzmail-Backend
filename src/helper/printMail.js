@@ -8,12 +8,21 @@ const savePrintMailData = async (data) => {
   }
 }
 
-const fetchPrintMailByUserId = async (userId, mailType) => {
+const fetchPrintMailByUserId = async (userId, mailType, limit, page) => {
   try {
+    const query = {}
+    query.userId = userId
     if (mailType) {
-      return await PrintMail.find({ userId, mailType })
+      query.mailType = mailType
     }
-    return await PrintMail.find({ userId: userId })
+    if (!limit && !page) {
+      return await PrintMail.find(query)
+    }
+    const validLimit = limit > 0 ? parseInt(limit) : 10;
+    const validPage = page > 0 ? parseInt(page) : 1;
+    return await PrintMail.find(query)
+      .limit(validLimit)
+      .skip((validPage - 1) * validLimit)
   } catch (error) {
     throw error
   }
