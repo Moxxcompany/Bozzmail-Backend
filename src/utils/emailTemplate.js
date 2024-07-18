@@ -1,6 +1,5 @@
 const emailTemplate = ({
-  content,
-  heading
+  content
 }) => {
     return `<html>
       <head>
@@ -28,7 +27,6 @@ const emailTemplate = ({
       </head>
       <body>
         <div class="container">
-          <h2>${heading}</h2>
           ${content}
         </div>
       </body>

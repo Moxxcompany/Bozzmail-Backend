@@ -26,6 +26,7 @@ passport.use(
             email: profile.email,
             fullName: profile.displayName,
             is_profile_verified: true,
+            notify_email: true,
             profile_img: profile.picture
           }
           const user = await createNewUser(data)

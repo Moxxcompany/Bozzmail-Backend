@@ -18,7 +18,6 @@ const sendMail = async ({
   to,
   subject,
   text,
-  heading,
   content
 }) => {
 
@@ -28,8 +27,7 @@ const sendMail = async ({
     subject: subject,
     text: text,
     html: emailTemplate({
-      content: content,
-      heading: heading
+      content: content
     }),
   };
   transporter.sendMail(mailOptions, function (error, info) {

@@ -4,7 +4,7 @@ const { JWT_SECRET_KEY } = require('../constant/constants')
 module.exports = function (req, res, next) {
   const token = req.headers.token;
   if (!token) {
-    return res.status(401).json({ msg: 'No token, authorization denied' });
+    return res.status(401).json({ message: 'No token, authorization denied' });
   }
 
   try {
@@ -12,6 +12,6 @@ module.exports = function (req, res, next) {
     req.userId = decoded.userId;
     next();
   } catch (err) {
-    res.status(401).json({ msg: 'Token is not valid' });
+    res.status(401).json({ message: 'Token is not valid' });
   }
 };
