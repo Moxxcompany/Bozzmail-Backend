@@ -521,6 +521,21 @@
 					"response": []
 				},
 				{
+					"name": "delete profile pic",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "token",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": "http://localhost:3030/user/delete-profile-pic"
+					},
+					"response": []
+				},
+				{
 					"name": "delete user",
 					"request": {
 						"method": "POST",
@@ -923,18 +938,159 @@
 						"header": [
 							{
 								"key": "token",
-								"value": "",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjhmNzgyMzg4MDUwMTJiNjdjMWM1ZWUiLCJpYXQiOjE3MjEyOTc4NjksImV4cCI6MTcyMTMwMTQ2OX0.rD8Pnrsik7B-4o73CnTBasREKkNrezYPheDA3dZF7Rs",
 								"type": "text"
 							}
 						],
 						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"address_from\": {\r\n        \"first_name\": \"Shawn\",\r\n        \"last_name\": \"Ippotle\",\r\n        \"company_name\": \"Postgrid\",\r\n        \"street1\": \"215 Clayton St.\",\r\n        \"city\": \"San Francisco\",\r\n        \"state\": \"CA\",\r\n        \"zip\": \"94117\",\r\n        \"country\": \"US\"\r\n    },\r\n    \"address_to\": {\r\n        \"first_name\": \"Test\",\r\n        \"last_name\": \"Customer\",\r\n        \"company_name\": \"Test Customer\",\r\n        \"street1\": \"305 Water St\",\r\n        \"city\": \"Vancouver\",\r\n        \"state\": \"BC\",\r\n        \"country\": \"CA\",\r\n        \"zip\": \"V6B 1B9\"\r\n    },\r\n    \"html\": \"<b>Hello</b>!\",\r\n    \"addressPlacement\": \"top_first_page\",\r\n    \"doubleSided\": true,\r\n    \"perforatedPage\": 1,\r\n    \"extraService\": \"certified\",\r\n    \"envelopeType\": \"flat\",\r\n    \"description\": \"My HTML letter\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "address_from[first_name]",
+									"value": "Alex",
+									"type": "text"
+								},
+								{
+									"key": "address_from[last_name]",
+									"value": "Johnson",
+									"type": "text"
+								},
+								{
+									"key": "address_from[company_name]",
+									"value": "ExampleCorp",
+									"type": "text"
+								},
+								{
+									"key": "address_from[street1]",
+									"value": "123 Main St.",
+									"type": "text"
+								},
+								{
+									"key": "address_from[city]",
+									"value": "Los Angeles",
+									"type": "text"
+								},
+								{
+									"key": "address_from[state]",
+									"value": "CA",
+									"type": "text"
+								},
+								{
+									"key": "address_from[zip]",
+									"value": "90001",
+									"type": "text"
+								},
+								{
+									"key": "address_from[country]",
+									"value": "US",
+									"type": "text"
+								},
+								{
+									"key": "address_to[first_name]",
+									"value": "Jane",
+									"type": "text"
+								},
+								{
+									"key": "address_to[last_name]",
+									"value": "Doe",
+									"type": "text"
+								},
+								{
+									"key": "address_to[company_name]",
+									"value": "Sample Company",
+									"type": "text"
+								},
+								{
+									"key": "address_to[street1]",
+									"value": "456 Elm St",
+									"type": "text"
+								},
+								{
+									"key": "address_to[city]",
+									"value": "Toronto",
+									"type": "text"
+								},
+								{
+									"key": "address_to[state]",
+									"value": "ON",
+									"type": "text"
+								},
+								{
+									"key": "address_to[country]",
+									"value": "CA",
+									"type": "text"
+								},
+								{
+									"key": "address_to[zip]",
+									"value": "M5H 2N2",
+									"type": "text"
+								},
+								{
+									"key": "html",
+									"value": "<i>Hello, World!</i>",
+									"type": "text"
+								},
+								{
+									"key": "addressPlacement",
+									"value": "top_first_page",
+									"type": "text"
+								},
+								{
+									"key": "doubleSided",
+									"value": "false",
+									"type": "text"
+								},
+								{
+									"key": "perforatedPage",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "extraService",
+									"value": "certified",
+									"type": "text"
+								},
+								{
+									"key": "envelopeType",
+									"value": "flat",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Sample HTML letter",
+									"type": "text"
+								},
+								{
+									"key": "size",
+									"value": "us_letter",
+									"type": "text"
+								},
+								{
+									"key": "color",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "pdf_data",
+									"type": "file",
+									"src": "/C:/Users/means/Downloads/sample.pdf"
+								},
+								{
+									"key": "mailingClass",
+									"value": "first_class",
+									"type": "text"
+								},
+								{
+									"key": "sendDate",
+									"value": "2024-10-16T15:40:35.873Z",
+									"type": "text"
+								},
+								{
+									"key": "express",
+									"value": "true",
+									"type": "text"
 								}
-							}
+							]
 						},
 						"url": "http://localhost:3030/print-mail/send/letter"
 					},
@@ -947,18 +1103,13 @@
 						"header": [
 							{
 								"key": "token",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjhmNzgyMzg4MDUwMTJiNjdjMWM1ZWUiLCJpYXQiOjE3MjEyMjA0NDUsImV4cCI6MTcyMTIyNDA0NX0.d-2VMimsWIQ0uM1KfQRBlwzUQ5sjR47X0NT5anvIru8",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjhmNzgyMzg4MDUwMTJiNjdjMWM1ZWUiLCJpYXQiOjE3MjEyOTc4NjksImV4cCI6MTcyMTMwMTQ2OX0.rD8Pnrsik7B-4o73CnTBasREKkNrezYPheDA3dZF7Rs",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"address_to\": {\r\n        \"first_name\": \"Test\",\r\n        \"last_name\": \"Customer\",\r\n        \"company_name\": \"Test Customer\",\r\n        \"street1\": \"305 Water St\",\r\n        \"city\": \"Vancouver\",\r\n        \"state\": \"BC\",\r\n        \"country\": \"CA\",\r\n        \"zip\": \"V6B 1B9\"\r\n    },\r\n    \"frontHTML\": \"Hello\",\r\n    \"backHTML\": \"Hello again\",\r\n    \"size\": \"6x4\",\r\n    \"description\" : \"First post card\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
+							"raw": ""
 						},
 						"url": "http://localhost:3030/print-mail/send/postcard"
 					},
@@ -1037,7 +1188,7 @@
 						"header": [
 							{
 								"key": "token",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjhmNzgyMzg4MDUwMTJiNjdjMWM1ZWUiLCJpYXQiOjE3MjEyMjA0NDUsImV4cCI6MTcyMTIyNDA0NX0.d-2VMimsWIQ0uM1KfQRBlwzUQ5sjR47X0NT5anvIru8",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjhmNzgyMzg4MDUwMTJiNjdjMWM1ZWUiLCJpYXQiOjE3MjEzMDE4NDAsImV4cCI6MTcyMTMwNTQ0MH0.etC9iNXX3lbjeaBGFb2dN1TWVm_Ws5UHQDHhclDjJ28",
 								"type": "text"
 							}
 						],
@@ -1056,9 +1207,108 @@
 									"key": "mailType",
 									"value": "letter",
 									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"disabled": true
 								}
 							]
 						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "notifications",
+			"item": [
+				{
+					"name": "user notification",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjhmNzgyMzg4MDUwMTJiNjdjMWM1ZWUiLCJpYXQiOjE3MjEzMDYwMzksImV4cCI6MTcyMTMwOTYzOX0.1GVdtb8S4RWRZI9J4n2FMTmHGu37m1OrfFatXUCRKkg",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3030/user/notifications?page=1&limit=10",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"user",
+								"notifications"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read notification",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjhmNzgyMzg4MDUwMTJiNjdjMWM1ZWUiLCJpYXQiOjE3MjEzMDYwMzksImV4cCI6MTcyMTMwOTYzOX0.1GVdtb8S4RWRZI9J4n2FMTmHGu37m1OrfFatXUCRKkg",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ids\" : [\r\n        \"66990acb71cb40ca8fd91762\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3030/user/notifications/mark-read"
+					},
+					"response": []
+				},
+				{
+					"name": "delete notifications",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjhmNzgyMzg4MDUwMTJiNjdjMWM1ZWUiLCJpYXQiOjE3MjEzMDYwMzksImV4cCI6MTcyMTMwOTYzOX0.1GVdtb8S4RWRZI9J4n2FMTmHGu37m1OrfFatXUCRKkg",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ids\" : [\r\n        \"66990acb71cb40ca8fd91761\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3030/user/delete-notifications"
 					},
 					"response": []
 				}
