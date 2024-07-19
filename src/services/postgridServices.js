@@ -4,12 +4,14 @@ const {
   POSTGRID_BASE_URL,
   SEND_MAIL_POSTCARD_TYPE,
 } = require('../constant/constants')
+const fs = require('fs');
+const path = require('path');
 
 const headers = {
   'x-api-key': POSTGRID_API_KEY
 }
 
-const sendLetter = async (payload, userId) => {
+const sendLetter = async (payload, userId, pdfFile) => {
   const url = `${POSTGRID_BASE_URL}/v1/letters`
   try {
     const formData = new FormData();

@@ -37,7 +37,9 @@ const constants = {
     POSTGRID_API_KEY: process.env.POSTGRID_API_KEY,
     POSTGRID_BASE_URL: process.env.POSTGRID_BASE_URL,
     SEND_MAIL_LETTER_TYPE: 'letter',
-    SEND_MAIL_POSTCARD_TYPE: 'postcard'
+    SEND_MAIL_POSTCARD_TYPE: 'postcard',
+    GOOGLE_ADDRESS_VALIDATION_BASE_URL: process.env.GOOGLE_ADDRESS_VALIDATION_BASE_URL,
+    GOOGLE_ADDRESS_VALIDATION_KEY: process.env.GOOGLE_ADDRESS_VALIDATION_KEY
 };
 
 Object.keys(constants).forEach(key => {

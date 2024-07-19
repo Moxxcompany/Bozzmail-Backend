@@ -13,6 +13,7 @@ const {
   fetchPrintMailById,
   fetchPrintMailByUserId
 } = require('../../helper/printMail');
+const fs = require('fs');
 
 const sendNewPrintMail = async (req, res) => {
   const payload = req.body;
@@ -47,6 +48,10 @@ const sendNewPrintMail = async (req, res) => {
     }
   } catch (error) {
     return res.status(500).json({ message: error?.response?.data?.error || error?.response?.data });
+  } finally {
+    if (req.file) {
+      fs.unlinkSync(req.file.path);
+    }
   }
 };
 

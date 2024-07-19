@@ -938,7 +938,7 @@
 						"header": [
 							{
 								"key": "token",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjhmNzgyMzg4MDUwMTJiNjdjMWM1ZWUiLCJpYXQiOjE3MjEyOTc4NjksImV4cCI6MTcyMTMwMTQ2OX0.rD8Pnrsik7B-4o73CnTBasREKkNrezYPheDA3dZF7Rs",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjhmNzgyMzg4MDUwMTJiNjdjMWM1ZWUiLCJpYXQiOjE3MjEzOTQ5MzcsImV4cCI6MTcyMTM5ODUzN30.W4XRq_MTLEJhXmBi2eihRph14IAe-wGn745i9RWoVoc",
 								"type": "text"
 							}
 						],
@@ -1087,7 +1087,7 @@
 								},
 								{
 									"key": "express",
-									"value": "true",
+									"value": "false",
 									"type": "text"
 								}
 							]
@@ -1309,6 +1309,259 @@
 							}
 						},
 						"url": "http://localhost:3030/user/delete-notifications"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "address book",
+			"item": [
+				{
+					"name": "add user address",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjhmNzgyMzg4MDUwMTJiNjdjMWM1ZWUiLCJpYXQiOjE3MjEzODQyNTUsImV4cCI6MTcyMTM4Nzg1NX0.Ps7NGgtWIy7ANhU6gmG0WkvCjx9sZeig3in5gWDMtAc",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"street1\": \"building 2\",\r\n    \"street2\": \"\",\r\n    \"city\": \"San Francisco\",\r\n    \"state\": \"CA\",\r\n    \"country\": \"US\",\r\n    \"postalCode\": \"20166\",\r\n    \"addressType\": \"office\",\r\n    \"name\" : \"test user\",\r\n    \"email\" : \"abc@gmail.com\",\r\n    \"phoneNumber\" : \"+91 9876543210\",\r\n    \"is_default\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3030/address/user"
+					},
+					"response": []
+				},
+				{
+					"name": "verify address",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjhmNzgyMzg4MDUwMTJiNjdjMWM1ZWUiLCJpYXQiOjE3MjEzOTIyMzIsImV4cCI6MTcyMTM5NTgzMn0.jLjcrJ4q4P90j_Za4ipR5it5lOdsuizIW3frvysqeAQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"street1\": \"building 2\",\r\n    \"street2\": \"\",\r\n    \"city\": \"San Francisco\",\r\n    \"state\": \"CA\",\r\n    \"country\": \"US\",\r\n    \"postalCode\": \"20166\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3030/address/verify"
+					},
+					"response": []
+				},
+				{
+					"name": "import address csv file",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjhmNzgyMzg4MDUwMTJiNjdjMWM1ZWUiLCJpYXQiOjE3MjEzOTIyMzIsImV4cCI6MTcyMTM5NTgzMn0.jLjcrJ4q4P90j_Za4ipR5it5lOdsuizIW3frvysqeAQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": "http://localhost:3030/address/import"
+					},
+					"response": []
+				},
+				{
+					"name": "get user addresses",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjhmNzgyMzg4MDUwMTJiNjdjMWM1ZWUiLCJpYXQiOjE3MjEzODQyNTUsImV4cCI6MTcyMTM4Nzg1NX0.Ps7NGgtWIy7ANhU6gmG0WkvCjx9sZeig3in5gWDMtAc",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3030/address/user?limit=10&page=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"address",
+								"user"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get address",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjhmNzgyMzg4MDUwMTJiNjdjMWM1ZWUiLCJpYXQiOjE3MjEzODQyNTUsImV4cCI6MTcyMTM4Nzg1NX0.Ps7NGgtWIy7ANhU6gmG0WkvCjx9sZeig3in5gWDMtAc",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3030/address/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"address",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "669a413ef3843737d03f93fa"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update address",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjhmNzgyMzg4MDUwMTJiNjdjMWM1ZWUiLCJpYXQiOjE3MjEzODQyNTUsImV4cCI6MTcyMTM4Nzg1NX0.Ps7NGgtWIy7ANhU6gmG0WkvCjx9sZeig3in5gWDMtAc",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"street1\": \"building 2\",\r\n    \"street2\": \"\",\r\n    \"city\": \"San Francisco\",\r\n    \"state\": \"CA\",\r\n    \"country\": \"US\",\r\n    \"postalCode\": \"20166\",\r\n    \"addressType\": \"office\",\r\n    \"name\" : \"test user\",\r\n    \"email\" : \"abc@gmail.com\",\r\n    \"phoneNumber\" : \"+91 9876543210\",\r\n    \"is_default\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3030/address/:id/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"address",
+								":id",
+								"update"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "669a413ef3843737d03f93fa"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete user address",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjhmNzgyMzg4MDUwMTJiNjdjMWM1ZWUiLCJpYXQiOjE3MjEzODQyNTUsImV4cCI6MTcyMTM4Nzg1NX0.Ps7NGgtWIy7ANhU6gmG0WkvCjx9sZeig3in5gWDMtAc",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3030/address/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"address",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "669a413ef3843737d03f93fa"
+								}
+							]
+						}
 					},
 					"response": []
 				}

@@ -4,13 +4,12 @@ const {
   sendNewPrintMail,
   cancelMail,
   fetchUserPrintMail,
-  createWebHook,
-  listenWebhookevents
+  createWebHook
 } = require('../controllers/printMail/printMailController')
-const { upload } = require('../utils/uploadPic')
+const { uploadfile } = require('../utils/uploadFile')
 
 router.get("/", fetchUserPrintMail)
-router.post("/send/:mailType", upload.single('pdf_data'), sendNewPrintMail)
+router.post("/send/:mailType", uploadfile.single('pdf_data'), sendNewPrintMail)
 router.post("/:id/cancel", cancelMail)
 router.post("/add-webhook", createWebHook)
 

@@ -31,10 +31,21 @@ const telegramSignUpValidations = [
   validateError
 ]
 
+const addressValidations = [
+  body('name').not().isEmpty().withMessage('Name is required'),
+  body('street1').not().isEmpty().withMessage('Address Line 1 is required'),
+  body('city').not().isEmpty().withMessage('City Name is required'),
+  body('state').not().isEmpty().withMessage('State Name is required'),
+  body('postalCode').not().isEmpty().withMessage('Postal code is required'),
+  body('country').not().isEmpty().withMessage('Country is required'),
+  validateError
+]
+
 module.exports = {
   signupValidations,
   emailRequired,
   changePasswordValidations,
   resetPasswordValidations,
-  telegramSignUpValidations
+  telegramSignUpValidations,
+  addressValidations
 };

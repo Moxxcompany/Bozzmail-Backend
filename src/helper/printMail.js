@@ -32,7 +32,7 @@ const fetchPrintMailById = async (_id) => {
   try {
     return await PrintMail.findOne({ _id });
   } catch (error) {
-
+    throw error
   }
 }
 module.exports = {
