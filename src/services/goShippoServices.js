@@ -126,11 +126,25 @@ const createPickupShipment = async (data) => {
   }
 }
 
+const fetchGoShippoTrackShipment = async (data) =>{
+  const url = `${GOSHIPPO_BASE_URL}/tracks`
+  const payload = {
+    carrier: data.carrier,
+    tracking_number: data.tracking_number,
+  }
+  try {
+    return await post(url, payload, GOSHIPPO_TOKEN);
+  } catch (error) {
+    throw error
+  }
+}
+
 module.exports = {
   newShipmentShippo: generateNewShipment,
   purchaseShipmentShippo: purchaseShipment,
   newCustomFormShippo: generateNewCustom,
   fetchRateByIDShippo: fetchRateById,
   fetchShipmentByIdShippo: fetchShipmentById,
-  newPickupShippo: createPickupShipment
+  newPickupShippo: createPickupShipment,
+  fetchGoShippoTrackShipment: fetchGoShippoTrackShipment
 };

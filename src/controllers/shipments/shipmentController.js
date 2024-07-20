@@ -2,18 +2,21 @@ const {
   newShipmentShippo,
   purchaseShipmentShippo,
   fetchRateByIDShippo,
-  fetchShipmentByIdShippo
+  fetchShipmentByIdShippo,
+  fetchGoShippoTrackShipment
 } = require('../../services/goShippoServices');
 
 const {
   newShipmentFlavourCloud,
   getRatesFlavourCloud,
-  fetchShipmentDetailsFlavourCloud
+  fetchShipmentDetailsFlavourCloud,
+  fetchFlavourTrackShipment,
 } = require('../../services/flavourclousServices');
 
 const {
   newEasypostShipment,
-  purchaseEasypostShipment
+  purchaseEasypostShipment,
+  fetchEasyPostTrackShipment
 } = require('../../services/easypostServices');
 const {
   GOSHIPPO_SERVICE,
@@ -22,8 +25,12 @@ const {
 } = require('../../constant/constants');
 const {
   saveNewPurchasedShipment,
-  saveNewShipment
+  saveNewShipment,
+  fetchShipmentData,
+  saveShipmentTrackingData,
+  fetchShipmentPurchaseById
 } = require('../../helper/shipment');
+const { response } = require('express');
 
 const createNewLabel = async (req, res) => {
   const payload = req.body;
@@ -34,6 +41,12 @@ const createNewLabel = async (req, res) => {
     switch (service) {
       case GOSHIPPO_SERVICE:
         response = await newShipmentShippo(payload);
+        await sendNotification({
+          user: req.userDetails,
+          message: 'Shipments Created Successfully',
+          emailMessage: `<p>Shipments Created Successfully.</p>`,
+          emailSubject: 'Shipments'
+        })
         break;
       case FLAVOURCLOUD_SERVICE:
         response = await newShipmentFlavourCloud(payload);
@@ -46,6 +59,12 @@ const createNewLabel = async (req, res) => {
           }
           const shipmentPurchase = await saveNewPurchasedShipment(shipmentPurchaseData)
           if (shipmentPurchase) {
+            await sendNotification({
+              user: req.userDetails,
+              message: 'Shipments Created Successfully',
+              emailMessage: `<p>Shipments Created Successfully.</p>`,
+              emailSubject: 'Shipments'
+            })
             return res.status(200).json({ data: shipmentPurchase })
           }
         }
@@ -55,6 +74,12 @@ const createNewLabel = async (req, res) => {
           return res.status(400).json({ message: 'Easypost service does not provide international shipping.' });
         }
         response = await newEasypostShipment(payload)
+        await sendNotification({
+          user: req.userDetails,
+          message: 'Shipments Created Successfully',
+          emailMessage: `<p>Shipments Created Successfully.</p>`,
+          emailSubject: 'Shipments'
+        })
         break;
       default:
         return res.status(500).json({ message: 'Something went wrong.' });
@@ -68,6 +93,12 @@ const createNewLabel = async (req, res) => {
       }
       const shipment = await saveNewShipment(shipmentData)
       if (shipment) {
+        await sendNotification({
+          user: req.userDetails,
+          message: 'Shipments Created Successfully',
+          emailMessage: `<p>Shipments Created Successfully.</p>`,
+          emailSubject: 'Shipments'
+        })
         return res.status(200).json({ data: shipment })
       }
     } else {
@@ -91,6 +122,12 @@ const fetchShipmentRates = async (req, res) => {
         return res.status(500).json({ message: 'Something went wrong.' });
     }
     if (response.data) {
+      await sendNotification({
+        user: req.userDetails,
+        message: 'Shipments rates',
+        emailMessage: `<p>Shipments Rates.</p>`,
+        emailSubject: 'Shipments'
+      })
       return res.status(200).json({ data: response.data });
     } else {
       return res.status(500).json({ message: 'Failed to create shipment' });
@@ -123,6 +160,12 @@ const purchaseShipment = async (req, res) => {
           shipmentData.shipmentData.selectedRate = rateData.data
           const shipment = await saveNewPurchasedShipment(shipmentData)
           if (shipment) {
+            await sendNotification({
+              user: req.userDetails,
+              message: 'Shipment purchase',
+              emailMessage: `<p>Shipment purchase.</p>`,
+              emailSubject: 'Shipments Purchase details'
+            })
             return res.status(200).json({ data: shipment })
           }
         }
@@ -139,6 +182,12 @@ const purchaseShipment = async (req, res) => {
           }
           const shipment = await saveNewPurchasedShipment(shipmentData)
           if (shipment) {
+            await sendNotification({
+              user: req.userDetails,
+              message: 'Shipment purchase',
+              emailMessage: `<p>Shipment purchase.</p>`,
+              emailSubject: 'Shipments Purchase details'
+            })
             return res.status(200).json({ data: shipment })
           }
         }
@@ -151,8 +200,127 @@ const purchaseShipment = async (req, res) => {
   }
 }
 
+const getUserShipments = async (req, res) => {
+  const userId = req.userId;
+  const { page, limit } = req.query;
+
+  try {
+    const result = await fetchShipmentData(userId, page, limit);
+
+    console.log(`Total documents: ${result.total}`);
+    console.log(`Limited data:`, result.data);
+
+    return res.status(200).json({
+      total: result.total,
+      data: result.data
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error?.response?.data?.error || error?.response?.data });
+  }
+};
+
+const getShipmentsById = async (req, res) =>{
+  const {shipmentId} = req.params;
+  if(!shipmentId){
+    return res.status(500).json({ message: "Please enter a shipment id" });
+  }
+  try {
+    const result = await fetchShipmentPurchaseById(shipmentId);
+    return res.status(200).json({
+      result
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error?.response?.data?.error || error?.response?.data });
+  }
+}
+
+const trackShipment = async(req, res) => {
+  const payload = req.body;
+  const {trackNumber} = req.params;
+  const userId = req.userId;
+  const service = req.params.service;
+  let response;
+  try{
+    switch (service) {
+      case GOSHIPPO_SERVICE:
+        response = await fetchGoShippoTrackShipment(payload);
+        if (response.data) {
+          let shipmentData = {
+            userId: userId,
+            service: GOSHIPPO_SERVICE,
+            carrier: response?.data?.carrier,
+            trackNumber: response?.data?.tracking_number,
+            ShipmentTrackData: response?.data
+          }
+          const shipmentTrackingData = await saveShipmentTrackingData(shipmentData)
+          if(shipmentTrackingData){
+            await sendNotification({
+              user: req.userDetails,
+              message: 'Your order status',
+              emailMessage: `<p>Your order status.</p>`,
+              emailSubject: 'Status'
+            })
+            return res.status(200).json({
+              data: shipmentTrackingData
+              });
+          }
+        }
+        break;
+      case EASYPOST_SERVICE:
+        response = await fetchEasyPostTrackShipment(payload);
+        if (response.data) {
+          let shipmentData = {
+            userId: userId,
+            service: EASYPOST_SERVICE,
+            carrier: response?.data?.carrier,
+            trackNumber: response?.data?.tracking_code,
+            ShipmentTrackData: response?.data
+          }
+          const shipmentTrackingData = await saveShipmentTrackingData(shipmentData)
+          if(shipmentTrackingData){
+            await sendNotification({
+              user: req.userDetails,
+              message: 'Your order status',
+              emailMessage: `<p>Your order status.</p>`,
+              emailSubject: 'Status'
+            })
+            return res.status(200).json({
+              data: shipmentTrackingData
+            });
+          }
+        }
+        break;
+    case FLAVOURCLOUD_SERVICE:
+      response = await fetchFlavourTrackShipment(trackNumber);
+      if (response) {
+        let shipmentData = {
+          userId: userId,
+          service: FLAVOURCLOUD_SERVICE,
+          carrier: response?.data?.carrier || '',
+          trackNumber: response?.data?.TrackingNumber,
+          ShipmentTrackData: response?.data
+        }
+        const shipmentTrackingData = await saveShipmentTrackingData(shipmentData)
+        if(shipmentTrackingData){
+          return res.status(200).json({
+            data: shipmentTrackingData
+          });
+        }
+      }
+      break;
+    default:
+      return res.status(500).json({ message: 'Something went wrong.' });
+    }
+  }catch(error){
+    return res.status(500).json({ message: error?.response?.data?.error || error?.response?.data });
+  }
+}
+
 module.exports = {
   createNewLabel,
   fetchShipmentRates,
-  purchaseShipment
+  purchaseShipment,
+  getUserShipments,
+  trackShipment,
+  getShipmentsById
 };

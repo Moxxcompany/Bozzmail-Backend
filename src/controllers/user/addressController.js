@@ -16,6 +16,12 @@ const generateNewAddress = async (req, res) => {
     payload.userId = userId
     const newAddress = await createNewAddress(payload)
     if (newAddress) {
+      await sendNotification({
+        user: req.userDetails,
+        message: 'Your address generated succesfully.',
+        emailMessage: `<p>Your address generated succesfully</p>`,
+        emailSubject: 'Address'
+      })
       return res.status(200).json({ data: newAddress })
     }
   } catch (error) {
@@ -71,6 +77,12 @@ const editUserAddressData = async (req, res) => {
     }
     const newAddress = await updateAddress(userId, id, payload)
     if (newAddress) {
+      await sendNotification({
+        user: req.userDetails,
+        message: 'Address data updated succesfully.',
+        emailMessage: `<p>Address data updated succesfully.</p>`,
+        emailSubject: 'Address updated'
+      })
       return res.status(200).json({ message: 'Address data updated succesfully.', data: newAddress })
     } else {
       return res.status(500).json({ message: 'Failed to update Address data' });
@@ -85,6 +97,12 @@ const verifyAddress = async (req, res) => {
   try {
     const response = await validateAddress(payload);
     if (response) {
+      await sendNotification({
+        user: req.userDetails,
+        message: 'Address verified succesfully.',
+        emailMessage: `<p>Address verified succesfully.</p>`,
+        emailSubject: 'Address verification'
+      })
       return res.status(200).json({ data: response.data })
     }
   } catch (error) {
@@ -120,6 +138,12 @@ const importAddresses = async (req, res) => {
             addresses.push(newAddress)
           }
         }
+        await sendNotification({
+          user: req.userDetails,
+          message: 'Addresses imported successfully.',
+          emailMessage: `<p>Addresses imported successfully.</p>`,
+          emailSubject: 'Address'
+        })
         res.status(200).json({ message: 'Addresses imported successfully', data: addresses });
       } catch (error) {
         res.status(500).json({ message: 'Error importing addresses', error });

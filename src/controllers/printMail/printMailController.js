@@ -41,6 +41,12 @@ const sendNewPrintMail = async (req, res) => {
       }
       const printmail = await savePrintMailData(printData)
       if (printmail) {
+        await sendNotification({
+          user: req.userDetails,
+          message: 'Order',
+          emailMessage: `<p>Order.</p>`,
+          emailSubject: 'Order'
+        })
         return res.status(200).json({ data: printmail })
       }
     } else {
@@ -66,6 +72,12 @@ const cancelMail = async (req, res) => {
     const cancelledMail = await cancelPostGridMail(payload, mailData)
     mailData.mailData = cancelledMail.data
     mailData.save()
+    await sendNotification({
+      user: req.userDetails,
+      message: 'Cancel mail',
+      emailMessage: `<p>Cancel mail.</p>`,
+      emailSubject: 'Cancel mail'
+    })
     return res.status(200).json({ data: mailData })
   } catch (error) {
     return res.status(500).json({ message: error?.response?.data?.error || error?.response?.data });
@@ -78,6 +90,12 @@ const createWebHook = async (req, res) => {
   try {
     const response = await createPostGridWebHook(payload, userId);
     if (response.data) {
+      await sendNotification({
+        user: req.userDetails,
+        message: 'Mail',
+        emailMessage: `<p>Mail.</p>`,
+        emailSubject: 'Mail'
+      })
       return res.status(200).json({ data: response.data })
     } else {
       return res.status(500).json({ message: `Failed to send ${printType}` });

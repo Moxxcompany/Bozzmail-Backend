@@ -174,10 +174,20 @@ const fetchShipmentDetails = async (shipmentId) => {
   }
 }
 
+const fetchFlavourTrackShipment = async(trackNumber) =>{
+  const url = `${FLAVOURCLOUD_BASE_URL}/Tracking/${FLAVOURCLOUD_APP_ID}/${FLAVOURCLOUD_API_KEY}/${trackNumber}`
+  console.log(url)
+  try {
+    return await get(url);
+  } catch (error) {
+    throw error
+  }
+}
 module.exports = {
   newShipmentFlavourCloud: generateNewShipment,
   getRatesFlavourCloud: getRates,
   newHscode,
-  fetchShipmentDetailsFlavourCloud: fetchShipmentDetails
+  fetchShipmentDetailsFlavourCloud: fetchShipmentDetails,
+  fetchFlavourTrackShipment: fetchFlavourTrackShipment
 };
 
