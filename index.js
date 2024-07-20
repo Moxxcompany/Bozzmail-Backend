@@ -19,7 +19,6 @@ const {
   PORT,
   CORS_ORIGIN
 } = require('./src/constant/constants');
-const { listenWebhookevents } = require("./src/controllers/printMail/printMailController");
 
 const app = express()
 
@@ -32,6 +31,16 @@ const startServer = async () => {
         req.rawBody = buf;
       }
     }));
+    app.use((req, res, next) => {
+      console.log(req.body)
+      if (req.method === 'POST' && req.headers['x-postgrid-signature']) {
+        // bodyParser.json({
+        //   verify: verifySignature
+        // })(req, res, next);
+      } else {
+        next();
+      }
+    });
     app.use(cors({
       origin: CORS_ORIGIN,
       methods: "GET,POST,PUT,DELETE",

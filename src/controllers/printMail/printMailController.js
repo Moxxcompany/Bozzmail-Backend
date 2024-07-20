@@ -6,14 +6,17 @@ const {
 } = require('../../services/postgridServices');
 const {
   SEND_MAIL_LETTER_TYPE,
-  SEND_MAIL_POSTCARD_TYPE
+  SEND_MAIL_POSTCARD_TYPE,
+  POSTGRID_SECRET_KEY
 } = require('../../constant/constants');
 const {
   savePrintMailData,
   fetchPrintMailById,
-  fetchPrintMailByUserId
+  fetchPrintMailByUserId,
+  fetchPrintMailByMailId
 } = require('../../helper/printMail');
 const fs = require('fs');
+const jwt = require('jsonwebtoken');
 
 const sendNewPrintMail = async (req, res) => {
   const payload = req.body;
@@ -58,8 +61,9 @@ const sendNewPrintMail = async (req, res) => {
 const cancelMail = async (req, res) => {
   const payload = req.body;
   const id = req.params.id;
+  const userId = req.userId
   try {
-    const mailData = await fetchPrintMailById(id)
+    const mailData = await fetchPrintMailById(id, userId)
     if (!mailData) {
       return res.status(400).json({ message: 'Mail data not found' });
     }
@@ -89,8 +93,21 @@ const createWebHook = async (req, res) => {
 
 const listenWebhookevents = async (req, res) => {
   try {
-    console.log(req, '11111111111111111111111111111111111')
-    // return res.status(200).json({ data: req.body })
+    const token = req.body
+    const payload = {}
+    jwt.verify(token, POSTGRID_SECRET_KEY, (err, decoded) => {
+      if (err) {
+        console.error('Failed to authenticate token:', err.message);
+      } else {
+        payload = decoded
+      }
+    });
+    if (payload.event === 'letter.created' || payload.event === 'postcard.updated') {
+      const mailData = await fetchPrintMailByMailId(payload.data.id)
+      mailData.mailData = payload.data
+      mailData.save()
+    }
+    res.status(200).send('Received');
   } catch (error) {
     return res.status(500).json({ message: error?.response?.data?.error || error?.response?.data });
   }
@@ -107,10 +124,21 @@ const fetchUserPrintMail = async (req, res) => {
   }
 }
 
+const fetchMailById = async (req, res) => {
+  const id  = req.params.id;
+  try {
+    const data = await fetchPrintMailByMailId(id);
+    res.status(200).json({ data: data })
+  } catch (error) {
+    res.status(error.status || 500).json({ message: error });
+  }
+}
+
 module.exports = {
   sendNewPrintMail,
   cancelMail,
   createWebHook,
   fetchUserPrintMail,
+  fetchMailById,
   listenWebhookevents
 };

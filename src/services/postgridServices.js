@@ -3,6 +3,7 @@ const {
   POSTGRID_API_KEY,
   POSTGRID_BASE_URL,
   SEND_MAIL_POSTCARD_TYPE,
+  POSTGRID_SECRET_KEY
 } = require('../constant/constants')
 const fs = require('fs');
 const path = require('path');
@@ -109,7 +110,8 @@ const createWebHook = async (payload, userId) => {
         "postcard.created",
         "postcard.updated"
       ],
-      url: payload.url
+      url: payload.url,
+      secret: POSTGRID_SECRET_KEY
     }
     return await post(url, data, null, headers)
   } catch (error) {

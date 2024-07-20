@@ -35,8 +35,18 @@ const fetchPrintMailById = async (_id) => {
     throw error
   }
 }
+
+const fetchPrintMailByMailId = async (mailId) => {
+  try {
+    return await PrintMail.findOne({ mailId });
+  } catch (error) {
+    throw error
+  }
+}
+
 module.exports = {
   savePrintMailData,
   fetchPrintMailByUserId,
-  fetchPrintMailById
+  fetchPrintMailById,
+  fetchPrintMailByMailId
 }
