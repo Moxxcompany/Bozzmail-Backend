@@ -23,6 +23,12 @@ const generateNewHscode = async (req, res) => {
       }
       const hscode = await createNewHscode(hscodeData)
       if (hscode) {
+        await sendNotification({
+          user: req.userDetails,
+          message: 'Your hashcode genreated successfully',
+          emailMessage: `<p>Your hashcode genreated successfully.</p>`,
+          emailSubject: 'Your hashcode'
+        })
         return res.status(200).json({ data: hscode })
       }
     } else {
@@ -35,8 +41,9 @@ const generateNewHscode = async (req, res) => {
 
 const fetchUserHscode = async (req, res) => {
   const userId = req.userId;
+  const { page, limit } = req.query;
   try {
-    const hscodeData = await findUserHscode(userId);
+    const hscodeData = await findUserHscode(userId, page, limig);
     res.status(200).json({ data: hscodeData })
   } catch (error) {
     res.status(error.status || 500).json({ message: error });
@@ -51,6 +58,12 @@ const deleteHscodeData = async (req, res) => {
     if (!hscodeData) {
       return res.status(400).json({ message: 'HS code data not found. Please check again.' });
     }
+    await sendNotification({
+      user: req.userDetails,
+      message: 'HS Code data deleted succesfully.',
+      emailMessage: `<p>HS Code data deleted succesfully.</p>`,
+      emailSubject: 'Hashcode'
+    })
     res.status(200).json({ message: 'HS Code data deleted succesfully.' })
   } catch (error) {
     res.status(error.status || 500).json({ message: error });
@@ -73,6 +86,18 @@ const editHscodeData = async (req, res) => {
       hscodeData.image = response.data.Products[0].Image
       hscodeData.title = response.data.Products[0].Title
       await hscodeData.save();
+      await sendNotification({
+        user: req.userDetails,
+        message: 'Your hashcode update successfully',
+        emailMessage: `<p>Your hashcode update successfully.</p>`,
+        emailSubject: 'Your hashcode updated'
+      })
+      await sendNotification({
+        user: req.userDetails,
+        message: 'HS Code data updated succesfully',
+        emailMessage: `<p>HS Code data updated succesfully.</p>`,
+        emailSubject: 'Hashcode'
+      })
       return res.status(200).json({ message: 'HS Code data updated succesfully.', data: hscodeData })
     } else {
       return res.status(500).json({ message: 'Failed to update HS Code' });

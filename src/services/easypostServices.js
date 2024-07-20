@@ -82,10 +82,26 @@ const createPickupShipment = async (data) => {
   }
 }
 
+const fetchEasyPostTrackShipment = async (data) =>{
+  const url = `${EASYPOST_BASE_URL}/v2/trackers`
+  const payload = {
+    tracker: {
+      carrier: data.carrier,
+      tracking_code: data.tracking_code,
+    }
+  }
+  try {
+    return await post(url, payload, EASYPOST_TOKEN);
+  } catch (error) {
+    throw error
+  }
+}
+
 module.exports = {
   newEasypostShipment: generateNewShipment,
   purchaseEasypostShipment: purchaseShipment,
   newEasypostCustom: generateNewCustom,
-  newPickUpEasypost: createPickupShipment
+  newPickUpEasypost: createPickupShipment,
+  fetchEasyPostTrackShipment: fetchEasyPostTrackShipment
 };
 

@@ -29,6 +29,12 @@ const createNewPickup = async (req, res) => {
           }
           const pickup = await savePickupData(pickupData)
           if (pickup) {
+            await sendNotification({
+              user: req.userDetails,
+              message: 'Your pickup created successfully',
+              emailMessage: `<p>Your pickup created successfully.</p>`,
+              emailSubject: 'Congrats'
+            })
             return res.status(200).json({ data: pickup })
           }
         }
@@ -64,8 +70,8 @@ const createNewPickup = async (req, res) => {
 const getPickup = async (req, res) => {
   try {
     const id = req.userId;
-    const { service } = req.query;
-    const response = await fetchPickUpByUserId(id, service);
+    const { service, page, limit } = req.query;
+    const response = await fetchPickUpByUserId(id, service, page, limit);
     return res.status(200).json({ data: response })
   } catch (error) {
     return res.status(500).json({ message: error?.response?.data?.error || error?.response?.data });

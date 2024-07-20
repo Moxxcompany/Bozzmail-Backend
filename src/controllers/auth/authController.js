@@ -170,7 +170,7 @@ const sendResetPasswordLink = async (req, res) => {
       return res.status(400).json({ message: 'Email is incorrect' });
     }
     const token = crypto.randomBytes(32).toString('hex');
-    let expiresAt = moment().add(PASSWORD_RESET_TOKEN_EXPIRE_TIME, 'hour');
+    let expiresAt = moment().utc().add(PASSWORD_RESET_TOKEN_EXPIRE_TIME, 'hour');
     const data = {
       userId: existingUser._id,
       token: token,
@@ -202,7 +202,7 @@ const resetUserPassword = async (req, res) => {
     if (!tokenData) {
       return res.status(400).json({ message: 'Token is not Valid or expired' });
     }
-    if (tokenData.expiresAt < new Date()) {
+    if (tokenData.expiresAt < new Date().toISOString()) {
       await deleteToken(tokenData._id)
       return res.status(400).json({ message: 'Token expired. Please request a new password reset.' });
     }
