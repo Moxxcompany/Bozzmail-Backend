@@ -14,7 +14,8 @@ const {
   findUserCustoms,
   deleteCustomDetail,
   findCustomDetailsById
-} = require('../../helper/custom')
+} = require('../../helper/custom');
+const { sendNotification } = require('../../helper/sendNotification');
 
 const createNewCustom = async (req, res) => {
   const payload = req.body;

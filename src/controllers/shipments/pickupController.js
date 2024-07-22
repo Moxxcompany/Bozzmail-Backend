@@ -10,6 +10,7 @@ const {
   EASYPOST_SERVICE
 } = require('../../constant/constants');
 const { savePickupData, fetchPickUpByUserId } = require('../../helper/pickup');
+const { sendNotification } = require('../../helper/sendNotification');
 
 const createNewPickup = async (req, res) => {
   const payload = req.body;
