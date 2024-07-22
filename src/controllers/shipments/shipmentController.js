@@ -30,7 +30,7 @@ const {
   saveShipmentTrackingData,
   fetchShipmentPurchaseById
 } = require('../../helper/shipment');
-const { response } = require('express');
+const { sendNotification } = require('../../helper/sendNotification');
 
 const createNewLabel = async (req, res) => {
   const payload = req.body;
@@ -41,12 +41,6 @@ const createNewLabel = async (req, res) => {
     switch (service) {
       case GOSHIPPO_SERVICE:
         response = await newShipmentShippo(payload);
-        await sendNotification({
-          user: req.userDetails,
-          message: 'Shipments Created Successfully',
-          emailMessage: `<p>Shipments Created Successfully.</p>`,
-          emailSubject: 'Shipments'
-        })
         break;
       case FLAVOURCLOUD_SERVICE:
         response = await newShipmentFlavourCloud(payload);
@@ -74,12 +68,6 @@ const createNewLabel = async (req, res) => {
           return res.status(400).json({ message: 'Easypost service does not provide international shipping.' });
         }
         response = await newEasypostShipment(payload)
-        await sendNotification({
-          user: req.userDetails,
-          message: 'Shipments Created Successfully',
-          emailMessage: `<p>Shipments Created Successfully.</p>`,
-          emailSubject: 'Shipments'
-        })
         break;
       default:
         return res.status(500).json({ message: 'Something went wrong.' });
@@ -206,9 +194,6 @@ const getUserShipments = async (req, res) => {
 
   try {
     const result = await fetchShipmentData(userId, page, limit);
-
-    console.log(`Total documents: ${result.total}`);
-    console.log(`Limited data:`, result.data);
 
     return res.status(200).json({
       total: result.total,

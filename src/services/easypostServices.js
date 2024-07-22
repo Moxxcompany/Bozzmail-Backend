@@ -97,11 +97,21 @@ const fetchEasyPostTrackShipment = async (data) =>{
   }
 }
 
+const createNewBatch = async (data) => {
+  const url = `${EASYPOST_BASE_URL}/v2/batches`
+  try {
+    return await post(url, data, EASYPOST_TOKEN);
+  } catch (error) {
+    throw error
+  }
+}
+
 module.exports = {
   newEasypostShipment: generateNewShipment,
   purchaseEasypostShipment: purchaseShipment,
   newEasypostCustom: generateNewCustom,
   newPickUpEasypost: createPickupShipment,
-  fetchEasyPostTrackShipment: fetchEasyPostTrackShipment
+  fetchEasyPostTrackShipment: fetchEasyPostTrackShipment,
+  newBatchEasypost: createNewBatch
 };
 

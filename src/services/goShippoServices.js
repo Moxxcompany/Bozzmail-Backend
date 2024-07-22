@@ -115,7 +115,7 @@ const createPickupShipment = async (data) => {
       }
     },
     transactions: [data.transaction_id],
-    requested_start_time: data.min_datetime, 
+    requested_start_time: data.min_datetime,
     requested_end_time: data.max_datetime,
     is_test: data.is_test
   }
@@ -126,11 +126,26 @@ const createPickupShipment = async (data) => {
   }
 }
 
-const fetchGoShippoTrackShipment = async (data) =>{
+const fetchGoShippoTrackShipment = async (data) => {
   const url = `${GOSHIPPO_BASE_URL}/tracks`
   const payload = {
     carrier: data.carrier,
     tracking_number: data.tracking_number,
+  }
+  try {
+    return await post(url, payload, GOSHIPPO_TOKEN);
+  } catch (error) {
+    throw error
+  }
+}
+
+const createNewBatch = async (data) => {
+  const url = `${GOSHIPPO_BASE_URL}/batches`
+  const payload = {
+    default_carrier_account: data.default_carrier_account,
+    default_servicelevel_token: data.default_servicelevel_token,
+    label_filetype: data.label_filetype,
+    batch_shipments: data.batch_shipments
   }
   try {
     return await post(url, payload, GOSHIPPO_TOKEN);
@@ -146,5 +161,6 @@ module.exports = {
   fetchRateByIDShippo: fetchRateById,
   fetchShipmentByIdShippo: fetchShipmentById,
   newPickupShippo: createPickupShipment,
-  fetchGoShippoTrackShipment: fetchGoShippoTrackShipment
+  fetchGoShippoTrackShipment: fetchGoShippoTrackShipment,
+  newBatchShippo: createNewBatch
 };
