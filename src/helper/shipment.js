@@ -62,11 +62,16 @@ const fetchShipmentData = async (userId, page = 1, limit = 10) => {
 
 const saveShipmentTrackingData = async (data) => {
   try {
-    return await ShipmentTracking(data).save()
+    const filter = { userId: data.userId, trackNumber: data.trackNumber };
+    const update = data;
+    const options = { upsert: true, new: true };
+
+    return await ShipmentTracking.findOneAndUpdate(filter, update, options);
   } catch (error) {
-    throw error
+    throw error;
   }
-}
+};
+
 
 const fetchShipmentPurchaseById = async (shipmentId) => {
   try{
