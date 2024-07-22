@@ -8,6 +8,7 @@ const {
 } = require('../../helper/addressBook');
 const csvParser = require('csv-parser');
 const fs = require('fs');
+const { sendNotification } = require('../../helper/sendNotification');
 
 const generateNewAddress = async (req, res) => {
   const payload = req.body;
@@ -112,6 +113,10 @@ const verifyAddress = async (req, res) => {
 
 const importAddresses = async (req, res) => {
   const results = [];
+  if (!req.file || !req.file.mimetype.includes('text/csv')) {
+    fs.unlinkSync(req.file.path);
+    return res.status(400).json({ message: 'Please upload a correct csv file' });
+  }
   fs.createReadStream(req.file.path)
     .pipe(csvParser())
     .on('data', (data) => results.push(data))

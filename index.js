@@ -1,6 +1,7 @@
 const express = require("express")
 const cors = require("cors");
 const bodyParser = require('body-parser')
+const path = require('path');
 const session = require("express-session");
 const connectDB = require('./src/config/database')
 const authRoutes = require('./src/routes/auth')
@@ -31,16 +32,7 @@ const startServer = async () => {
         req.rawBody = buf;
       }
     }));
-    app.use((req, res, next) => {
-      console.log(req.body)
-      if (req.method === 'POST' && req.headers['x-postgrid-signature']) {
-        // bodyParser.json({
-        //   verify: verifySignature
-        // })(req, res, next);
-      } else {
-        next();
-      }
-    });
+    app.use(express.static(path.join(__dirname, 'public')));
     app.use(cors({
       origin: CORS_ORIGIN,
       methods: "GET,POST,PUT,DELETE",
