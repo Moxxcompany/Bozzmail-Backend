@@ -44,7 +44,7 @@ const fetchUserHscode = async (req, res) => {
   const userId = req.userId;
   const { page, limit } = req.query;
   try {
-    const hscodeData = await findUserHscode(userId, page, limig);
+    const hscodeData = await findUserHscode(userId, page, limit);
     res.status(200).json({ data: hscodeData })
   } catch (error) {
     res.status(error.status || 500).json({ message: error });
@@ -92,12 +92,6 @@ const editHscodeData = async (req, res) => {
         message: 'Your hashcode update successfully',
         emailMessage: `<p>Your hashcode update successfully.</p>`,
         emailSubject: 'Your hashcode updated'
-      })
-      await sendNotification({
-        user: req.userDetails,
-        message: 'HS Code data updated succesfully',
-        emailMessage: `<p>HS Code data updated succesfully.</p>`,
-        emailSubject: 'Hashcode'
       })
       return res.status(200).json({ message: 'HS Code data updated succesfully.', data: hscodeData })
     } else {
