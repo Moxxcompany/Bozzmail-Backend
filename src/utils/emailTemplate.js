@@ -1,7 +1,5 @@
-const emailTemplate = ({
-  content
-}) => {
-    return `<html>
+const emailTemplate = ({ content }) => {
+  return `<html>
       <head>
         <style>
           body{
@@ -35,5 +33,5 @@ const emailTemplate = ({
 }
 
 module.exports = {
-  emailTemplate
+  emailTemplate,
 }

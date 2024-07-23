@@ -1,5 +1,5 @@
-const Custom = require("../model/customs");
-const { paginate } = require("../utils/filters");
+const Custom = require("../model/customs")
+const { paginate } = require("../utils/filters")
 
 const createNewCustomForm = async (data) => {
   try {
@@ -9,27 +9,27 @@ const createNewCustomForm = async (data) => {
   }
 }
 
-const findUserCustoms = async (userId, service, page = 1, limit = 10) => {
+const findUserCustoms = async (userId, service, page, limit) => {
   try {
-    const query = { userId };
+    const query = { userId }
 
     if (service) {
-      query.service = service;
+      query.service = service
     }
-    const totalDocuments = await Custom.countDocuments(query);
-    const { validLimit, skip, validPage} = paginate(page, limit)
-    const customsData = await Custom.find(query).skip(skip).limit(validLimit);
-
+    const totalDocuments = await Custom.countDocuments(query)
+    if (!limit && !page) {
+      return { data: await Custom.find(query), total: totalDocuments }
+    }
+    const { validLimit, skip } = paginate(page, limit)
+    const limitedData = await Custom.find(query).skip(skip).limit(validLimit)
     return {
       total: totalDocuments,
-      data: customsData,
-      page: validPage,
-      limit: validLimit
+      data: limitedData,
     }
   } catch (error) {
-    throw error;
+    throw error
   }
-};
+}
 
 const findCustomDetailsById = async (userId, _id) => {
   try {
@@ -50,5 +50,5 @@ module.exports = {
   createNewCustomForm,
   findUserCustoms,
   findCustomDetailsById,
-  deleteCustomDetail
+  deleteCustomDetail,
 }

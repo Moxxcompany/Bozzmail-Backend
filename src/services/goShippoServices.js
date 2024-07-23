@@ -1,12 +1,9 @@
-const { post, get } = require('../utils/axios')
-const {
-  GOSHIPPO_API_KEY,
-  GOSHIPPO_BASE_URL
-} = require('../constant/constants')
+const { post, get } = require("../utils/axios")
+const { GOSHIPPO_API_KEY, GOSHIPPO_BASE_URL } = require("../constant/constants")
 const GOSHIPPO_TOKEN = `ShippoToken ${GOSHIPPO_API_KEY}`
 
 const generateNewShipment = async (data) => {
-  const url = `${GOSHIPPO_BASE_URL}/shipments/`;
+  const url = `${GOSHIPPO_BASE_URL}/shipments/`
   try {
     const payload = {
       address_from: data.address_from,
@@ -14,7 +11,7 @@ const generateNewShipment = async (data) => {
       parcels: [data.parcel],
       async: false,
       customs_declaration: data.customs_declaration,
-      extra: {}
+      extra: {},
     }
     if (data.insurance_added) {
       payload.extra.insurance = data.insurance
@@ -23,11 +20,11 @@ const generateNewShipment = async (data) => {
       payload.extra.additional_info = data.additional_info
     }
     const response = await post(url, payload, GOSHIPPO_TOKEN)
-    return response;
+    return response
   } catch (error) {
-    throw error;
+    throw error
   }
-};
+}
 
 const purchaseShipment = async (payload) => {
   const url = `${GOSHIPPO_BASE_URL}/transactions`
@@ -35,7 +32,7 @@ const purchaseShipment = async (payload) => {
     let data = {
       rate: payload.rateId,
       async: false,
-      label_file_type: "PDF"
+      label_file_type: "PDF",
     }
     const response = await post(url, data, GOSHIPPO_TOKEN)
     return response
@@ -45,7 +42,7 @@ const purchaseShipment = async (payload) => {
 }
 
 const generateNewCustom = async (payload) => {
-  const url = `${GOSHIPPO_BASE_URL}/customs/declarations`;
+  const url = `${GOSHIPPO_BASE_URL}/customs/declarations`
   const data = {
     contents_type: payload.contents_type.toUpperCase(), //Enum: "DOCUMENTS" "GIFT" "SAMPLE" "MERCHANDISE" "HUMANITARIAN_DONATION" "RETURN_MERCHANDISE" "OTHER"
     non_delivery_option: payload.non_delivery_option.toUpperCase(), //Enum: "ABANDON" "RETURN"
@@ -54,7 +51,7 @@ const generateNewCustom = async (payload) => {
     contents_explanation: payload?.contents_explanation, // if content_type is 'other' Need a brief description.
     incoterm: payload.incoterm,
     eel_pfc: payload.eel_pfc,
-    items: []
+    items: [],
   }
   payload.customs_items.forEach((item) => {
     let customData = {
@@ -65,12 +62,12 @@ const generateNewCustom = async (payload) => {
       value_amount: item.value,
       value_currency: item.currency,
       hs_code: item.hs_tariff_number,
-      origin_country: item.origin_country
+      origin_country: item.origin_country,
     }
     data.items.push(customData)
   })
   try {
-    return await post(url, data, GOSHIPPO_TOKEN);
+    return await post(url, data, GOSHIPPO_TOKEN)
   } catch (error) {
     throw error
   }
@@ -79,7 +76,7 @@ const generateNewCustom = async (payload) => {
 const fetchRateById = async (id) => {
   const url = `${GOSHIPPO_BASE_URL}/rates/${id}`
   try {
-    return await get(url, GOSHIPPO_TOKEN);
+    return await get(url, GOSHIPPO_TOKEN)
   } catch (error) {
     throw error
   }
@@ -88,7 +85,7 @@ const fetchRateById = async (id) => {
 const fetchShipmentById = async (id) => {
   const url = `${GOSHIPPO_BASE_URL}/shipments/${id}`
   try {
-    return await get(url, GOSHIPPO_TOKEN);
+    return await get(url, GOSHIPPO_TOKEN)
   } catch (error) {
     throw error
   }
@@ -111,16 +108,16 @@ const createPickupShipment = async (data) => {
         zip: data.address.zip,
         country: data.address.country,
         phone: data.address?.phone,
-        email: data.address?.email
-      }
+        email: data.address?.email,
+      },
     },
     transactions: [data.transaction_id],
     requested_start_time: data.min_datetime,
     requested_end_time: data.max_datetime,
-    is_test: data.is_test
+    is_test: data.is_test,
   }
   try {
-    return await post(url, payload, GOSHIPPO_TOKEN);
+    return await post(url, payload, GOSHIPPO_TOKEN)
   } catch (error) {
     throw error
   }
@@ -133,7 +130,7 @@ const fetchGoShippoTrackShipment = async (data) => {
     tracking_number: data.tracking_number,
   }
   try {
-    return await post(url, payload, GOSHIPPO_TOKEN);
+    return await post(url, payload, GOSHIPPO_TOKEN)
   } catch (error) {
     throw error
   }
@@ -145,10 +142,10 @@ const createNewBatch = async (data) => {
     default_carrier_account: data.default_carrier_account,
     default_servicelevel_token: data.default_servicelevel_token,
     label_filetype: data.label_filetype,
-    batch_shipments: data.batch_shipments
+    batch_shipments: data.batch_shipments,
   }
   try {
-    return await post(url, payload, GOSHIPPO_TOKEN);
+    return await post(url, payload, GOSHIPPO_TOKEN)
   } catch (error) {
     throw error
   }
@@ -162,5 +159,5 @@ module.exports = {
   fetchShipmentByIdShippo: fetchShipmentById,
   newPickupShippo: createPickupShipment,
   fetchGoShippoTrackShipment: fetchGoShippoTrackShipment,
-  newBatchShippo: createNewBatch
-};
+  newBatchShippo: createNewBatch,
+}

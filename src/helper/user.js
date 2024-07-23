@@ -1,13 +1,13 @@
-const User = require("../model/user");
-const bcrypt = require("bcrypt");
+const User = require("../model/user")
+const bcrypt = require("bcrypt")
 
 const fetchUserByEmail = async (email, withPassword) => {
   try {
     let userData = {}
     if (withPassword) {
-      userData = await User.findOne({ email });
+      userData = await User.findOne({ email })
     } else {
-      userData = await User.findOne({ email }).select('-password')
+      userData = await User.findOne({ email }).select("-password")
     }
     return userData
   } catch (error) {
@@ -27,9 +27,9 @@ const fetchUserById = async (_id, withPassword) => {
   try {
     let userData = {}
     if (withPassword) {
-      userData = await User.findOne({ _id });
+      userData = await User.findOne({ _id })
     } else {
-      userData = await User.findOne({ _id }).select('-password')
+      userData = await User.findOne({ _id }).select("-password")
     }
     return userData
   } catch (error) {
@@ -39,7 +39,7 @@ const fetchUserById = async (_id, withPassword) => {
 
 const getUserData = async (data) => {
   try {
-    const { password, ...user } = data._doc;
+    const { password, ...user } = data._doc
     return user
   } catch (error) {
     throw error
@@ -47,7 +47,7 @@ const getUserData = async (data) => {
 }
 
 const updateUserPassword = async (id, password) => {
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await bcrypt.hash(password, 10)
   await User.findByIdAndUpdate(id, { password: hashedPassword })
   return true
 }
@@ -66,5 +66,5 @@ module.exports = {
   fetchUserById,
   getUserData,
   updateUserPassword,
-  findUserByTelegramId
+  findUserByTelegramId,
 }

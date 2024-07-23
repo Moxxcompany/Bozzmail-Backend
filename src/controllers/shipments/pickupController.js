@@ -1,86 +1,85 @@
-const {
-  newPickupShippo
-} = require('../../services/goShippoServices');
+const { newPickupShippo } = require("../../services/goShippoServices")
 
-const {
-  newPickUpEasypost
-} = require('../../services/easypostServices');
+const { newPickUpEasypost } = require("../../services/easypostServices")
 const {
   GOSHIPPO_SERVICE,
-  EASYPOST_SERVICE
-} = require('../../constant/constants');
-const { savePickupData, fetchPickUpByUserId } = require('../../helper/pickup');
-const { sendNotification } = require('../../helper/sendNotification');
+  EASYPOST_SERVICE,
+} = require("../../constant/constants")
+const { savePickupData, fetchPickUpByUserId } = require("../../helper/pickup")
+const { sendNotification } = require("../../helper/sendNotification")
 
 const createNewPickup = async (req, res) => {
-  const payload = req.body;
-  const service = req.params.service;
-  const userId = req.userId;
+  const payload = req.body
+  const service = req.params.service
+  const userId = req.userId
   try {
-    let response;
+    let response
     switch (service) {
       case EASYPOST_SERVICE:
-        response = await newPickUpEasypost(payload);
+        response = await newPickUpEasypost(payload)
         if (response?.data) {
           let pickupData = {
             userId: userId,
             service: EASYPOST_SERVICE,
             pickupId: response.data?.id,
-            PickupData: response?.data
+            PickupData: response?.data,
           }
           const pickup = await savePickupData(pickupData)
           if (pickup) {
             await sendNotification({
               user: req.userDetails,
-              message: 'Your pickup created successfully',
+              message: "Your pickup created successfully",
               emailMessage: `<p>Your pickup created successfully.</p>`,
-              emailSubject: 'Congrats'
+              emailSubject: "Congrats",
             })
             return res.status(200).json({ data: pickup })
           }
         }
-        break;
+        break
       case GOSHIPPO_SERVICE:
-        response = await newPickupShippo(payload);
+        response = await newPickupShippo(payload)
         if (response?.data) {
           let pickupData = {
             userId: userId,
             service: GOSHIPPO_SERVICE,
             pickupId: response.data?.object_id,
-            PickupData: response?.data
+            PickupData: response?.data,
           }
           const pickup = await savePickupData(pickupData)
           if (pickup) {
             return res.status(200).json({ data: pickup })
           }
         }
-        break;
+        break
       default:
-        return res.status(500).json({ message: 'Something went wrong.' });
+        return res.status(500).json({ message: "Something went wrong." })
     }
     if (response.data) {
       return res.status(200).json({ data: response.data })
     } else {
-      return res.status(500).json({ message: 'Failed to create customs' });
+      return res.status(500).json({ message: "Failed to create customs" })
     }
   } catch (error) {
-    return res.status(500).json({ message: error?.response?.data?.error || error?.response?.data });
+    return res
+      .status(500)
+      .json({ message: error?.response?.data?.error || error?.response?.data })
   }
-};
+}
 
 const getPickup = async (req, res) => {
   try {
-    const id = req.userId;
-    const { service, page, limit } = req.query;
-    const response = await fetchPickUpByUserId(id, service, page, limit);
-    return res.status(200).json({ data: response })
+    const id = req.userId
+    const { service, page, limit } = req.query
+    const response = await fetchPickUpByUserId(id, service, page, limit)
+    return res.status(200).json({ response })
   } catch (error) {
-    return res.status(500).json({ message: error?.response?.data?.error || error?.response?.data });
-
+    return res
+      .status(500)
+      .json({ message: error?.response?.data?.error || error?.response?.data })
   }
 }
 
 module.exports = {
   createNewPickup,
-  getPickup
-};
+  getPickup,
+}

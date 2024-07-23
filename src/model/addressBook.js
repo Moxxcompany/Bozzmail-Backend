@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const mongoose = require("mongoose")
+const Schema = mongoose.Schema
 
 const AddressBookSchema = new Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
@@ -8,14 +8,14 @@ const AddressBookSchema = new Schema({
   city: { type: String },
   state: { type: String },
   country: { type: String },
-  addressType: { type: String},
+  addressType: { type: String },
   postalCode: { type: String },
   name: { type: String },
   email: { type: String },
   phoneNumber: { type: String },
-  is_default: { type: Boolean, default: false }
-});
+  is_default: { type: Boolean, default: false },
+})
 
-const AddressBook = mongoose.model('AddressBook', AddressBookSchema);
+const AddressBook = mongoose.model("AddressBook", AddressBookSchema)
 
-module.exports = AddressBook;
+module.exports = AddressBook
