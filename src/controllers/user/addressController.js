@@ -35,7 +35,7 @@ const fetchUserAddresses = async (req, res) => {
   const { limit, page } = req.query;
   try {
     const addresses = await getUserAddresses(userId, limit, page);
-    res.status(200).json({ data: addresses })
+    res.status(200).json({ addresses })
   } catch (error) {
     res.status(error.status || 500).json({ message: error });
   }

@@ -14,7 +14,7 @@ const {
   fetchPrintMailById,
   fetchPrintMailByUserId,
   fetchPrintMailByMailId
-  } = require('../../helper/printMail');
+} = require('../../helper/printMail');
 const { sendNotification } = require("../../helper/sendNotification")
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
@@ -144,7 +144,7 @@ const fetchUserPrintMail = async (req, res) => {
 }
 
 const fetchMailById = async (req, res) => {
-  const id  = req.params.id;
+  const id = req.params.id;
   try {
     const data = await fetchPrintMailByMailId(id);
     res.status(200).json({ data: data })
@@ -159,5 +159,5 @@ module.exports = {
   createWebHook,
   fetchUserPrintMail,
   fetchMailById,
-  listenWebhookevents
+  postGridWebhook: listenWebhookevents
 };

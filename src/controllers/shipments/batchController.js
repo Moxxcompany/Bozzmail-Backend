@@ -59,8 +59,7 @@ const getUserBatches = async (req, res) => {
     const result = await fetchBatchData(userId, page, limit);
 
     return res.status(200).json({
-      total: result.total,
-      data: result.data
+      result
     });
   } catch (error) {
     return res.status(500).json({ message: error?.response?.data?.error || error?.response?.data });

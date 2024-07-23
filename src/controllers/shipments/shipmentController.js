@@ -204,9 +204,9 @@ const getUserShipments = async (req, res) => {
   }
 };
 
-const getShipmentsById = async (req, res) =>{
-  const {shipmentId} = req.params;
-  if(!shipmentId){
+const getShipmentsById = async (req, res) => {
+  const { shipmentId } = req.params;
+  if (!shipmentId) {
     return res.status(500).json({ message: "Please enter a shipment id" });
   }
   try {
@@ -219,13 +219,13 @@ const getShipmentsById = async (req, res) =>{
   }
 }
 
-const trackShipment = async(req, res) => {
+const trackShipment = async (req, res) => {
   const payload = req.body;
-  const {trackNumber} = req.params;
+  const { trackNumber } = req.params;
   const userId = req.userId;
   const service = req.params.service;
   let response;
-  try{
+  try {
     switch (service) {
       case GOSHIPPO_SERVICE:
         response = await fetchGoShippoTrackShipment(payload);
@@ -238,7 +238,7 @@ const trackShipment = async(req, res) => {
             ShipmentTrackData: response?.data
           }
           const shipmentTrackingData = await saveShipmentTrackingData(shipmentData)
-          if(shipmentTrackingData){
+          if (shipmentTrackingData) {
             await sendNotification({
               user: req.userDetails,
               message: 'Your order status',
@@ -247,7 +247,7 @@ const trackShipment = async(req, res) => {
             })
             return res.status(200).json({
               data: shipmentTrackingData
-              });
+            });
           }
         }
         break;
@@ -262,7 +262,7 @@ const trackShipment = async(req, res) => {
             ShipmentTrackData: response?.data
           }
           const shipmentTrackingData = await saveShipmentTrackingData(shipmentData)
-          if(shipmentTrackingData){
+          if (shipmentTrackingData) {
             await sendNotification({
               user: req.userDetails,
               message: 'Your order status',
@@ -275,28 +275,28 @@ const trackShipment = async(req, res) => {
           }
         }
         break;
-    case FLAVOURCLOUD_SERVICE:
-      response = await fetchFlavourTrackShipment(trackNumber);
-      if (response) {
-        let shipmentData = {
-          userId: userId,
-          service: FLAVOURCLOUD_SERVICE,
-          carrier: response?.data?.carrier || '',
-          trackNumber: response?.data?.TrackingNumber,
-          ShipmentTrackData: response?.data
+      case FLAVOURCLOUD_SERVICE:
+        response = await fetchFlavourTrackShipment(trackNumber);
+        if (response) {
+          let shipmentData = {
+            userId: userId,
+            service: FLAVOURCLOUD_SERVICE,
+            carrier: response?.data?.carrier || '',
+            trackNumber: response?.data?.TrackingNumber,
+            ShipmentTrackData: response?.data
+          }
+          const shipmentTrackingData = await saveShipmentTrackingData(shipmentData)
+          if (shipmentTrackingData) {
+            return res.status(200).json({
+              data: shipmentTrackingData
+            });
+          }
         }
-        const shipmentTrackingData = await saveShipmentTrackingData(shipmentData)
-        if(shipmentTrackingData){
-          return res.status(200).json({
-            data: shipmentTrackingData
-          });
-        }
-      }
-      break;
-    default:
-      return res.status(500).json({ message: 'Something went wrong.' });
+        break;
+      default:
+        return res.status(500).json({ message: 'Something went wrong.' });
     }
-  }catch(error){
+  } catch (error) {
     return res.status(500).json({ message: error?.response?.data?.error || error?.response?.data });
   }
 }

@@ -1,9 +1,10 @@
 const AddressBook = require("../model/addressBook")
 const { post } = require('../utils/axios')
-const { 
+const {
   GOOGLE_ADDRESS_VALIDATION_BASE_URL,
   GOOGLE_ADDRESS_VALIDATION_KEY
 } = require("../constant/constants");
+const { paginate } = require("../utils/filters");
 
 const createNewAddress = async (data) => {
   try {
@@ -27,11 +28,17 @@ const getUserAddresses = async (userId, limit, page) => {
     if (!limit && !page) {
       return await AddressBook.find(query)
     }
-    const validLimit = limit > 0 ? parseInt(limit) : 10;
-    const validPage = page > 0 ? parseInt(page) : 1;
-    return await AddressBook.find(query)
+    const totalDocuments = await AddressBook.countDocuments(query);
+    const { validLimit, skip, validPage } = paginate(page, limit)
+    const data = await AddressBook.find(query)
       .limit(validLimit)
-      .skip((validPage - 1) * validLimit)
+      .skip(skip)
+    return {
+      total: totalDocuments,
+      data: data,
+      page: validPage,
+      limit: validLimit
+    };
   } catch (error) {
     throw error
   }

@@ -64,8 +64,8 @@ const fetchUserCustoms = async (req, res) => {
   const { page, limit } = req.query;
 
   try {
-    const customsData = await findUserCustoms(userId, service, page , limit);
-    res.status(200).json({ data: customsData })
+    const customsData = await findUserCustoms(userId, service, page, limit);
+    res.status(200).json({ customsData })
   } catch (error) {
     res.status(error.status || 500).json({ message: error });
   }

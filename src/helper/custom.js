@@ -1,4 +1,5 @@
-const Custom = require("../model/customs")
+const Custom = require("../model/customs");
+const { paginate } = require("../utils/filters");
 
 const createNewCustomForm = async (data) => {
   try {
@@ -15,18 +16,16 @@ const findUserCustoms = async (userId, service, page = 1, limit = 10) => {
     if (service) {
       query.service = service;
     }
-
-    // Ensure page and limit are valid numbers and greater than zero
-    const validPage = page > 0 ? parseInt(page) : 1;
-    const validLimit = limit > 0 ? parseInt(limit) : 10;
-
-    // Calculate the number of documents to skip
-    const skip = (validPage - 1) * validLimit;
-
-    // Fetch the limited data with pagination
+    const totalDocuments = await Custom.countDocuments(query);
+    const { validLimit, skip, validPage} = paginate(page, limit)
     const customsData = await Custom.find(query).skip(skip).limit(validLimit);
 
-    return customsData;
+    return {
+      total: totalDocuments,
+      data: customsData,
+      page: validPage,
+      limit: validLimit
+    }
   } catch (error) {
     throw error;
   }
