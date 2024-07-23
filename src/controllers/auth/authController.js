@@ -115,7 +115,6 @@ const signIn = async (req, res) => {
           emailMessage: `<p>Congrats! You have successfully logged in for Bozzmail.</p>`,
           emailSubject: "Logged in for bozzmail successful.",
         })
-        console.log(userData, '1111111111111111111111111')
         res
           .status(200)
           .json({

@@ -6,7 +6,7 @@ const {
   POSTGRID_SECRET_KEY,
 } = require("../constant/constants")
 const fs = require("fs")
-const path = require("path")
+const FormData = require('form-data')
 
 const headers = {
   "x-api-key": POSTGRID_API_KEY,
@@ -35,7 +35,6 @@ const sendLetter = async (payload, userId, pdfFile) => {
     formData.append("from[provinceOrState]", payload.address_from.state)
     formData.append("from[countryCode]", payload.address_from.country)
 
-    formData.append("html", payload.html)
     formData.append("addressPlacement", payload.addressPlacement) // top_first_page or insert_blank_page
     formData.append("doubleSided", payload.doubleSided)
     formData.append("perforatedPage", payload.perforatedPage) // 1 or 0
@@ -53,13 +52,20 @@ const sendLetter = async (payload, userId, pdfFile) => {
     if (payload?.express) {
       formData.append("express", payload.express) // true or false
     }
-    return await post(url, formData, null, headers)
+    if (pdfFile) {
+      formData.append("pdf", fs.createReadStream(pdfFile.path), { filename: pdfFile.originalname })
+    } else if (payload.pdfLink) {
+      formData.append("pdfLink", payload.pdfLink)
+    } else {
+      formData.append("html", payload.html)
+    }
+    return await post(url, formData, null, { ...headers, ...formData.getHeaders() })
   } catch (error) {
     throw error
   }
 }
 
-const sendPostCard = async (payload, userId) => {
+const sendPostCard = async (payload, userId, pdfFile) => {
   const url = `${POSTGRID_BASE_URL}/v1/postcards`
   try {
     const formData = new FormData()
@@ -72,9 +78,7 @@ const sendPostCard = async (payload, userId) => {
     formData.append("to[provinceOrState]", payload.address_to.state)
     formData.append("to[countryCode]", payload.address_to.country)
 
-    formData.append("frontHTML", payload.frontHTML)
-    formData.append("backHTML", payload.backHTML)
-    formData.append("size", payload.size)
+    formData.append("size", payload?.size)
     formData.append("sendDate", payload.sendDate)
     formData.append("description", payload.description)
     formData.append("mailingClass", payload.mailingClass)
@@ -82,16 +86,23 @@ const sendPostCard = async (payload, userId) => {
     if (payload?.express) {
       formData.append("express", payload.express) // true or false
     }
-    return await post(url, formData, null, headers)
+    if (pdfFile) {
+      formData.append("pdf", fs.createReadStream(pdfFile.path), { filename: pdfFile.originalname })
+    } else if (payload.pdfLink) {
+      formData.append("pdf", payload.pdfLink)
+    } else {
+      formData.append("frontHTML", payload.frontHTML)
+      formData.append("backHTML", payload.backHTML)
+    }
+    return await post(url, formData, null, { ...headers, ...formData.getHeaders() })
   } catch (error) {
     throw error
   }
 }
 
 const cancelMail = async (payload, mailData) => {
-  const url = `${POSTGRID_BASE_URL}/v1/${
-    mailData.mailType === SEND_MAIL_POSTCARD_TYPE ? "postcards" : "letters"
-  }/${mailData.mailId}/cancellation`
+  const url = `${POSTGRID_BASE_URL}/v1/${mailData.mailType === SEND_MAIL_POSTCARD_TYPE ? "postcards" : "letters"
+    }/${mailData.mailId}/cancellation`
   try {
     const data = {
       note: payload.note,

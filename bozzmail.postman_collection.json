@@ -1078,7 +1078,7 @@
 						"header": [
 							{
 								"key": "token",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjhmNzgyMzg4MDUwMTJiNjdjMWM1ZWUiLCJpYXQiOjE3MjE2NDY3OTUsImV4cCI6MTcyMTY1MDM5NX0.g7E0JJTpYMMSTGsRDPF14yqiQsya4WGwHTYUMogDTK0",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjhmNzgyMzg4MDUwMTJiNjdjMWM1ZWUiLCJpYXQiOjE3MjE3MzY5MzcsImV4cCI6MTcyMTc0MDUzN30.L15iF-X0nSiR-3Ub5Tj6EhRuN-AU6gS7TltB9__TJno",
 								"type": "text"
 							}
 						],
@@ -1211,9 +1211,9 @@
 									"type": "text"
 								},
 								{
-									"key": "pdf_data",
+									"key": "pdf",
 									"type": "file",
-									"src": "/C:/Users/means/Downloads/sample.pdf"
+									"src": []
 								},
 								{
 									"key": "mailingClass",
@@ -1229,6 +1229,12 @@
 									"key": "express",
 									"value": "false",
 									"type": "text"
+								},
+								{
+									"key": "pdfLink",
+									"value": "",
+									"type": "text",
+									"disabled": true
 								}
 							]
 						},
@@ -1243,13 +1249,100 @@
 						"header": [
 							{
 								"key": "token",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjhmNzgyMzg4MDUwMTJiNjdjMWM1ZWUiLCJpYXQiOjE3MjEyOTc4NjksImV4cCI6MTcyMTMwMTQ2OX0.rD8Pnrsik7B-4o73CnTBasREKkNrezYPheDA3dZF7Rs",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjhmNzgyMzg4MDUwMTJiNjdjMWM1ZWUiLCJpYXQiOjE3MjE3MzY5MzcsImV4cCI6MTcyMTc0MDUzN30.L15iF-X0nSiR-3Ub5Tj6EhRuN-AU6gS7TltB9__TJno",
 								"type": "text"
 							}
 						],
 						"body": {
-							"mode": "raw",
-							"raw": ""
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "address_to[first_name]",
+									"value": "Jane",
+									"type": "text"
+								},
+								{
+									"key": "address_to[last_name]",
+									"value": "Doe",
+									"type": "text"
+								},
+								{
+									"key": "address_to[company_name]",
+									"value": "Sample Company",
+									"type": "text"
+								},
+								{
+									"key": "address_to[street1]",
+									"value": "456 Elm St",
+									"type": "text"
+								},
+								{
+									"key": "address_to[city]",
+									"value": "Toronto",
+									"type": "text"
+								},
+								{
+									"key": "address_to[state]",
+									"value": "ON",
+									"type": "text"
+								},
+								{
+									"key": "address_to[country]",
+									"value": "CA",
+									"type": "text"
+								},
+								{
+									"key": "address_to[zip]",
+									"value": "M5H 2N2",
+									"type": "text"
+								},
+								{
+									"key": "frontHTML",
+									"value": "<i>Hello, World!</i>",
+									"type": "text"
+								},
+								{
+									"key": "backHTML",
+									"value": "<i>Hello, World!</i>",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Sample HTML letter",
+									"type": "text"
+								},
+								{
+									"key": "size",
+									"value": "11x6",
+									"type": "text"
+								},
+								{
+									"key": "mailingClass",
+									"value": "first_class",
+									"type": "text"
+								},
+								{
+									"key": "sendDate",
+									"value": "2024-10-16T15:40:35.873Z",
+									"type": "text"
+								},
+								{
+									"key": "express",
+									"value": "false",
+									"type": "text"
+								},
+								{
+									"key": "pdfLink",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "pdf",
+									"type": "file",
+									"src": "/C:/Users/means/Downloads/sample.pdf"
+								}
+							]
 						},
 						"url": "http://localhost:3030/print-mail/send/postcard"
 					},
