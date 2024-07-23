@@ -4,7 +4,7 @@ const { OTP_EXPIRE_TIME } = require("../constant/constants")
 
 const generateOtp = () => {
   const otp = Math.floor(10000 + Math.random() * 90000).toString()
-  const expiresAt = moment().utc().add(OTP_EXPIRE_TIME, "minutes").toISOString()
+  const expiresAt = moment().utc().add(OTP_EXPIRE_TIME, "minutes")
   return { otp, expiresAt }
 }
 

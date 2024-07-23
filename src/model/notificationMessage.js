@@ -8,9 +8,9 @@ const NotificationMessageSchema = new Schema({
   created_at: { type: Date, default: Date.now },
 })
 
-const NotificationMessageS = mongoose.model(
-  "NotificationMessageS",
+const NotificationMessage = mongoose.model(
+  "NotificationMessage",
   NotificationMessageSchema
 )
 
-module.exports = NotificationMessageS
+module.exports = NotificationMessage

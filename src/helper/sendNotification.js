@@ -25,10 +25,10 @@ const sendNotification = async ({
     } else {
       if (emailMessage && user.notify_email) {
         await sendMail({
-          to: user.email,
           subject: emailSubject,
           text: message,
           content: emailMessage,
+          user: user
         })
       }
       if (user.notify_mobile && user.phoneNumber) {

@@ -1,0 +1,27 @@
+<div style="width: 100%; max-width: 567px; margin: 32px auto;">
+
+  <div style="padding: 20px 32px; background-color: #ffffff;">
+    <table style="width: 100%;">
+      <tr>
+        <td>
+          <p style="margin-top: 20px; margin-bottom: 24px; line-height: 1.5; text-align: justify;">Hello <%= user.name
+              || user.email %>
+          </p>
+          <p style="margin-top: 20px; margin-bottom: 24px; line-height: 1.5; text-align: justify;">
+            <%- content %>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p style="margin-top: 20px; margin-bottom: 24px; line-height: 1.5; text-align: justify;">If you don't know why
+            you got this email, please get in touch with us here.</p>
+          <p style="margin-top: 20px; margin-bottom: 24px; line-height: 1.5; text-align: justify;">
+            Best regards, <br />
+            Bozzmail.
+          </p>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
