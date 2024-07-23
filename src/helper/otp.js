@@ -1,18 +1,16 @@
-const moment = require('moment');
+const moment = require("moment")
 const Otp = require("../model/otp")
-const {
-  OTP_EXPIRE_TIME
-} = require('../constant/constants')
+const { OTP_EXPIRE_TIME } = require("../constant/constants")
 
 const generateOtp = () => {
-  const otp = Math.floor(10000 + Math.random() * 90000).toString();
-  const expiresAt = moment().add(OTP_EXPIRE_TIME, 'minutes').toISOString();
-  return { otp, expiresAt };
+  const otp = Math.floor(10000 + Math.random() * 90000).toString()
+  const expiresAt = moment().utc().add(OTP_EXPIRE_TIME, "minutes")
+  return { otp, expiresAt }
 }
 
 const saveOtpDetails = async (email) => {
   try {
-    const { otp, expiresAt } = generateOtp();
+    const { otp, expiresAt } = generateOtp()
     return await Otp({ email, otp, expiresAt }).save()
   } catch (error) {
     throw error
@@ -29,19 +27,19 @@ const fetchOtp = async (email) => {
 
 const updateOtpDetails = async (email) => {
   try {
-    const { otp, expiresAt } = generateOtp();
+    const { otp, expiresAt } = generateOtp()
     const data = {
       otp,
       expiresAt,
-      email
+      email,
     }
     await Otp.updateOne(
       { email },
       {
         otp,
-        expiresAt
+        expiresAt,
       }
-    );
+    )
     return data
   } catch (error) {
     throw error
@@ -52,12 +50,12 @@ const verifyEmailOtp = async (email, otp) => {
   try {
     const otpData = await Otp.findOne({ email, otp })
     if (!otpData) {
-      return false;
-    }
-    if (moment().isAfter(otpData.expiresAt)) {
       return false
     }
-    await Otp.deleteOne({ _id: otpDoc._id });
+    if (moment().utc().isAfter(otpData.expiresAt)) {
+      return false
+    }
+    await Otp.deleteOne({ _id: otpDoc._id })
     return true
   } catch (error) {
     throw error
@@ -69,5 +67,5 @@ module.exports = {
   saveOtpDetails,
   fetchOtp,
   updateOtpDetails,
-  verifyEmailOtp
+  verifyEmailOtp,
 }

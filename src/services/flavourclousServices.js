@@ -1,19 +1,19 @@
-const { post, get } = require('../utils/axios')
+const { post, get } = require("../utils/axios")
 const {
   FLAVOURCLOUD_BASE_URL,
   FLAVOURCLOUD_API_KEY,
-  FLAVOURCLOUD_APP_ID
-} = require('../constant/constants');
+  FLAVOURCLOUD_APP_ID,
+} = require("../constant/constants")
 
 const generateNewShipment = async (payload) => {
-  const url = `${FLAVOURCLOUD_BASE_URL}/Shipments`;
+  const url = `${FLAVOURCLOUD_BASE_URL}/Shipments`
   let data = {
     AppID: FLAVOURCLOUD_APP_ID,
     RestApiKey: FLAVOURCLOUD_API_KEY,
     Reference: payload.reference_id,
     ReasonForExport: payload.export_type,
     HashKey: payload.hash_key,
-    DutyHashKey: payload.duty_hash_key || '',
+    DutyHashKey: payload.duty_hash_key || "",
     PickUpDate: payload.pickup_date, // format "YYYY-MM-DD"
     TermsOfTrade: payload.terms_of_trade,
     WeightUnit: payload.parcel.mass_unit.toUpperCase(),
@@ -30,7 +30,7 @@ const generateNewShipment = async (payload) => {
       Country: payload.from_address.country,
       Zip: payload.from_address.zip,
       Phone: payload.from_address.phone || "",
-      Email: payload.from_address.email || ""
+      Email: payload.from_address.email || "",
     },
     ShipToAddress: {
       Name: payload.to_address.name,
@@ -42,7 +42,7 @@ const generateNewShipment = async (payload) => {
       Country: payload.to_address.country,
       Zip: payload.to_address.zip,
       Phone: payload.to_address.phone || "",
-      Email: payload.to_address.email || ""
+      Email: payload.to_address.email || "",
     },
     Shipments: [
       {
@@ -51,10 +51,10 @@ const generateNewShipment = async (payload) => {
           Weight: payload.parcel.weight,
           Length: payload.parcel.length,
           Width: payload.parcel.width,
-          Height: payload.parcel.height
-        }
-      }
-    ]
+          Height: payload.parcel.height,
+        },
+      },
+    ],
   }
   payload.items.forEach((item) => {
     let itemData = {
@@ -68,14 +68,14 @@ const generateNewShipment = async (payload) => {
     data.Shipments[0].Piece.push(itemData)
   })
   try {
-    return await post(url, data);
+    return await post(url, data)
   } catch (error) {
     throw error
   }
-};
+}
 
 const getRates = async (payload) => {
-  const url = `${FLAVOURCLOUD_BASE_URL}/Rates`;
+  const url = `${FLAVOURCLOUD_BASE_URL}/Rates`
   let data = {
     AppID: FLAVOURCLOUD_APP_ID,
     RestApiKey: FLAVOURCLOUD_API_KEY,
@@ -86,10 +86,7 @@ const getRates = async (payload) => {
     DimensionUnit: payload.parcel.distance_unit.toUpperCase(),
     Insurance: payload.insurance_added ? "Y" : "N",
     ServiceCode: payload.service_code, //"STANDARD", "EXPRESS"
-    TermsOfTrade: [
-      "DDP",
-      "DDU"
-    ],
+    TermsOfTrade: ["DDP", "DDU"],
     IsReturn: "N",
     IncludeLandedCost: true,
     ShipFromAddress: {
@@ -102,7 +99,7 @@ const getRates = async (payload) => {
       Country: payload.from_address.country,
       Zip: payload.from_address.zip,
       Phone: payload.from_address.phone || "",
-      Email: payload.from_address.email || ""
+      Email: payload.from_address.email || "",
     },
     ShipToAddress: {
       Name: payload.to_address.name,
@@ -114,16 +111,16 @@ const getRates = async (payload) => {
       Country: payload.to_address.country,
       Zip: payload.to_address.zip,
       Phone: payload.to_address.phone || "",
-      Email: payload.to_address.email || ""
+      Email: payload.to_address.email || "",
     },
-    ReasonForExport: payload.export_type,  // Possible values could be 'documents', 'gift', 'merchandise', 'returned_goods', 'sample', or 'other'
+    ReasonForExport: payload.export_type, // Possible values could be 'documents', 'gift', 'merchandise', 'returned_goods', 'sample', or 'other'
     Pieces: [],
     Package: {
       Weight: payload.parcel.weight,
       Length: payload.parcel.length,
       Width: payload.parcel.width,
-      Height: payload.parcel.height
-    }
+      Height: payload.parcel.height,
+    },
   }
   payload.items.forEach((item) => {
     let itemData = {
@@ -133,16 +130,16 @@ const getRates = async (payload) => {
       HSCode: item.hs_tariff_number,
       OriginCountryCode: item.origin_country,
       Description: item.description,
-      Category: item.category
+      Category: item.category,
     }
     data.Pieces.push(itemData)
   })
   try {
-    return await post(url, data);
+    return await post(url, data)
   } catch (error) {
     throw error
   }
-};
+}
 
 const newHscode = async (payload) => {
   const url = `${FLAVOURCLOUD_BASE_URL}/Classifications`
@@ -153,12 +150,12 @@ const newHscode = async (payload) => {
       {
         Description: payload.product.description,
         Image: payload.product.image_url,
-        Title: payload.product.title
-      }
-    ]
+        Title: payload.product.title,
+      },
+    ],
   }
   try {
-    return await post(url, data);
+    return await post(url, data)
   } catch (error) {
     throw error
   }
@@ -166,18 +163,25 @@ const newHscode = async (payload) => {
 
 const fetchShipmentDetails = async (shipmentId) => {
   const url = `${FLAVOURCLOUD_BASE_URL}/Shipments/${FLAVOURCLOUD_APP_ID}/${FLAVOURCLOUD_API_KEY}?ShipmentID=${shipmentId}`
-  console.log(url)
   try {
-    return await get(url);
+    return await get(url)
   } catch (error) {
     throw error
   }
 }
 
+const fetchFlavourTrackShipment = async (trackNumber) => {
+  const url = `${FLAVOURCLOUD_BASE_URL}/Tracking/${FLAVOURCLOUD_APP_ID}/${FLAVOURCLOUD_API_KEY}/${trackNumber}`
+  try {
+    return await get(url)
+  } catch (error) {
+    throw error
+  }
+}
 module.exports = {
   newShipmentFlavourCloud: generateNewShipment,
   getRatesFlavourCloud: getRates,
   newHscode,
-  fetchShipmentDetailsFlavourCloud: fetchShipmentDetails
-};
-
+  fetchShipmentDetailsFlavourCloud: fetchShipmentDetails,
+  fetchFlavourTrackShipment: fetchFlavourTrackShipment,
+}

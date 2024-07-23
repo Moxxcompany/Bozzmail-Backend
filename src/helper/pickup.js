@@ -1,4 +1,5 @@
 const Pickup = require("../model/pickupModal")
+const { paginate } = require("../utils/filters")
 
 const savePickupData = async (data) => {
   try {
@@ -8,17 +9,28 @@ const savePickupData = async (data) => {
   }
 }
 
-const fetchPickUpByUserId = async (userId, service) => {
+const fetchPickUpByUserId = async (userId, service, page, limit) => {
   try {
+    const query = { userId }
     if (service) {
-      return await Pickup.find({ userId, service })
+      query.service = service
     }
-    return await Pickup.find({ userId: userId })
+    const totalDocuments = await Pickup.countDocuments(query)
+    if (!limit && !page) {
+      return { data: await Pickup.find(query), total: totalDocuments }
+    }
+    const { validLimit, skip } = paginate(page, limit)
+    const limitedData = await Pickup.find(query).skip(skip).limit(validLimit)
+    return {
+      total: totalDocuments,
+      data: limitedData,
+    }
   } catch (error) {
     throw error
   }
 }
+
 module.exports = {
   savePickupData,
-  fetchPickUpByUserId
+  fetchPickUpByUserId,
 }

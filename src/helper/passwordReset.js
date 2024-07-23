@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose")
 const PasswordReset = require("../model/passwordReset")
 
 const createPasswordReset = async (data) => {
@@ -19,7 +19,7 @@ const fetchPasswordToken = async (token) => {
 
 const deleteToken = async (_id) => {
   try {
-    const objectId = mongoose.Types.ObjectId(_id);
+    const objectId = mongoose.Types.ObjectId(_id)
     await PasswordReset.findByIdAndRemove(objectId)
     return true
   } catch (error) {
@@ -30,5 +30,5 @@ const deleteToken = async (_id) => {
 module.exports = {
   createPasswordReset,
   fetchPasswordToken,
-  deleteToken
+  deleteToken,
 }

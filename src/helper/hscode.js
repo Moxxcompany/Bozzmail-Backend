@@ -1,4 +1,5 @@
 const Hscode = require("../model/hscode")
+const { paginate } = require("../utils/filters")
 
 const createNewHscode = async (data) => {
   try {
@@ -8,9 +9,19 @@ const createNewHscode = async (data) => {
   }
 }
 
-const findUserHscode = async (userId) => {
+const findUserHscode = async (userId, page, limit) => {
   try {
-    return await Hscode.find({ userId })
+    const query = { userId }
+    const totalDocuments = await Hscode.countDocuments(query)
+    if (!limit && !page) {
+      return { data: await Hscode.find(query), total: totalDocuments }
+    }
+    const { validLimit, skip } = paginate(page, limit)
+    const limitedData = await Hscode.find(query).skip(skip).limit(validLimit)
+    return {
+      total: totalDocuments,
+      data: limitedData,
+    }
   } catch (error) {
     throw error
   }
@@ -35,5 +46,5 @@ module.exports = {
   createNewHscode,
   findUserHscode,
   findHscodeDetailsById,
-  deleteHscodeDetail
+  deleteHscodeDetail,
 }

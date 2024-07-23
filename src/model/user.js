@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose")
 
 const AddressSchema = new mongoose.Schema({
   street1: { type: String },
@@ -7,7 +7,7 @@ const AddressSchema = new mongoose.Schema({
   state: { type: String },
   country: { type: String },
   postalCode: { type: String },
-});
+})
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -17,6 +17,10 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
   },
+  is_admin: {
+    type: Boolean,
+    default: false,
+  },
   fullName: {
     type: String,
   },
@@ -25,27 +29,27 @@ const userSchema = new mongoose.Schema({
   },
   is_profile_verified: {
     type: Boolean,
-    default: false
+    default: false,
   },
   notify_mobile: {
     type: Boolean,
-    default: false
+    default: false,
   },
   notify_email: {
     type: Boolean,
-    default: false
+    default: false,
   },
   is_active: {
     type: Boolean,
-    default: true
+    default: true,
   },
   profile_img: {
-    type: String
+    type: String,
   },
   telegramId: {
-    type: String
+    type: String,
   },
-  address: AddressSchema
-});
-const User = mongoose.model("User", userSchema);
-module.exports = User;
+  address: AddressSchema,
+})
+const User = mongoose.model("User", userSchema)
+module.exports = User
