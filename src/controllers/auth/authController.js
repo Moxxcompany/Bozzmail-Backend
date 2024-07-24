@@ -31,8 +31,10 @@ const { verifyEmailId } = require("../../services/infobipServices")
 const {
   PASSWORD_RESET_TOKEN_EXPIRE_TIME,
   FE_APP_BASE_URL,
+  SIGNUP_REWARD_POINTS
 } = require("../../constant/constants")
 const { sendNotification } = require("../../helper/sendNotification")
+const { addUserPoints } = require("../../helper/rewards")
 
 const signUp = async (req, res) => {
   const { email, password, phoneNumber, notify_mobile } = req.body
@@ -57,6 +59,12 @@ const signUp = async (req, res) => {
     const user = await createNewUser(data)
     const userData = await getUserData(user)
     if (user) {
+      let rewardPoints = {
+        userId: user._id,
+        points: SIGNUP_REWARD_POINTS,
+        reason: 'User registered for the first time',
+      }
+      await addUserPoints(rewardPoints)
       const otpDetails = await saveOtpDetails(email)
       const verificationLink = `${FE_APP_BASE_URL}/verify-email`
       await sendNotification({

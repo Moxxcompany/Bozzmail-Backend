@@ -31,6 +31,7 @@ const {
   fetchShipmentPurchaseById,
 } = require("../../helper/shipment")
 const { sendNotification } = require("../../helper/sendNotification")
+const { addUserPoints } = require("../../helper/rewards")
 
 const createNewLabel = async (req, res) => {
   const payload = req.body
@@ -158,6 +159,12 @@ const purchaseShipment = async (req, res) => {
           }
           shipmentData.shipmentData.transactionData = response.data
           shipmentData.shipmentData.selectedRate = rateData.data
+          let rewardPoints = {
+            userId: userId,
+            points: rateData.data.amount,
+            reason: 'Purchased a new shipment',
+          }
+          await addUserPoints(rewardPoints)
           const shipment = await saveNewPurchasedShipment(shipmentData)
           if (shipment) {
             await sendNotification({
@@ -180,6 +187,12 @@ const purchaseShipment = async (req, res) => {
             shipmentId: response.data.id,
             shipmentData: data,
           }
+          let rewardPoints = {
+            userId: userId,
+            points: data.selected_rate.rate,
+            reason: 'Purchased a new shipment',
+          }
+          await addUserPoints(rewardPoints)
           const shipment = await saveNewPurchasedShipment(shipmentData)
           if (shipment) {
             await sendNotification({
