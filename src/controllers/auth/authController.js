@@ -34,7 +34,7 @@ const {
   REWARD_POINTS
 } = require("../../constant/constants")
 const { sendNotification } = require("../../helper/sendNotification")
-const { addUserPoints } = require("../../helper/rewards")
+const { addUserRewardPoints } = require("../../helper/rewards")
 
 const signUp = async (req, res) => {
   const { email, password, phoneNumber, notify_mobile } = req.body
@@ -64,7 +64,7 @@ const signUp = async (req, res) => {
         points: REWARD_POINTS.SIGNUP.points,
         reason: REWARD_POINTS.SIGNUP.message,
       }
-      await addUserPoints(rewardPoints)
+      await addUserRewardPoints(rewardPoints)
       const otpDetails = await saveOtpDetails(email)
       const verificationLink = `${FE_APP_BASE_URL}/verify-email`
       await sendNotification({
@@ -401,7 +401,7 @@ const telegramLoginSuccess = async (req, res) => {
       points: REWARD_POINTS.SIGNUP.points,
       reason: REWARD_POINTS.SIGNUP.message,
     }
-    await addUserPoints(rewardPoints)
+    await addUserRewardPoints(rewardPoints)
     const token = createToken(newUser._id)
     await sendNotification({
       user: newUser,

@@ -1,6 +1,6 @@
 const RewardPoint = require("../model/rewardPoints")
 
-const addUserPoints = async (data) => {
+const addUserRewardPoints = async (data) => {
   try {
     return await RewardPoint(data).save()
   } catch (error) {
@@ -9,5 +9,5 @@ const addUserPoints = async (data) => {
 }
 
 module.exports = {
-  addUserPoints
+  addUserRewardPoints
 }

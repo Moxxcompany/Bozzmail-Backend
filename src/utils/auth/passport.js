@@ -6,7 +6,7 @@ const {
   GOOGLE_CLIENT_SECRET,
   REWARD_POINTS,
 } = require("../../constant/constants")
-const { addUserPoints } = require("../../helper/rewards")
+const { addUserRewardPoints } = require("../../helper/rewards")
 
 passport.use(
   new OAuth2Strategy(
@@ -35,7 +35,7 @@ passport.use(
             points: REWARD_POINTS.SIGNUP.points,
             reason: REWARD_POINTS.SIGNUP.message,
           }
-          await addUserPoints(rewardPoints)
+          await addUserRewardPoints(rewardPoints)
           return done(null, user)
         }
       } catch (error) {
