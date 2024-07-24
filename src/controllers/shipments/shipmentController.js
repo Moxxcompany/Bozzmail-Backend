@@ -22,6 +22,7 @@ const {
   GOSHIPPO_SERVICE,
   FLAVOURCLOUD_SERVICE,
   EASYPOST_SERVICE,
+  REWARD_POINTS,
 } = require("../../constant/constants")
 const {
   saveNewPurchasedShipment,
@@ -161,8 +162,8 @@ const purchaseShipment = async (req, res) => {
           shipmentData.shipmentData.selectedRate = rateData.data
           let rewardPoints = {
             userId: userId,
-            points: rateData.data.amount,
-            reason: 'Purchased a new shipment',
+            points: +rateData.data.amount * REWARD_POINTS.PURCHASED_SHIPMENT.points,
+            reason: REWARD_POINTS.PURCHASED_SHIPMENT.message,
           }
           await addUserPoints(rewardPoints)
           const shipment = await saveNewPurchasedShipment(shipmentData)
@@ -189,8 +190,8 @@ const purchaseShipment = async (req, res) => {
           }
           let rewardPoints = {
             userId: userId,
-            points: data.selected_rate.rate,
-            reason: 'Purchased a new shipment',
+            points: +data.selected_rate.rate * REWARD_POINTS.PURCHASED_SHIPMENT.points,
+            reason: REWARD_POINTS.PURCHASED_SHIPMENT.message,
           }
           await addUserPoints(rewardPoints)
           const shipment = await saveNewPurchasedShipment(shipmentData)

@@ -4,7 +4,9 @@ const { fetchUserByEmail, createNewUser } = require("../../helper/user")
 const {
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
+  REWARD_POINTS,
 } = require("../../constant/constants")
+const { addUserPoints } = require("../../helper/rewards")
 
 passport.use(
   new OAuth2Strategy(
@@ -28,6 +30,12 @@ passport.use(
             profile_img: profile.picture,
           }
           const user = await createNewUser(data)
+          let rewardPoints = {
+            userId: user._id,
+            points: REWARD_POINTS.SIGNUP.points,
+            reason: REWARD_POINTS.SIGNUP.message,
+          }
+          await addUserPoints(rewardPoints)
           return done(null, user)
         }
       } catch (error) {

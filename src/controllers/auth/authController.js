@@ -31,7 +31,7 @@ const { verifyEmailId } = require("../../services/infobipServices")
 const {
   PASSWORD_RESET_TOKEN_EXPIRE_TIME,
   FE_APP_BASE_URL,
-  SIGNUP_REWARD_POINTS
+  REWARD_POINTS
 } = require("../../constant/constants")
 const { sendNotification } = require("../../helper/sendNotification")
 const { addUserPoints } = require("../../helper/rewards")
@@ -61,8 +61,8 @@ const signUp = async (req, res) => {
     if (user) {
       let rewardPoints = {
         userId: user._id,
-        points: SIGNUP_REWARD_POINTS,
-        reason: 'User registered for the first time',
+        points: REWARD_POINTS.SIGNUP.points,
+        reason: REWARD_POINTS.SIGNUP.message,
       }
       await addUserPoints(rewardPoints)
       const otpDetails = await saveOtpDetails(email)
@@ -396,6 +396,12 @@ const telegramLoginSuccess = async (req, res) => {
       notify_email: false,
     }
     const newUser = await createNewUser(data)
+    let rewardPoints = {
+      userId: newUser._id,
+      points: REWARD_POINTS.SIGNUP.points,
+      reason: REWARD_POINTS.SIGNUP.message,
+    }
+    await addUserPoints(rewardPoints)
     const token = createToken(newUser._id)
     await sendNotification({
       user: newUser,
