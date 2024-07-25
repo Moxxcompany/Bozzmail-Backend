@@ -42,6 +42,16 @@ const constants = {
   GOOGLE_ADDRESS_VALIDATION_BASE_URL:
     process.env.GOOGLE_ADDRESS_VALIDATION_BASE_URL,
   GOOGLE_ADDRESS_VALIDATION_KEY: process.env.GOOGLE_ADDRESS_VALIDATION_KEY,
+  REWARD_POINTS: {
+    SIGNUP: {
+      message: 'User registered for the first time',
+      points: 100
+    },
+    PURCHASED_SHIPMENT: {
+      message: 'User purchased a standard shipment',
+      points: 1
+    }
+  }
 }
 
 Object.keys(constants).forEach((key) => {

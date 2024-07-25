@@ -22,6 +22,7 @@ const {
   GOSHIPPO_SERVICE,
   FLAVOURCLOUD_SERVICE,
   EASYPOST_SERVICE,
+  REWARD_POINTS,
 } = require("../../constant/constants")
 const {
   saveNewPurchasedShipment,
@@ -31,6 +32,7 @@ const {
   fetchShipmentPurchaseById,
 } = require("../../helper/shipment")
 const { sendNotification } = require("../../helper/sendNotification")
+const { addUserRewardPoints } = require("../../helper/rewards")
 
 const createNewLabel = async (req, res) => {
   const payload = req.body
@@ -158,6 +160,12 @@ const purchaseShipment = async (req, res) => {
           }
           shipmentData.shipmentData.transactionData = response.data
           shipmentData.shipmentData.selectedRate = rateData.data
+          let rewardPoints = {
+            userId: userId,
+            points: +rateData.data.amount * REWARD_POINTS.PURCHASED_SHIPMENT.points,
+            reason: REWARD_POINTS.PURCHASED_SHIPMENT.message,
+          }
+          await addUserRewardPoints(rewardPoints)
           const shipment = await saveNewPurchasedShipment(shipmentData)
           if (shipment) {
             await sendNotification({
@@ -180,6 +188,12 @@ const purchaseShipment = async (req, res) => {
             shipmentId: response.data.id,
             shipmentData: data,
           }
+          let rewardPoints = {
+            userId: userId,
+            points: +data.selected_rate.rate * REWARD_POINTS.PURCHASED_SHIPMENT.points,
+            reason: REWARD_POINTS.PURCHASED_SHIPMENT.message,
+          }
+          await addUserRewardPoints(rewardPoints)
           const shipment = await saveNewPurchasedShipment(shipmentData)
           if (shipment) {
             await sendNotification({

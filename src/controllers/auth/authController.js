@@ -31,8 +31,11 @@ const { verifyEmailId } = require("../../services/infobipServices")
 const {
   PASSWORD_RESET_TOKEN_EXPIRE_TIME,
   FE_APP_BASE_URL,
+  REWARD_POINTS
 } = require("../../constant/constants")
 const { sendNotification } = require("../../helper/sendNotification")
+const { addUserRewardPoints } = require("../../helper/rewards")
+const { generate12DigitNumber } = require("../../utils/helperFuncs")
 
 const signUp = async (req, res) => {
   const { email, password, phoneNumber, notify_mobile } = req.body
@@ -53,10 +56,17 @@ const signUp = async (req, res) => {
       phoneNumber,
       notify_mobile,
       notify_email: true,
+      referral_code: `ref_${generate12DigitNumber()}`
     }
     const user = await createNewUser(data)
     const userData = await getUserData(user)
     if (user) {
+      let rewardPoints = {
+        userId: user._id,
+        points: REWARD_POINTS.SIGNUP.points,
+        reason: REWARD_POINTS.SIGNUP.message,
+      }
+      await addUserRewardPoints(rewardPoints)
       const otpDetails = await saveOtpDetails(email)
       const verificationLink = `${FE_APP_BASE_URL}/verify-email`
       await sendNotification({
@@ -386,8 +396,15 @@ const telegramLoginSuccess = async (req, res) => {
       fullName: `${first_name} ${last_name}`,
       is_profile_verified: true,
       notify_email: false,
+      referral_code: `ref_${generate12DigitNumber()}`
     }
     const newUser = await createNewUser(data)
+    let rewardPoints = {
+      userId: newUser._id,
+      points: REWARD_POINTS.SIGNUP.points,
+      reason: REWARD_POINTS.SIGNUP.message,
+    }
+    await addUserRewardPoints(rewardPoints)
     const token = createToken(newUser._id)
     await sendNotification({
       user: newUser,

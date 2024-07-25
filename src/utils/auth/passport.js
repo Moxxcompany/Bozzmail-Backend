@@ -4,7 +4,10 @@ const { fetchUserByEmail, createNewUser } = require("../../helper/user")
 const {
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
+  REWARD_POINTS,
 } = require("../../constant/constants")
+const { addUserRewardPoints } = require("../../helper/rewards")
+const { generate12DigitNumber } = require("../helperFuncs")
 
 passport.use(
   new OAuth2Strategy(
@@ -26,8 +29,15 @@ passport.use(
             is_profile_verified: true,
             notify_email: true,
             profile_img: profile.picture,
+            referral_code: `ref_${generate12DigitNumber()}`
           }
           const user = await createNewUser(data)
+          let rewardPoints = {
+            userId: user._id,
+            points: REWARD_POINTS.SIGNUP.points,
+            reason: REWARD_POINTS.SIGNUP.message,
+          }
+          await addUserRewardPoints(rewardPoints)
           return done(null, user)
         }
       } catch (error) {
