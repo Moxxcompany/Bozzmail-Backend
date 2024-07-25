@@ -451,7 +451,7 @@ const googleLoginSuccess = async (req, res) => {
 }
 
 const telegramLoginSuccess = async (req, res) => {
-  const { first_name, last_name, id } = req.body
+  const { first_name, last_name, id, photo_url } = req.body
   try {
     const user = await findUserByTelegramId(id)
     if (user) {
@@ -460,7 +460,7 @@ const telegramLoginSuccess = async (req, res) => {
         user: user,
         message: "Welcome to bozzmail. Your have successfuly logged in.",
       })
-      res.status(200).json({ message: "User login", data: user, token: token })
+      return res.status(200).json({ message: "User login", data: user, token: token })
     }
     const data = {
       telegramId: id,
@@ -468,6 +468,9 @@ const telegramLoginSuccess = async (req, res) => {
       is_profile_verified: true,
       notify_email: false,
       referral_code: `ref_${generateUniqueNumber()}`
+    }
+    if (photo_url) {
+      data.profile_img = photo_url
     }
     const newUser = await createNewUser(data)
     let rewardPoints = {
