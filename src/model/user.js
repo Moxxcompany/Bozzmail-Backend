@@ -49,6 +49,14 @@ const userSchema = new mongoose.Schema({
   telegramId: {
     type: String,
   },
+  referral_code: {
+    type: String,
+    unique: true,
+  },
+  created_at: {
+    type: Date,
+    default: Date.now,
+  },
   address: AddressSchema,
 })
 const User = mongoose.model("User", userSchema)
