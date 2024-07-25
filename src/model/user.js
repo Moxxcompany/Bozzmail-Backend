@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     unique: true,
+    sparse: true,
   },
   password: {
     type: String,
@@ -26,6 +27,8 @@ const userSchema = new mongoose.Schema({
   },
   phoneNumber: {
     type: String,
+    unique: true,
+    sparse: true,
   },
   is_profile_verified: {
     type: Boolean,

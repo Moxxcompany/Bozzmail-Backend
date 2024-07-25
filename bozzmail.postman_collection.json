@@ -452,6 +452,24 @@
 					"response": []
 				},
 				{
+					"name": "signIn-phoneNumber",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"phoneNumber\": \"\",\r\n    \"otp\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3030/auth/signin-phone-num"
+					},
+					"response": []
+				},
+				{
 					"name": "signIn-request",
 					"request": {
 						"method": "POST",

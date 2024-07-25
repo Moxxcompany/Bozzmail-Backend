@@ -8,6 +8,7 @@ const {
   fetchUserById,
   updateUserPassword,
   findUserByTelegramId,
+  fetchUserByPhoneNumber
 } = require("../../helper/user")
 const {
   createPasswordReset,
@@ -49,6 +50,12 @@ const signUp = async (req, res) => {
     if (existingUser) {
       return res.status(400).json({ message: "Email Address already in use" })
     }
+    if (phoneNumber && phoneNumber.length) {
+      const checkUserWithPhoneNum = await fetchUserByPhoneNumber(phoneNumber)
+      if (checkUserWithPhoneNum) {
+        return res.status(400).json({ message: "Phone Number already in use" })
+      }
+    }
     const hashedPassword = await bcrypt.hash(password, 10)
     const data = {
       email,
@@ -81,6 +88,70 @@ const signUp = async (req, res) => {
         .json({ message: "User created Successfully", data: userData })
     } else {
       res.status(500).json({ message: "Failed to create a new user" })
+    }
+  } catch (error) {
+    res.status(error.status || 500).json({ message: error })
+  }
+}
+
+const signInWithPhoneNum = async (req, res) => {
+  const { otp, phoneNumber } = req.body
+  try {
+    if (!phoneNumber && !phoneNumber.length) {
+      return res
+        .status(400)
+        .json({ message: "Phone Number is required" })
+    }
+    if (!otp && !otp.length) {
+      return res
+        .status(400)
+        .json({ message: "OTP is required" })
+    }
+    const response = await verifySMSOTP(phoneNumber, otp)
+    if (response) {
+      const existingUser = await fetchUserByPhoneNumber(phoneNumber)      
+      if (existingUser) {
+        const token = createToken(existingUser._id)
+        await sendNotification({
+          user: existingUser,
+          message:
+            "Congrats! You have successfully signed in for Bozzmail.",
+        })
+        return res
+          .status(200)
+          .json({
+            message: "Sign In",
+            data: existingUser,
+            token: token,
+          })
+      } else {
+        const data = {
+          phoneNumber,
+          notify_mobile: true,
+          is_profile_verified: true,
+          referral_code: `ref_${generate12DigitNumber()}`
+        }
+        const user = await createNewUser(data)
+        if (user) {
+          const userToken = createToken(user._id)
+          let rewardPoints = {
+            userId: user._id,
+            points: REWARD_POINTS.SIGNUP.points,
+            reason: REWARD_POINTS.SIGNUP.message,
+          }
+          await addUserRewardPoints(rewardPoints)
+          await sendNotification({
+            user: user,
+            message:
+              "Congrats! You have successfully signed up for Bozzmail.",
+          })
+          res
+            .status(200)
+            .json({ message: "User created Successfully", data: user, token: userToken })
+        } else {
+          res.status(500).json({ message: "Failed to create a new user" })
+        }
+      }
     }
   } catch (error) {
     res.status(error.status || 500).json({ message: error })
@@ -431,6 +502,7 @@ module.exports = {
   verifyEmailAddress,
   signUp,
   signIn,
+  signInWithPhoneNum,
   sendResetPasswordLink,
   resetUserPassword,
   sentVerificationEmailCode,
