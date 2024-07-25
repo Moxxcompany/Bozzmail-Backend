@@ -36,7 +36,7 @@ const {
 } = require("../../constant/constants")
 const { sendNotification } = require("../../helper/sendNotification")
 const { addUserRewardPoints } = require("../../helper/rewards")
-const { generate12DigitNumber } = require("../../utils/helperFuncs")
+const { generateUniqueNumber } = require("../../utils/helperFuncs")
 
 const signUp = async (req, res) => {
   const { email, password, phoneNumber, notify_mobile } = req.body
@@ -63,7 +63,7 @@ const signUp = async (req, res) => {
       phoneNumber,
       notify_mobile,
       notify_email: true,
-      referral_code: `ref_${generate12DigitNumber()}`
+      referral_code: `ref_${generateUniqueNumber()}`
     }
     const user = await createNewUser(data)
     const userData = await getUserData(user)
@@ -129,7 +129,7 @@ const signInWithPhoneNum = async (req, res) => {
           phoneNumber,
           notify_mobile: true,
           is_profile_verified: true,
-          referral_code: `ref_${generate12DigitNumber()}`
+          referral_code: `ref_${generateUniqueNumber()}`
         }
         const user = await createNewUser(data)
         if (user) {
@@ -467,7 +467,7 @@ const telegramLoginSuccess = async (req, res) => {
       fullName: `${first_name} ${last_name}`,
       is_profile_verified: true,
       notify_email: false,
-      referral_code: `ref_${generate12DigitNumber()}`
+      referral_code: `ref_${generateUniqueNumber()}`
     }
     const newUser = await createNewUser(data)
     let rewardPoints = {
