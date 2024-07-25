@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt")
 const crypto = require("crypto")
-const { fetchUserById, updateUserPassword } = require("../../helper/user")
+const { fetchUserById, updateUserPassword, fetchUserByPhoneNumber } = require("../../helper/user")
 const { uploadFile, deleteFile, getObjectSignedUrl } = require("../../utils/s3")
 const { sendNotification } = require("../../helper/sendNotification")
 
@@ -55,8 +55,14 @@ const updateUserDetails = async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: "User not found. Check again" })
     }
+    if (phoneNumber && phoneNumber.length) {
+      const checkUserWithPhoneNum = await fetchUserByPhoneNumber(phoneNumber)
+      if (checkUserWithPhoneNum) {
+        return res.status(400).json({ message: "Phone Number already in use" })
+      }
+    }
     user.fullName = fullName ? fullName : user.fullName
-    user.phoneNumber = phoneNumber ? phoneNumber : user.phoneNumber
+    user.phoneNumber = phoneNumber && phoneNumber.length ? phoneNumber : user.phoneNumber
     user.address = address ? address : user.address
     await user.save()
     await sendNotification({

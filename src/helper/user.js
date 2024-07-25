@@ -15,6 +15,14 @@ const fetchUserByEmail = async (email, withPassword) => {
   }
 }
 
+const fetchUserByPhoneNumber = async (phoneNumber) => {
+  try {
+    return await User.findOne({ phoneNumber }).select("-password")
+  } catch (error) {
+    throw error
+  }
+}
+
 const createNewUser = async (data) => {
   try {
     return await User(data).save()
@@ -67,4 +75,5 @@ module.exports = {
   getUserData,
   updateUserPassword,
   findUserByTelegramId,
+  fetchUserByPhoneNumber
 }

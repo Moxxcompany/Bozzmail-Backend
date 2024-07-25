@@ -7,7 +7,7 @@ const {
   REWARD_POINTS,
 } = require("../../constant/constants")
 const { addUserRewardPoints } = require("../../helper/rewards")
-const { generate12DigitNumber } = require("../helperFuncs")
+const { generateUniqueNumber } = require("../helperFuncs")
 
 passport.use(
   new OAuth2Strategy(
@@ -29,7 +29,7 @@ passport.use(
             is_profile_verified: true,
             notify_email: true,
             profile_img: profile.picture,
-            referral_code: `ref_${generate12DigitNumber()}`
+            referral_code: `ref_${generateUniqueNumber()}`
           }
           const user = await createNewUser(data)
           let rewardPoints = {
