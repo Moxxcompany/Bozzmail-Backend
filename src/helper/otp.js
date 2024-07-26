@@ -55,7 +55,7 @@ const verifyEmailOtp = async (email, otp) => {
     if (moment().utc().isAfter(otpData.expiresAt)) {
       return false
     }
-    await Otp.deleteOne({ _id: otpDoc._id })
+    await Otp.deleteOne({ _id: otpData._id })
     return true
   } catch (error) {
     throw error
