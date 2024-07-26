@@ -15,6 +15,9 @@ module.exports = async function (req, res, next) {
     if (!userDetails || !userDetails.is_active) {
       return res.status(401).json({ message: "Token not valid" })
     }
+    if (req.baseUrl === '/admin' && !userDetails.is_admin) {
+      return res.status(401).json({ message: "You dont have authorization." })
+    }
     req.userDetails = userDetails
     next()
   } catch (err) {
