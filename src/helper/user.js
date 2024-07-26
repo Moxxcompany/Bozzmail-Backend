@@ -1,5 +1,6 @@
 const User = require("../model/user")
 const bcrypt = require("bcrypt")
+const { paginate } = require("../utils/filters")
 
 const fetchUserByEmail = async (email, withPassword) => {
   try {
@@ -68,6 +69,27 @@ const findUserByTelegramId = async (id) => {
   }
 }
 
+const fetchUsersList = async (limit, page, isActive) => {
+  try {
+    const query = {}
+    if (isActive == 'true') {
+      query.is_active = true
+    }
+    const totalUsers = await User.countDocuments(query)
+    if (!limit && !page) {
+      return { data: await User.find(query).select("-password").sort({ created_at: -1 }), total: totalUsers }
+    }
+    const { validLimit, skip } = paginate(page, limit)
+    const data = await User.find(query).select("-password").limit(validLimit).skip(skip).sort({ created_at: -1 })
+    return {
+      total: totalUsers,
+      data: data,
+    }
+  } catch (error) {
+    throw error
+  }
+}
+
 module.exports = {
   fetchUserByEmail,
   createNewUser,
@@ -75,5 +97,6 @@ module.exports = {
   getUserData,
   updateUserPassword,
   findUserByTelegramId,
-  fetchUserByPhoneNumber
+  fetchUserByPhoneNumber,
+  fetchUsersList
 }

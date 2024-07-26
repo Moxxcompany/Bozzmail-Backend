@@ -14,6 +14,7 @@ const pickupRoutes = require("./src/routes/pickup")
 const printMailRoutes = require("./src/routes/printMail")
 const webhookRoutes = require("./src/routes/webhooks")
 const addressRoutes = require("./src/routes/address")
+const adminRoutes = require("./src/routes/admin")
 
 const jwtMiddlewareValidation = require("./src/middleware/validateToken")
 const {
@@ -62,6 +63,7 @@ const startServer = async () => {
     app.use("/pickup", jwtMiddlewareValidation, pickupRoutes)
     app.use("/print-mail", jwtMiddlewareValidation, printMailRoutes)
     app.use("/address", jwtMiddlewareValidation, addressRoutes)
+    app.use("/admin", jwtMiddlewareValidation, adminRoutes)
     app.use("/webhooks", webhookRoutes)
     const port = PORT || "3001"
     app.listen(port, () => {

@@ -35,9 +35,12 @@ const findUserPurchasedShipments = async (userId) => {
   }
 }
 
-const fetchShipmentData = async (userId, page = 1, limit = 10) => {
+const fetchShipmentData = async (userId, page, limit) => {
   try {
-    const query = { userId }
+    const query = {}
+    if (userId) {
+      query.userId = userId
+    }
     const totalDocuments = await ShipmentPurchase.countDocuments(query)
     if (!limit && !page) {
       return {
