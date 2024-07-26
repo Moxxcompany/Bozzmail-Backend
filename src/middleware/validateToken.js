@@ -1,11 +1,15 @@
 const jwt = require("jsonwebtoken")
 const { JWT_SECRET_KEY } = require("../constant/constants")
-const { fetchUserById } = require("../helper/user")
+const { fetchUserById } = require("../helper/user");
+const { isTokenBlacklisted } = require("../utils/tokenBlacklist");
 
 module.exports = async function (req, res, next) {
   const token = req.headers.token
   if (!token) {
     return res.status(401).json({ message: "No token, authorization denied" })
+  }
+  if (isTokenBlacklisted(token)) {
+    return res.status(401).json({ message: 'Token is invalid' });
   }
 
   try {
