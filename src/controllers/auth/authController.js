@@ -287,7 +287,7 @@ const sendResetPasswordLink = async (req, res) => {
     await createPasswordReset(data)
     const resetLink = `${FE_APP_BASE_URL}/verify-reset-password/${token}`
     await sendMail({
-      to: existingUser.email,
+      user: existingUser,
       subject: "Password Reset",
       text: `You requested for a password reset. Click on this link to reset your password: ${resetLink}`,
       heading: "Password Reset",
@@ -328,7 +328,7 @@ const resetUserPassword = async (req, res) => {
     await updateUserPassword(userData._id, newPassword)
     await deleteToken(tokenData._id)
     await sendNotification({
-      user: existingUser,
+      user: userData,
       message: "Your password for your account has been reset successfully.",
       emailMessage: `<p>Your password for your account has been reset successfully.</p>`,
       emailSubject: "Account Password reset successfuly",
@@ -411,14 +411,13 @@ const sentVerificationEmailCode = async (req, res) => {
       ? await updateOtpDetails(email)
       : await saveOtpDetails(email)
     await sendMail({
-      to: existingUser.email,
+      user: user,
       subject: "Email Verification Code",
       text: `You requested for a email verification code.`,
-      heading: "Verify your profile",
       content: `<p>You requested for a email verification. The OTP for your account is ${otpDetails.otp}. These is valid upto 5 min</p>`,
     })
     await sendNotification({
-      user: existingUser,
+      user: user,
       message:
         "You requested for a email verification.. Check your email for code.",
     })
@@ -426,7 +425,6 @@ const sentVerificationEmailCode = async (req, res) => {
       .status(200)
       .json({
         message: "Email Verification code sent on registered email",
-        data: otpDetails,
       })
   } catch (error) {
     res.status(error.status || 500).json({ message: error })
