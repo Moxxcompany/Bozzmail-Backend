@@ -593,7 +593,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\" : \"\"\r\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
