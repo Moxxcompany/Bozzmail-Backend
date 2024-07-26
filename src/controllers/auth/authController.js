@@ -36,7 +36,8 @@ const {
 } = require("../../constant/constants")
 const { sendNotification } = require("../../helper/sendNotification")
 const { addUserRewardPoints } = require("../../helper/rewards")
-const { generateUniqueNumber } = require("../../utils/helperFuncs")
+const { generateUniqueNumber } = require("../../utils/helperFuncs");
+const { addTokenToBlacklist } = require("../../utils/tokenBlacklist");
 
 const signUp = async (req, res) => {
   const { email, password, phoneNumber, notify_mobile } = req.body
@@ -493,6 +494,17 @@ const logout = async (req, res) => {
   req.logout(function (err) {
     if (err) {
       return next(err)
+    }
+    try {
+      const token = req.headers.token
+      if (token) {
+        addTokenToBlacklist(token);
+        res.status(200).json({ message: 'Logged out successfully' });
+      } else {
+        res.status(400).json({ message: 'No token provided' });
+      }
+    } catch (err) {
+      res.status(500).json({ message: 'Error logging out' });
     }
   })
 }
