@@ -12,6 +12,7 @@ const {
   findCustomDetailsById,
 } = require("../../helper/custom")
 const { sendNotification } = require("../../helper/sendNotification")
+const { logger } = require("../../utils/logger")
 
 const createNewCustom = async (req, res) => {
   const payload = req.body
@@ -50,9 +51,9 @@ const createNewCustom = async (req, res) => {
       return res.status(500).json({ message: "Failed to create customs" })
     }
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: error?.response?.data?.error || error?.response?.data })
+    const err = error?.response?.data?.error || error?.response?.data || 'Error creating a custom form'
+    logger.error(err)
+    res.status(error.status || 500).json({ message: err })
   }
 }
 
@@ -65,7 +66,9 @@ const fetchUserCustoms = async (req, res) => {
     const customsData = await findUserCustoms(userId, service, page, limit)
     res.status(200).json({ customsData })
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = error || 'Error fetching custom form list'
+    logger.error(err)
+    res.status(error.status || 500).json({ message: err })
   }
 }
 
@@ -81,7 +84,9 @@ const deleteCustomData = async (req, res) => {
     }
     res.status(200).json({ message: "Custom data deleted succesfully." })
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = error || 'Error deleting a custom form'
+    logger.error(err)
+    res.status(error.status || 500).json({ message: err })
   }
 }
 
@@ -118,7 +123,9 @@ const editCustomData = async (req, res) => {
       return res.status(500).json({ message: "Failed to update customs" })
     }
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = error || 'Error updating a custom form'
+    logger.error(err)
+    res.status(error.status || 500).json({ message: err })
   }
 }
 

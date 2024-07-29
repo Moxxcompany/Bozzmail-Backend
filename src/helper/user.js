@@ -57,8 +57,7 @@ const getUserData = async (data) => {
 
 const updateUserPassword = async (id, password) => {
   const hashedPassword = await bcrypt.hash(password, 10)
-  await User.findByIdAndUpdate(id, { password: hashedPassword })
-  return true
+  return await User.findByIdAndUpdate(id, { password: hashedPassword })
 }
 
 const findUserByTelegramId = async (id) => {

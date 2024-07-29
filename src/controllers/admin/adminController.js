@@ -5,6 +5,7 @@ const {
   fetchUserById,
   fetchUserByPhoneNumber
 } = require("../../helper/user")
+const { logger } = require("../../utils/logger")
 
 const getUserList = async (req, res) => {
   const { limit, page, isActive } = req.query
@@ -12,7 +13,9 @@ const getUserList = async (req, res) => {
     const users = await fetchUsersList(limit, page, isActive)
     res.status(200).json({ users })
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = error || 'Error fetching user list for admin'
+    logger.error(err)
+    res.status(error.status || 500).json({ message: err })
   }
 }
 
@@ -22,7 +25,9 @@ const getUserById = async (req, res) => {
     const user = await fetchUserById(id)
     res.status(200).json({ data: user })
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = error || 'Error fetching user details for admin'
+    logger.error(err)
+    res.status(error.status || 500).json({ message: err })
   }
 }
 
@@ -52,7 +57,9 @@ const updateUserDetails = async (req, res) => {
     })
     res.status(200).json({ message: "User details updated Successfully" })
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = error || 'Error updatin user details by admin'
+    logger.error(err)
+    res.status(error.status || 500).json({ message: err })
   }
 }
 
@@ -73,7 +80,9 @@ const deleteUserById = async (req, res) => {
     })
     res.status(200).json({ message: "User data Deleted Successfully" })
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = error || 'Error deleting user by admin'
+    logger.error(err)
+    res.status(error.status || 500).json({ message: err })
   }
 }
 
@@ -83,7 +92,9 @@ const fetchAllShipments = async (req, res) => {
     const shipments = await fetchShipmentData(null, limit, page)
     res.status(200).json({ shipments })
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = error || 'Error fetching shipment list for admin'
+    logger.error(err)
+    res.status(error.status || 500).json({ message: err })
   }
 }
 

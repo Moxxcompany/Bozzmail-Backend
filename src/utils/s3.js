@@ -11,12 +11,13 @@ const {
   S3_BUCKET_NAME,
   S3_SECRET_ACCESS_KEY,
 } = require("../constant/constants")
+const { logger } = require("./logger")
 
 const s3Client = new S3Client({
-  S3_REGION,
+  region: S3_REGION,
   credentials: {
-    S3_ACCESS_KEY_ID,
-    S3_SECRET_ACCESS_KEY,
+    accessKeyId: S3_ACCESS_KEY_ID,
+    secretAccessKey: S3_SECRET_ACCESS_KEY,
   },
 })
 
@@ -27,7 +28,12 @@ const uploadFile = async (fileBuffer, fileName, contentType) => {
     Key: fileName,
     ContentType: contentType,
   }
-  return await s3Client.send(new PutObjectCommand(uploadParams))
+  try {
+    return await s3Client.send(new PutObjectCommand(uploadParams))
+  } catch (error) {
+    logger.error(error)
+    throw error
+  }
 }
 
 const deleteFile = async (fileName) => {
@@ -35,8 +41,12 @@ const deleteFile = async (fileName) => {
     Bucket: S3_BUCKET_NAME,
     Key: fileName,
   }
-
-  return await s3Client.send(new DeleteObjectCommand(deleteParams))
+  try {
+    return await s3Client.send(new DeleteObjectCommand(deleteParams))
+  } catch (error) {
+    logger.error(error)
+    throw error
+  }
 }
 
 const getObjectSignedUrl = async (key) => {
@@ -44,8 +54,13 @@ const getObjectSignedUrl = async (key) => {
     Bucket: S3_BUCKET_NAME,
     Key: key,
   }
-  const command = new GetObjectCommand(params)
-  return await getSignedUrl(s3Client, command)
+  try {
+    const command = new GetObjectCommand(params)
+    return await getSignedUrl(s3Client, command)  
+  } catch (error) {
+    logger.error(error)
+    throw error
+  }
 }
 
 module.exports = {

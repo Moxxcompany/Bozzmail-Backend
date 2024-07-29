@@ -3,6 +3,7 @@ const crypto = require("crypto")
 const { fetchUserById, updateUserPassword, fetchUserByPhoneNumber } = require("../../helper/user")
 const { uploadFile, deleteFile, getObjectSignedUrl } = require("../../utils/s3")
 const { sendNotification } = require("../../helper/sendNotification")
+const { logger } = require("../../utils/logger")
 
 const getUserById = async (req, res) => {
   const id = req.userId
@@ -13,7 +14,9 @@ const getUserById = async (req, res) => {
     }
     res.status(200).json({ data: user })
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = error || 'Error fetching user profile details'
+    logger.error(err)
+    res.status(error.status || 500).json({ message: err })
   }
 }
 
@@ -43,7 +46,9 @@ const changeUserPassword = async (req, res) => {
     })
     res.status(200).json({ message: "Password Changed Successfully" })
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = error || 'Error changing user password'
+    logger.error(err)
+    res.status(error.status || 500).json({ message: err })
   }
 }
 
@@ -73,7 +78,9 @@ const updateUserDetails = async (req, res) => {
     })
     res.status(200).json({ message: "User details updated Successfully" })
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = error || 'Error updating user profile data'
+    logger.error(err)
+    res.status(error.status || 500).json({ message: err })
   }
 }
 
@@ -94,7 +101,9 @@ const deleteUser = async (req, res) => {
     })
     res.status(200).json({ message: "User data Deleted Successfully" })
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = error || 'Error deleting user data'
+    logger.error(err)
+    res.status(error.status || 500).json({ message: err })
   }
 }
 
@@ -129,7 +138,9 @@ const updateUserProfileImg = async (req, res) => {
     })
     res.status(200).json({ message: "Profile Pic updated", data: user })
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = error || 'Error updating or adding user profile pic'
+    logger.error(err)
+    res.status(error.status || 500).json({ message: err })
   }
 }
 
@@ -139,6 +150,12 @@ const deleteUserProfileImg = async (req, res) => {
     const user = await fetchUserById(userId)
     if (!user) {
       return res.status(400).json({ message: "User not found. Check again" })
+    }
+    if (user.profile_img) {
+      const parsedUrl = new URL(user.profile_img)
+      const pathname = parsedUrl.pathname
+      const filename = pathname.split("/").pop()
+      await deleteFile(`user-profile/${filename}`)
     }
     user.profile_img = null
     await user.save()
@@ -151,7 +168,9 @@ const deleteUserProfileImg = async (req, res) => {
     })
     res.status(200).json({ message: "Profile Pic deleted" })
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = error || 'Error deleting user profile pic'
+    logger.error(err)
+    res.status(error.status || 500).json({ message: err })
   }
 }
 
