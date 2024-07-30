@@ -93,9 +93,9 @@ const signUp = async (req, res) => {
       res.status(500).json({ message: "Failed to create a new user" })
     }
   } catch (error) {
-    const err = error || 'Error signup new user'
-    logger.error({ message: 'Failed to signup new user', error: err })
-    res.status(error.status || 500).json({ message: err })
+    const err = { message: 'Failed to signup new user', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -159,9 +159,9 @@ const signInWithPhoneNum = async (req, res) => {
       }
     }
   } catch (error) {
-    const err = error || 'Error signin user with phone number'
-    logger.error({ message: 'Failed to signin with phone number', error: err })
-    res.status(error.status || 500).json({ message: err })
+    const err = { message: 'Failed to signin user with phone number', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -273,9 +273,9 @@ const signIn = async (req, res) => {
         res.status(500).json({ message: "Something went wrong." })
     }
   } catch (error) {
-    const err = error || 'Error signin user'
-    logger.error({ message: 'Failed to signin user', error: err })
-    res.status(error.status || 500).json({ message: err })
+    const err = { message: 'Failed to signin user', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -321,9 +321,9 @@ const sendResetPasswordLink = async (req, res) => {
       .status(200)
       .json({ message: "Password Verification link sent to registered email" })
   } catch (error) {
-    const err = error || 'Error sending password reset link'
-    logger.error({ message: 'Failed to send password reset link', error: err })
-    res.status(error.status || 500).json({ message: err })
+    const err = { message: 'Failed to send user password reset link', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -356,9 +356,9 @@ const resetUserPassword = async (req, res) => {
     })
     res.status(200).json({ message: "Password reset successfully" })
   } catch (error) {
-    const err = error || 'Error resetting user password'
-    logger.error({ message: 'Failed to reset user password', error: err })
-    res.status(error.status || 500).json({ message: err })
+    const err = { message: 'Failed to reset user password', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -377,9 +377,9 @@ const sendSMSVerificationCode = async (req, res) => {
       res.status(500).json({ message: "Failed to send verification code" })
     }
   } catch (error) {
-    const err = error.errors || 'Error sending otp code for verification.'
-    logger.error({ message: 'Failed to send otp', error: err })
-    res.status(error.status || 500).json({ message: err })
+    const err = { message: 'Failed to send otp for phone number', error: error?.errors || error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -401,9 +401,9 @@ const verifySMSCode = async (req, res) => {
       res.status(500).json({ error: "OTP code is not correct" })
     }
   } catch (error) {
-    const err = error.errors || 'Error verifying otp code for phone number'
-    logger.error({ message: 'Failed to verify otp for phone number', error: err })
-    res.status(error.status || 500).json({ message: err })
+    const err = { message: 'Failed to verify otp for phone number', error: error?.errors || error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -422,9 +422,9 @@ const verifyEmailAddress = async (req, res) => {
       res.status(500).json({ message: "Email is not valid" })
     }
   } catch (error) {
-    const err = error || 'Error verifying email'
-    logger.error({ message: 'Failed to validate email', error: err })
-    res.status(error.status || 500).json({ message: err })
+    const err = { message: 'Failed to validate email', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -459,28 +459,32 @@ const sentVerificationEmailCode = async (req, res) => {
         message: "Email Verification code sent on registered email",
       })
   } catch (error) {
-    const err = error || 'Error sending email verification code'
-    logger.error({ message: 'Failed to send email verification code', error: err })
-    res.status(error.status || 500).json({ message: err })
+    const err = { message: 'Failed to send email verification code', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
 const googleLoginSuccess = async (req, res) => {
-  if (req.user && req.user._id) {
-    const token = createToken(req.user._id)
-    await sendNotification({
-      user: req.user,
-      message: "You have successful logged in for bozzmail.",
-      emailMessage: `<p>You have successful logged in for bozzmail.</p>`,
-      emailSubject: "Login successful in bozzmail",
-    })
-    res
-      .status(200)
-      .json({ message: "User login", data: req.user, token: token })
-  } else {
-    const err = 'Error signin user with google'
-    logger.error({ message: 'Failed to callback google login', error: err })
-    res.status(500).json({ message: err })
+  try {
+    if (req.user && req.user._id) {
+      const token = createToken(req.user._id)
+      await sendNotification({
+        user: req.user,
+        message: "You have successful logged in for bozzmail.",
+        emailMessage: `<p>You have successful logged in for bozzmail.</p>`,
+        emailSubject: "Login successful in bozzmail",
+      })
+      res
+        .status(200)
+        .json({ message: "User login", data: req.user, token: token })
+    } else {
+      res.status(500).json({ message: 'Error signin user with google' })
+    }
+  } catch (error) {
+    const err = { message: 'Error signin user with google', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -521,9 +525,9 @@ const telegramLoginSuccess = async (req, res) => {
     })
     res.status(200).json({ message: "User login", data: newUser, token: token })
   } catch (error) {
-    const err = error.errors || 'Error login with telegram'
-    logger.error({ message: 'Failed to login using telegram', error: err })
-    res.status(error.status || 500).json({ message: err })
+    const err = { message: 'Error login with telegram', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -541,9 +545,9 @@ const logout = async (req, res) => {
         res.status(400).json({ message: 'No token provided' });
       }
     } catch (error) {
-      const err = error || 'Error logging out'
-      logger.error({ message: 'Failed to logout user', error: err })
-      res.status(error.status || 500).json({ message: err })
+      const err = { message: 'Failed to logout user', error: error }
+      logger.error(err)
+      res.status(error.status || 500).json(err)
     }
   })
 }

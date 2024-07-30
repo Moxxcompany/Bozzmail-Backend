@@ -42,8 +42,8 @@ passport.use(
           return done(null, user)
         }
       } catch (error) {
-        const err = error || 'Error signin with google account'
-        logger.error({ message: 'Failed to signin by google', error: err})
+        const err = { message: 'Failed to signin by google', error: error }
+        logger.error(err)
         return done(error, null)
       }
     }

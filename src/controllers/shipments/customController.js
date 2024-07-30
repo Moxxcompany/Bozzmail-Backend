@@ -51,9 +51,9 @@ const createNewCustom = async (req, res) => {
       return res.status(500).json({ message: "Failed to create customs" })
     }
   } catch (error) {
-    const err = error?.response?.data?.error || error?.response?.data || 'Error creating a custom form'
-    logger.error({ message: 'Failed to create custom form', error: err})
-    res.status(error.status || 500).json({ message: err })
+    const err = { message: 'Failed to create custom form', error: error?.response?.data?.error || error?.response?.data }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -66,9 +66,9 @@ const fetchUserCustoms = async (req, res) => {
     const customsData = await findUserCustoms(userId, service, page, limit)
     res.status(200).json({ customsData })
   } catch (error) {
-    const err = error || 'Error fetching custom form list'
-    logger.error({ message: 'Failed to fetch custom form list', error: err })
-    res.status(error.status || 500).json({ message: err })
+    const err = { message: 'Failed to fetch custom form list', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -84,9 +84,9 @@ const deleteCustomData = async (req, res) => {
     }
     res.status(200).json({ message: "Custom data deleted succesfully." })
   } catch (error) {
-    const err = error || 'Error deleting a custom form'
-    logger.error({ message: 'Failed to delete a custom form', error: err })
-    res.status(error.status || 500).json({ message: err })
+    const err = { message: 'Failed to delete a custom form', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -123,9 +123,9 @@ const editCustomData = async (req, res) => {
       return res.status(500).json({ message: "Failed to update customs" })
     }
   } catch (error) {
-    const err = error || 'Error updating a custom form'
-    logger.error({ message: 'Failed to update custom form', error: err })
-    res.status(error.status || 500).json({ message: err })
+    const err = { message: 'Failed to update a custom form', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 

@@ -58,12 +58,12 @@ const createNewPickup = async (req, res) => {
     if (response.data) {
       return res.status(200).json({ data: response.data })
     } else {
-      return res.status(500).json({ message: "Failed to create customs" })
+      return res.status(500).json({ message: "Failed to create pick up" })
     }
   } catch (error) {
-    const err = error?.response?.data?.error || error?.response?.data || 'Error creating a new pickup'
-    logger.error({ message: 'Failed to create a pickup', error: err })
-    res.status(error.status || 500).json({ message: err })
+    const err = { message: 'Failed to create a pickup', error: error?.response?.data?.error || error?.response?.data }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -74,9 +74,9 @@ const getPickup = async (req, res) => {
     const response = await fetchPickUpByUserId(id, service, page, limit)
     return res.status(200).json({ response })
   } catch (error) {
-    const err = error || 'Error fetching user pickup list'
-    logger.error({ message: 'Failed to fetch user pickup list', error: err })
-    res.status(error.status || 500).json({ message: err })
+    const err = { message: 'Failed to fetch user pickup list', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
