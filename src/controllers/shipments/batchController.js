@@ -45,7 +45,7 @@ const createNewBatch = async (req, res) => {
     }
   } catch (error) {
     const err = error?.response?.data?.error || error?.response?.data || 'Error failed to create a batch'
-    logger.error(err)
+    logger.error({ message: 'Failed to create a batch shipment', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }
@@ -62,7 +62,7 @@ const getUserBatches = async (req, res) => {
     })
   } catch (error) {
     const err = error || error || 'Error fetching user batches'
-    logger.error(err)
+    logger.error({ message: 'Failed to fetch batch list', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }

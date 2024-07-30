@@ -59,7 +59,7 @@ const sendNewPrintMail = async (req, res) => {
     }
   } catch (error) {
     const err = error?.response?.data?.error || error?.response?.data || 'Error sending a letter or postcard.'
-    logger.error(err)
+    logger.error({ message: 'Failed to send letter/postcard', error: err })
     res.status(error.status || 500).json({ message: err })
   } finally {
     if (req.file) {
@@ -89,7 +89,7 @@ const cancelMail = async (req, res) => {
     return res.status(200).json({ data: mailData })
   } catch (error) {
     const err = error?.response?.data?.error || error?.response?.data || 'Error cancelling letter or postcard.'
-    logger.error(err)
+    logger.error({ message: 'Failed to cancel letter/postcard', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }
@@ -112,7 +112,7 @@ const createWebHook = async (req, res) => {
     }
   } catch (error) {
     const err = error?.response?.data?.error || error?.response?.data || 'Error setting postgrid webhook'
-    logger.error(err)
+    logger.error({ message: 'Failed to add webhook for postgrid', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }
@@ -139,7 +139,7 @@ const listenWebhookevents = async (req, res) => {
     res.status(200).send("Received")
   } catch (error) {
     const err = error?.response?.data?.error || error?.response?.data || 'Error listening postgrid webhook'
-    logger.error(err)
+    logger.error({ message: 'Failed listening postgrid webhook', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }
@@ -152,7 +152,7 @@ const fetchUserPrintMail = async (req, res) => {
     res.status(200).json({ data })
   } catch (error) {
     const err = error || 'Error fetching user mails list'
-    logger.error(err)
+    logger.error({ message: 'Failed to fetch mail list', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }
@@ -164,7 +164,7 @@ const fetchMailById = async (req, res) => {
     res.status(200).json({ data: data })
   } catch (error) {
     const err = error || 'Error fetching mail details'
-    logger.error(err)
+    logger.error({ message: 'Failed to fetch letter/postcard details.', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }

@@ -31,7 +31,7 @@ const uploadFile = async (fileBuffer, fileName, contentType) => {
   try {
     return await s3Client.send(new PutObjectCommand(uploadParams))
   } catch (error) {
-    logger.error(error)
+    logger.error({ message: 'Failed to upload file for S3.', error: error })
     throw error
   }
 }
@@ -44,7 +44,7 @@ const deleteFile = async (fileName) => {
   try {
     return await s3Client.send(new DeleteObjectCommand(deleteParams))
   } catch (error) {
-    logger.error(error)
+    logger.error({ message: 'Failed to delete file from S3.', error: error })
     throw error
   }
 }
@@ -56,9 +56,9 @@ const getObjectSignedUrl = async (key) => {
   }
   try {
     const command = new GetObjectCommand(params)
-    return await getSignedUrl(s3Client, command)  
+    return await getSignedUrl(s3Client, command)
   } catch (error) {
-    logger.error(error)
+    logger.error({ message: 'Failed to get url from S3', error: error })
     throw error
   }
 }

@@ -21,7 +21,7 @@ const sendMail = async ({ subject, text, content, user, template }) => {
     const html = await new Promise((resolve, reject) => {
       ejs.renderFile(path.join(__dirname, `../templates/${template ? template : 'default'}.ejs`), { content, user }, (err, data) => {
         if (err) {
-          logger.error(err)
+          logger.error({ message: 'Failed to send email', error: err })
           reject(err);
         } else {
           resolve(data);
@@ -40,7 +40,7 @@ const sendMail = async ({ subject, text, content, user, template }) => {
     await new Promise((resolve, reject) => {
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-          logger.error(err)
+          logger.error({ message: 'Failed to send email', error: error })
           reject(error);
         } else {
           resolve(info);

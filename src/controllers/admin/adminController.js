@@ -14,7 +14,7 @@ const getUserList = async (req, res) => {
     res.status(200).json({ users })
   } catch (error) {
     const err = error || 'Error fetching user list for admin'
-    logger.error(err)
+    logger.error({ message: 'Failed to fetch user list for admin', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }
@@ -26,7 +26,7 @@ const getUserById = async (req, res) => {
     res.status(200).json({ data: user })
   } catch (error) {
     const err = error || 'Error fetching user details for admin'
-    logger.error(err)
+    logger.error({ message: 'Failed to fetch user details for admin', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }
@@ -55,10 +55,10 @@ const updateUserDetails = async (req, res) => {
       emailMessage: `<p>Your bozzmail account has been updated by admin.</p>`,
       emailSubject: "Bozzmail account updated",
     })
-    res.status(200).json({ message: "User details updated Successfully" })
+    res.status(200).json({ message: "User details updated successfully" })
   } catch (error) {
-    const err = error || 'Error updatin user details by admin'
-    logger.error(err)
+    const err = error || 'Error updating user details by admin'
+    logger.error({ message: 'Failed to update user details  by admin', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }
@@ -81,7 +81,7 @@ const deleteUserById = async (req, res) => {
     res.status(200).json({ message: "User data Deleted Successfully" })
   } catch (error) {
     const err = error || 'Error deleting user by admin'
-    logger.error(err)
+    logger.error({ message: 'Failed to delete user by admin', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }
@@ -93,7 +93,7 @@ const fetchAllShipments = async (req, res) => {
     res.status(200).json({ shipments })
   } catch (error) {
     const err = error || 'Error fetching shipment list for admin'
-    logger.error(err)
+    logger.error({ message: 'Failed to fetch shipment list for admin', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }

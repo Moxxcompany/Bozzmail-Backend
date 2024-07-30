@@ -15,7 +15,7 @@ const getUserById = async (req, res) => {
     res.status(200).json({ data: user })
   } catch (error) {
     const err = error || 'Error fetching user profile details'
-    logger.error(err)
+    logger.error({ message: 'Failed to fetch user details', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }
@@ -47,7 +47,7 @@ const changeUserPassword = async (req, res) => {
     res.status(200).json({ message: "Password Changed Successfully" })
   } catch (error) {
     const err = error || 'Error changing user password'
-    logger.error(err)
+    logger.error({ message: 'Failed to change password', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }
@@ -79,7 +79,7 @@ const updateUserDetails = async (req, res) => {
     res.status(200).json({ message: "User details updated Successfully" })
   } catch (error) {
     const err = error || 'Error updating user profile data'
-    logger.error(err)
+    logger.error({ message: 'Failed to update user details', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }
@@ -102,7 +102,7 @@ const deleteUser = async (req, res) => {
     res.status(200).json({ message: "User data Deleted Successfully" })
   } catch (error) {
     const err = error || 'Error deleting user data'
-    logger.error(err)
+    logger.error({ message: 'Failed to deactivate account', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }
@@ -139,7 +139,7 @@ const updateUserProfileImg = async (req, res) => {
     res.status(200).json({ message: "Profile Pic updated", data: user })
   } catch (error) {
     const err = error || 'Error updating or adding user profile pic'
-    logger.error(err)
+    logger.error({ message: 'Failed to add/update profile pic', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }
@@ -169,7 +169,7 @@ const deleteUserProfileImg = async (req, res) => {
     res.status(200).json({ message: "Profile Pic deleted" })
   } catch (error) {
     const err = error || 'Error deleting user profile pic'
-    logger.error(err)
+    logger.error({ message: 'Failed to delete user profile pic', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }

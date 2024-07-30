@@ -102,7 +102,7 @@ const createNewLabel = async (req, res) => {
     }
   } catch (error) {
     const err = error?.response?.data?.error || error?.response?.data || 'Error creating a new shipment'
-    logger.error(err)
+    logger.error({ message: 'Failed to create a shipment', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }
@@ -132,7 +132,7 @@ const fetchShipmentRates = async (req, res) => {
     }
   } catch (error) {
     const err = error?.response?.data?.error || error?.response?.data || 'Error fetching rates for a new shipment'
-    logger.error(err)
+    logger.error({ message: 'Failed to fetch rates for a shipment', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }
@@ -218,7 +218,7 @@ const purchaseShipment = async (req, res) => {
     }
   } catch (error) {
     const err = error?.response?.data?.error || error?.response?.data || 'Error purchasing a new shipment'
-    logger.error(err)
+    logger.error({ message: 'Failed to purchase a new shipment', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }
@@ -236,7 +236,7 @@ const getUserShipments = async (req, res) => {
     })
   } catch (error) {
     const err = error || 'Error fetching user shipment list'
-    logger.error(err)
+    logger.error({ message: 'Failed to fetch user shipments', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }
@@ -253,7 +253,7 @@ const getShipmentsById = async (req, res) => {
     })
   } catch (error) {
     const err = error || 'Error fetching a new shipment details'
-    logger.error(err)
+    logger.error({ message: 'Failed to fetch shipment details', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }
@@ -348,8 +348,8 @@ const trackShipment = async (req, res) => {
         return res.status(500).json({ message: "Something went wrong." })
     }
   } catch (error) {
-    const err = error?.response?.data?.error || error?.response?.data || 'Error Tracking a shipment'
-    logger.error(err)
+    const err = error?.response?.data?.error || error?.response?.data || 'Error tracking a shipment'
+    logger.error({ message: 'Failed to track a shipment', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }

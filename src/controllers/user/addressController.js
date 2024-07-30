@@ -28,7 +28,7 @@ const generateNewAddress = async (req, res) => {
     }
   } catch (error) {
     const err = error || 'Error creating a new address for user'
-    logger.error(err)
+    logger.error({ message: 'Failed to create a new address', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }
@@ -41,7 +41,7 @@ const fetchUserAddresses = async (req, res) => {
     res.status(200).json({ addresses })
   } catch (error) {
     const err = error || 'Error fetching address list for user'
-    logger.error(err)
+    logger.error({ message: 'Failed to fetch user address list', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }
@@ -54,7 +54,7 @@ const fetchAddressById = async (req, res) => {
     res.status(200).json({ data: address })
   } catch (error) {
     const err = error || 'Error fetching an address details for user'
-    logger.error(err)
+    logger.error({ message: 'Failed to fetch address details', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }
@@ -73,7 +73,7 @@ const deleteUserAddress = async (req, res) => {
     }
   } catch (error) {
     const err = error || 'Error deleting address for user'
-    logger.error(err)
+    logger.error({ message: 'Failed to delete address for user', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }
@@ -108,7 +108,7 @@ const editUserAddressData = async (req, res) => {
     }
   } catch (error) {
     const err = error || 'Error updating an address for user'
-    logger.error(err)
+    logger.error({ message: 'Failed to update address', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }
@@ -128,7 +128,7 @@ const verifyAddress = async (req, res) => {
     }
   } catch (error) {
     const err = error || 'Error verifying a new address for user'
-    logger.error(err)
+    logger.error({ message: 'Failed to validate address', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }
@@ -179,7 +179,7 @@ const importAddresses = async (req, res) => {
           .json({ message: "Addresses imported successfully", data: addresses })
       } catch (error) {
         const err = error || 'Error importing new addresses for user from CSV file'
-        logger.error(err)
+        logger.error({ message: 'Failed to import addresses', error: err })
         res.status(error.status || 500).json({ message: err })
       } finally {
         if (req.file) {

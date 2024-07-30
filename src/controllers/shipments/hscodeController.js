@@ -36,7 +36,7 @@ const generateNewHscode = async (req, res) => {
     }
   } catch (error) {
     const err = error?.response?.data?.error || error?.response?.data || 'Error creating a new HS code'
-    logger.error(err)
+    logger.error({ message: 'Failed to create HS code', error: err})
     res.status(error.status || 500).json({ message: err })
   }
 }
@@ -49,7 +49,7 @@ const fetchUserHscode = async (req, res) => {
     res.status(200).json({ hscodeData })
   } catch (error) {
     const err = error || 'Error fetching user HS code list'
-    logger.error(err)
+    logger.error({ message: 'Failed to fetch HS code list', error: err})
     res.status(error.status || 500).json({ message: err })
   }
 }
@@ -73,7 +73,7 @@ const deleteHscodeData = async (req, res) => {
     res.status(200).json({ message: "HS Code data deleted succesfully." })
   } catch (error) {
     const err = error || 'Error deleting user HS code.'
-    logger.error(err)
+    logger.error({ message: 'Failed to delete HS code', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }
@@ -112,8 +112,8 @@ const editHscodeData = async (req, res) => {
       return res.status(500).json({ message: "Failed to update HS Code" })
     }
   } catch (error) {
-    const err = error || 'Failed to update HS Code'
-    logger.error(err)
+    const err = error || 'Error updating HS Code'
+    logger.error({ message: 'Failed to update HS code', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }

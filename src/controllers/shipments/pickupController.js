@@ -62,7 +62,7 @@ const createNewPickup = async (req, res) => {
     }
   } catch (error) {
     const err = error?.response?.data?.error || error?.response?.data || 'Error creating a new pickup'
-    logger.error(err)
+    logger.error({ message: 'Failed to create a pickup', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }
@@ -75,7 +75,7 @@ const getPickup = async (req, res) => {
     return res.status(200).json({ response })
   } catch (error) {
     const err = error || 'Error fetching user pickup list'
-    logger.error(err)
+    logger.error({ message: 'Failed to fetch user pickup list', error: err })
     res.status(error.status || 500).json({ message: err })
   }
 }
