@@ -48,29 +48,6 @@
 			]
 		},
 		{
-			"name": "infobipemailverify",
-			"item": [
-				{
-					"name": "email-verify",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"emailId\" : \"abc@gmail.com\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": "{{base_url}}/auth/verify-email"
-					},
-					"response": []
-				}
-			]
-		},
-		{
 			"name": "shipment",
 			"item": [
 				{
@@ -686,6 +663,24 @@
 							}
 						},
 						"url": "{{base_url}}/auth/logout"
+					},
+					"response": []
+				},
+				{
+					"name": "email-verify",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"emailId\" : \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/auth/verify-email"
 					},
 					"response": []
 				}

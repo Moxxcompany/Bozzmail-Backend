@@ -27,9 +27,7 @@ const { sendMail } = require("../../utils/sendEmail")
 const {
   sendSMSVerificationOTP,
   verifySMSOTP,
-  sendSMS,
 } = require("../../services/telynxServices")
-const { verifyEmailId } = require("../../services/infobipServices")
 const {
   PASSWORD_RESET_TOKEN_EXPIRE_TIME,
   FE_APP_BASE_URL,
@@ -40,6 +38,7 @@ const { addUserRewardPoints } = require("../../helper/rewards")
 const { generateUniqueNumber } = require("../../utils/helperFuncs");
 const { addTokenToBlacklist } = require("../../utils/tokenBlacklist");
 const { logger } = require("../../utils/logger")
+const { verifyEmailUsingNeutrino } = require("../../services/neutrinoServices")
 
 const signUp = async (req, res) => {
   const { email, password, phoneNumber, notify_mobile } = req.body
@@ -52,6 +51,10 @@ const signUp = async (req, res) => {
     const existingUser = await fetchUserByEmail(email)
     if (existingUser) {
       return res.status(400).json({ message: "Email Address already in use" })
+    }
+    const emailVerification = await verifyEmailUsingNeutrino(email)
+    if (!emailVerification) {
+      return res.status(400).json({ message: "Email is not valid" })
     }
     if (phoneNumber && phoneNumber.length) {
       const checkUserWithPhoneNum = await fetchUserByPhoneNumber(phoneNumber)
@@ -413,11 +416,11 @@ const verifyEmailAddress = async (req, res) => {
     if (!emailId || !emailId.length) {
       return res.status(400).json({ message: "Email Id is required" })
     }
-    const response = await verifyEmailId(emailId)
-    if (response.data) {
+    const emailVerification = await verifyEmailUsingNeutrino(emailId)
+    if (emailVerification) {
       res
         .status(200)
-        .json({ message: "Verification complete", data: response.data })
+        .json({ message: "Verification complete", data: emailVerification })
     } else {
       res.status(500).json({ message: "Email is not valid" })
     }

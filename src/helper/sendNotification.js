@@ -23,7 +23,7 @@ const sendNotification = async ({
         message: message,
       })
     } else {
-      if (emailMessage && user.email) {
+      if (emailMessage && user.email && user.notify_email) {
         await sendMail({
           subject: emailSubject,
           text: message,
