@@ -416,11 +416,11 @@ const verifyEmailAddress = async (req, res) => {
     if (!emailId || !emailId.length) {
       return res.status(400).json({ message: "Email Id is required" })
     }
-    const data = await verifyEmailUsingNeutrino(emailId)
-    if (data) {
+    const emailVerification = await verifyEmailUsingNeutrino(emailId)
+    if (emailVerification) {
       res
         .status(200)
-        .json({ message: "Verification complete", data: data })
+        .json({ message: "Verification complete", data: emailVerification })
     } else {
       res.status(500).json({ message: "Email is not valid" })
     }
