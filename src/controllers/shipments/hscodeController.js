@@ -6,6 +6,7 @@ const {
 } = require("../../helper/hscode")
 const { sendNotification } = require("../../helper/sendNotification")
 const { newHscode } = require("../../services/flavourclousServices")
+const { logger } = require("../../utils/logger")
 
 const generateNewHscode = async (req, res) => {
   const payload = req.body
@@ -24,8 +25,8 @@ const generateNewHscode = async (req, res) => {
       if (hscode) {
         await sendNotification({
           user: req.userDetails,
-          message: "Your hashcode genreated successfully",
-          emailMessage: `<p>Your hashcode genreated successfully.</p>`,
+          message: "Your hs code genreated successfully",
+          emailMessage: `<p>Your hs code genreated successfully.</p>`,
           emailSubject: "Your hashcode",
         })
         return res.status(200).json({ data: hscode })
@@ -34,9 +35,9 @@ const generateNewHscode = async (req, res) => {
       return res.status(500).json({ message: "Failed to create HS Code" })
     }
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: error?.response?.data?.error || error?.response?.data })
+    const err = { message: 'Failed to create a HS code', error: error?.response?.data?.error || error?.response?.data }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -47,7 +48,9 @@ const fetchUserHscode = async (req, res) => {
     const hscodeData = await findUserHscode(userId, page, limit)
     res.status(200).json({ hscodeData })
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = { message: 'Failed to fetch HS code list', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -65,17 +68,19 @@ const deleteHscodeData = async (req, res) => {
       user: req.userDetails,
       message: "HS Code data deleted succesfully.",
       emailMessage: `<p>HS Code data deleted succesfully.</p>`,
-      emailSubject: "Hashcode",
+      emailSubject: "Hs code",
     })
     res.status(200).json({ message: "HS Code data deleted succesfully." })
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = { message: 'Failed to delete a HS code', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
 const editHscodeData = async (req, res) => {
   const userId = req.userId
-  const hscodeId = req.params.customId
+  const hscodeId = req.params.hscodeId
   const payload = req.body
   try {
     const hscodeData = await findHscodeDetailsById(userId, hscodeId)
@@ -84,18 +89,18 @@ const editHscodeData = async (req, res) => {
         .status(400)
         .json({ message: "HS code data not found. Please check again." })
     }
-    const newData = await createNewHscode(payload)
+    const newData = await newHscode(payload)
     if (newData.data) {
-      hscodeData.hscodeDetails = response.data.Products[0].Classification
-      hscodeData.description = response.data.Products[0].Description
-      hscodeData.image = response.data.Products[0].Image
-      hscodeData.title = response.data.Products[0].Title
+      hscodeData.hscodeDetails = newData.data.Products[0].Classification
+      hscodeData.description = newData.data.Products[0].Description
+      hscodeData.image = newData.data.Products[0].Image
+      hscodeData.title = newData.data.Products[0].Title
       await hscodeData.save()
       await sendNotification({
         user: req.userDetails,
-        message: "Your hashcode update successfully",
-        emailMessage: `<p>Your hashcode update successfully.</p>`,
-        emailSubject: "Your hashcode updated",
+        message: "Your hs code update successfully",
+        emailMessage: `<p>Your hs code update successfully.</p>`,
+        emailSubject: "Your hs code updated",
       })
       return res
         .status(200)
@@ -107,7 +112,9 @@ const editHscodeData = async (req, res) => {
       return res.status(500).json({ message: "Failed to update HS Code" })
     }
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = { message: 'Failed to update a HS code', error: error?.response?.data?.error || error?.response?.data || error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 

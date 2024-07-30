@@ -11,9 +11,9 @@ const generateNewShipment = async (data) => {
   try {
     const payload = {
       shipment: {
-        to_address: data.to_address,
-        from_address: data.from_address,
-        parcel: data.parcel,
+        to_address: data?.to_address,
+        from_address: data?.from_address,
+        parcel: data?.parcel,
       },
     }
     return await post(url, payload, EASYPOST_TOKEN)
@@ -27,7 +27,7 @@ const purchaseShipment = async (payload) => {
   try {
     let data = {
       rate: {
-        id: payload.rateId,
+        id: payload?.rateId,
       },
     }
     if (payload.insurance) {

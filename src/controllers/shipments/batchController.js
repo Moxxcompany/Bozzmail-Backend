@@ -5,6 +5,7 @@ const {
   EASYPOST_SERVICE,
 } = require("../../constant/constants")
 const { saveNewBatch, fetchBatchData } = require("../../helper/batchShipment")
+const { logger } = require("../../utils/logger")
 
 const createNewBatch = async (req, res) => {
   const payload = req.body
@@ -43,9 +44,9 @@ const createNewBatch = async (req, res) => {
       return res.status(500).json({ message: "Failed to create batch" })
     }
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: error?.response?.data?.error || error?.response?.data })
+    const err = { message: 'Failed to create a batch shipment', error: error?.response?.data?.error || error?.response?.data }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -60,9 +61,9 @@ const getUserBatches = async (req, res) => {
       result,
     })
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: error?.response?.data?.error || error?.response?.data })
+    const err = { message: 'Failed to fetch batch list', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 

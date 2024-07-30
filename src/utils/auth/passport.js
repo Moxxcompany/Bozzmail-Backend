@@ -8,6 +8,7 @@ const {
 } = require("../../constant/constants")
 const { addUserRewardPoints } = require("../../helper/rewards")
 const { generateUniqueNumber } = require("../helperFuncs")
+const { logger } = require("../logger")
 
 passport.use(
   new OAuth2Strategy(
@@ -41,6 +42,8 @@ passport.use(
           return done(null, user)
         }
       } catch (error) {
+        const err = { message: 'Failed to signin by google', error: error }
+        logger.error(err)
         return done(error, null)
       }
     }

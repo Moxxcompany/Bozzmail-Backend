@@ -36,6 +36,7 @@ const startServer = async () => {
         },
       })
     )
+    app.use(express.text({ type: 'text/plain' }))
     app.use(express.static(path.join(__dirname, "public")))
     app.use(
       cors({
@@ -57,7 +58,7 @@ const startServer = async () => {
     app.use("/auth", authRoutes)
     app.use("/user", jwtMiddlewareValidation, userRoutes)
     app.use("/shipments", jwtMiddlewareValidation, shipmentsRoutes)
-    app.use("/batch", batchShipmentsRoutes)
+    app.use("/batch", jwtMiddlewareValidation, batchShipmentsRoutes)
     app.use("/customs", jwtMiddlewareValidation, customsRoutes)
     app.use("/hscode", jwtMiddlewareValidation, hsCodeRoutes)
     app.use("/pickup", jwtMiddlewareValidation, pickupRoutes)

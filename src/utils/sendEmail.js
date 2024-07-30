@@ -5,6 +5,7 @@ const {
 } = require("../constant/constants")
 const ejs = require('ejs');
 const path = require("path");
+const { logger } = require("./logger");
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -17,31 +18,41 @@ const transporter = nodemailer.createTransport({
 
 const sendMail = async ({ subject, text, content, user, template }) => {
   try {
-    ejs.renderFile(path.join(__dirname, `../templates/${template ? template : 'default'}.ejs`), { content, user }, (err, data) => {
-      if (err) {
-        console.log(err);
-      }
-      else {
-        const mailOptions = {
-          from: NODEMAILER_FROM_EMAIL_ID,
-          to: user.email,
-          subject: subject,
-          text: text,
-          html: data,
+    const html = await new Promise((resolve, reject) => {
+      ejs.renderFile(path.join(__dirname, `../templates/${template ? template : 'default'}.ejs`), { content, user }, (err, data) => {
+        if (err) {
+          logger.error({ message: 'Failed to send email', error: err })
+          reject(err);
+        } else {
+          resolve(data);
         }
-
-        transporter.sendMail(mailOptions, (error, info) => {
-          if (error) {
-            return console.log(error);
-          }
-        });
-      }
+      });
     });
 
+    const mailOptions = {
+      from: NODEMAILER_FROM_EMAIL_ID,
+      to: user.email,
+      subject: subject,
+      text: text,
+      html: html,
+    };
+
+    await new Promise((resolve, reject) => {
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          logger.error({ message: 'Failed to send email', error: error })
+          reject(error);
+        } else {
+          resolve(info);
+        }
+      });
+    });
+    return true;
   } catch (error) {
-    console.log(error.message);
+    console.error('Failed to send email:', error.message);
+    return false;
   }
-}
+};
 
 module.exports = {
   sendMail,

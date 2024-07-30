@@ -19,9 +19,15 @@ const fetchPasswordToken = async (token) => {
 
 const deleteToken = async (_id) => {
   try {
-    const objectId = mongoose.Types.ObjectId(_id)
-    await PasswordReset.findByIdAndRemove(objectId)
-    return true
+    return await PasswordReset.deleteOne({ _id })
+  } catch (error) {
+    throw error
+  }
+}
+
+const fetchTokenByUserId = async (userId) => {
+  try {
+    return await PasswordReset.findOne({ userId })
   } catch (error) {
     throw error
   }
@@ -31,4 +37,5 @@ module.exports = {
   createPasswordReset,
   fetchPasswordToken,
   deleteToken,
+  fetchTokenByUserId
 }

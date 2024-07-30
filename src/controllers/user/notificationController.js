@@ -3,6 +3,7 @@ const {
   markNotificationsAsRead,
   deleteNotifications,
 } = require("../../helper/sendNotification")
+const { logger } = require("../../utils/logger")
 
 const getUserNotification = async (req, res) => {
   const id = req.userId
@@ -11,7 +12,9 @@ const getUserNotification = async (req, res) => {
     const notifications = await fetchUserNotifications(id, page, limit)
     res.status(200).json({ notifications })
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = { message: 'Failed to fetch user notifications', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -23,7 +26,9 @@ const changeNotificationReadStatus = async (req, res) => {
       .status(200)
       .json({ message: "Notifications marked as read successfuly." })
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = { message: 'Failed to change notifications status', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -34,7 +39,9 @@ const deleteUserNotifications = async (req, res) => {
     await deleteNotifications(id, payload.ids)
     res.status(200).json({ message: "Notifications deleted successfuly." })
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = { message: 'Failed to delete notifications', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 

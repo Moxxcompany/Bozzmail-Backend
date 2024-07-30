@@ -8,7 +8,7 @@ const verifyEmailId = async (emailId) => {
     const payload = {
       to: emailId,
     }
-    const response = await post(url, JSON.stringify(payload), INFOBIP_TOKEN)
+    const response = await post(url, payload, INFOBIP_TOKEN)
     return response.data
   } catch (error) {
     throw error

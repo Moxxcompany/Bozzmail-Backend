@@ -33,6 +33,7 @@ const {
 } = require("../../helper/shipment")
 const { sendNotification } = require("../../helper/sendNotification")
 const { addUserRewardPoints } = require("../../helper/rewards")
+const { logger } = require("../../utils/logger")
 
 const createNewLabel = async (req, res) => {
   const payload = req.body
@@ -100,9 +101,9 @@ const createNewLabel = async (req, res) => {
       return res.status(500).json({ message: "Failed to create shipment" })
     }
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: error?.response?.data?.error || error?.response?.data })
+    const err = { message: 'Failed to create a new shipment', error: error?.response?.data?.error || error?.response?.data || error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -130,9 +131,9 @@ const fetchShipmentRates = async (req, res) => {
       return res.status(500).json({ message: "Failed to create shipment" })
     }
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: error?.response?.data?.error || error?.response?.data })
+    const err = { message: 'Failed to fetch rates for a shipment', error: error?.response?.data?.error || error?.response?.data || error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -144,6 +145,9 @@ const purchaseShipment = async (req, res) => {
     let response
     switch (service) {
       case GOSHIPPO_SERVICE:
+        if (!payload.rateId) {
+          return res.status(400).json({ message: "Invalid rateId" })
+        }
         response = await purchaseShipmentShippo(payload)
         if (response.data) {
           const rateData = await fetchRateByIDShippo(payload.rateId)
@@ -179,6 +183,9 @@ const purchaseShipment = async (req, res) => {
         }
         break
       case EASYPOST_SERVICE:
+        if (!payload.shipmentId || !payload.rateId) {
+          return res.status(400).json({ message: "Invalid shipmentId or rateId" })
+        }
         response = await purchaseEasypostShipment(payload)
         if (response.data) {
           const { rates, ...data } = response.data
@@ -210,9 +217,9 @@ const purchaseShipment = async (req, res) => {
         return res.status(500).json({ message: "Something went wrong." })
     }
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: error?.response?.data?.error || error?.response?.data })
+    const err = { message: 'Failed to purchase a new shipment', error: error?.response?.data?.error || error?.response?.data || error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -228,9 +235,9 @@ const getUserShipments = async (req, res) => {
       data: result.data,
     })
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: error?.response?.data?.error || error?.response?.data })
+    const err = { message: 'Failed to fetch user shipments', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -245,9 +252,9 @@ const getShipmentsById = async (req, res) => {
       result,
     })
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: error?.response?.data?.error || error?.response?.data })
+    const err = { message: 'Failed to fetch shipment details', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -260,6 +267,9 @@ const trackShipment = async (req, res) => {
   try {
     switch (service) {
       case GOSHIPPO_SERVICE:
+        if (!payload.carrier || !payload.tracking_number) {
+          return res.status(400).json({ message: "Invalid carrier or tracking number" })
+        }
         response = await fetchGoShippoTrackShipment(payload)
         if (response.data) {
           let shipmentData = {
@@ -286,6 +296,9 @@ const trackShipment = async (req, res) => {
         }
         break
       case EASYPOST_SERVICE:
+        if (!payload.carrier || !payload.tracking_code) {
+          return res.status(400).json({ message: "Invalid carrier or tracking code" })
+        }
         response = await fetchEasyPostTrackShipment(payload)
         if (response.data) {
           let shipmentData = {
@@ -335,9 +348,9 @@ const trackShipment = async (req, res) => {
         return res.status(500).json({ message: "Something went wrong." })
     }
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: error?.response?.data?.error || error?.response?.data })
+    const err = { message: 'Failed to track a shipment', error: error?.response?.data?.error || error?.response?.data || error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 

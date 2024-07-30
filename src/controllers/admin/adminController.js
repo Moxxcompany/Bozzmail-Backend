@@ -5,6 +5,7 @@ const {
   fetchUserById,
   fetchUserByPhoneNumber
 } = require("../../helper/user")
+const { logger } = require("../../utils/logger")
 
 const getUserList = async (req, res) => {
   const { limit, page, isActive } = req.query
@@ -12,7 +13,9 @@ const getUserList = async (req, res) => {
     const users = await fetchUsersList(limit, page, isActive)
     res.status(200).json({ users })
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = { message: 'Failed to fetch user list for admin', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -22,7 +25,9 @@ const getUserById = async (req, res) => {
     const user = await fetchUserById(id)
     res.status(200).json({ data: user })
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = { message: 'Failed to fetch user details for admin', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -50,9 +55,11 @@ const updateUserDetails = async (req, res) => {
       emailMessage: `<p>Your bozzmail account has been updated by admin.</p>`,
       emailSubject: "Bozzmail account updated",
     })
-    res.status(200).json({ message: "User details updated Successfully" })
+    res.status(200).json({ message: "User details updated successfully" })
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = { message: 'Failed to update user details by admin', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -73,7 +80,9 @@ const deleteUserById = async (req, res) => {
     })
     res.status(200).json({ message: "User data Deleted Successfully" })
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = { message: 'Failed to delete user by admin', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -83,7 +92,9 @@ const fetchAllShipments = async (req, res) => {
     const shipments = await fetchShipmentData(null, limit, page)
     res.status(200).json({ shipments })
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = { message: 'Failed to fetch shipment list for admin', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 

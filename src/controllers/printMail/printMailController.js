@@ -18,6 +18,7 @@ const {
 const { sendNotification } = require("../../helper/sendNotification")
 const fs = require("fs")
 const jwt = require("jsonwebtoken")
+const { logger } = require("../../utils/logger")
 
 const sendNewPrintMail = async (req, res) => {
   const payload = req.body
@@ -57,9 +58,9 @@ const sendNewPrintMail = async (req, res) => {
       return res.status(500).json({ message: `Failed to send ${printType}` })
     }
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: error?.response?.data?.error || error?.response?.data })
+    const err = { message: 'Failed to send letter/postcard', error: error?.response?.data?.error || error?.response?.data }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   } finally {
     if (req.file) {
       fs.unlinkSync(req.file.path)
@@ -87,9 +88,9 @@ const cancelMail = async (req, res) => {
     })
     return res.status(200).json({ data: mailData })
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: error?.response?.data?.error || error?.response?.data })
+    const err = { message: 'Failed to cancel letter/postcard', error: error?.response?.data?.error || error?.response?.data }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -110,16 +111,16 @@ const createWebHook = async (req, res) => {
       return res.status(500).json({ message: `Failed to send ${printType}` })
     }
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: error?.response?.data?.error || error?.response?.data })
+    const err = { message: 'Failed to add webhook for postgrid', error: error?.response?.data?.error || error?.response?.data }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
 const listenWebhookevents = async (req, res) => {
   try {
     const token = req.body
-    const payload = {}
+    let payload = {}
     jwt.verify(token, POSTGRID_SECRET_KEY, (err, decoded) => {
       if (err) {
         console.error("Failed to authenticate token:", err.message)
@@ -128,8 +129,8 @@ const listenWebhookevents = async (req, res) => {
       }
     })
     if (
-      payload.event === "letter.created" ||
-      payload.event === "postcard.updated"
+      payload.type === "letter.created" ||
+      payload.type === "postcard.updated"
     ) {
       const mailData = await fetchPrintMailByMailId(payload.data.id)
       mailData.mailData = payload.data
@@ -137,9 +138,9 @@ const listenWebhookevents = async (req, res) => {
     }
     res.status(200).send("Received")
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: error?.response?.data?.error || error?.response?.data })
+    const err = { message: 'Failed to listen webhook for postgrid', error: error?.response?.data?.error || error?.response?.data }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -150,7 +151,9 @@ const fetchUserPrintMail = async (req, res) => {
     const data = await fetchPrintMailByUserId(userId, mailType, limit, page)
     res.status(200).json({ data })
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = { message: 'Failed to fetch mail list', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -160,7 +163,9 @@ const fetchMailById = async (req, res) => {
     const data = await fetchPrintMailByMailId(id)
     res.status(200).json({ data: data })
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = { message: 'Failed to fetch letter/postcard details', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 

@@ -14,6 +14,7 @@ const {
   createPasswordReset,
   fetchPasswordToken,
   deleteToken,
+  fetchTokenByUserId,
 } = require("../../helper/passwordReset")
 const {
   saveOtpDetails,
@@ -38,6 +39,7 @@ const { sendNotification } = require("../../helper/sendNotification")
 const { addUserRewardPoints } = require("../../helper/rewards")
 const { generateUniqueNumber } = require("../../utils/helperFuncs");
 const { addTokenToBlacklist } = require("../../utils/tokenBlacklist");
+const { logger } = require("../../utils/logger")
 
 const signUp = async (req, res) => {
   const { email, password, phoneNumber, notify_mobile } = req.body
@@ -91,7 +93,9 @@ const signUp = async (req, res) => {
       res.status(500).json({ message: "Failed to create a new user" })
     }
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = { message: 'Failed to signup new user', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -110,7 +114,7 @@ const signInWithPhoneNum = async (req, res) => {
     }
     const response = await verifySMSOTP(phoneNumber, otp)
     if (response) {
-      const existingUser = await fetchUserByPhoneNumber(phoneNumber)      
+      const existingUser = await fetchUserByPhoneNumber(phoneNumber)
       if (existingUser) {
         const token = createToken(existingUser._id)
         await sendNotification({
@@ -155,7 +159,9 @@ const signInWithPhoneNum = async (req, res) => {
       }
     }
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = { message: 'Failed to signin user with phone number', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -267,7 +273,9 @@ const signIn = async (req, res) => {
         res.status(500).json({ message: "Something went wrong." })
     }
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = { message: 'Failed to signin user', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -278,22 +286,32 @@ const sendResetPasswordLink = async (req, res) => {
     if (!existingUser || !existingUser.is_active) {
       return res.status(400).json({ message: "Email is incorrect" })
     }
+    const existingToken = await fetchTokenByUserId(existingUser._id)
     const token = crypto.randomBytes(32).toString("hex")
     let expiresAt = moment().utc().add(PASSWORD_RESET_TOKEN_EXPIRE_TIME, "hour")
-    const data = {
-      userId: existingUser._id,
-      token: token,
-      expiresAt: expiresAt,
+    if (existingToken) {
+      existingToken.token = token
+      existingToken.expiresAt = expiresAt
+      existingToken.save()
+    } else {
+      const data = {
+        userId: existingUser._id,
+        token: token,
+        expiresAt: expiresAt,
+      }
+      await createPasswordReset(data)
     }
-    await createPasswordReset(data)
     const resetLink = `${FE_APP_BASE_URL}/verify-reset-password/${token}`
-    await sendMail({
+    const mail = await sendMail({
       user: existingUser,
       subject: "Password Reset",
       text: `You requested for a password reset. Click on this link to reset your password: ${resetLink}`,
       heading: "Password Reset",
       content: `<p>You requested for a password reset. Click on this <a href="${resetLink}" target="_blank">reset link</a> to reset your password.</p>`,
     })
+    if (!mail) {
+      return res.status(401).json({ message: 'Email not sent. Invalid credentials' })
+    }
     await sendNotification({
       user: existingUser,
       message:
@@ -303,7 +321,9 @@ const sendResetPasswordLink = async (req, res) => {
       .status(200)
       .json({ message: "Password Verification link sent to registered email" })
   } catch (error) {
-    res.status(error.status || 500).json({ mesaage: error })
+    const err = { message: 'Failed to send user password reset link', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -336,7 +356,9 @@ const resetUserPassword = async (req, res) => {
     })
     res.status(200).json({ message: "Password reset successfully" })
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = { message: 'Failed to reset user password', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -355,7 +377,9 @@ const sendSMSVerificationCode = async (req, res) => {
       res.status(500).json({ message: "Failed to send verification code" })
     }
   } catch (error) {
-    res.status(error.status || 500).json({ message: error.errors })
+    const err = { message: 'Failed to send otp for phone number', error: error?.errors || error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -377,7 +401,9 @@ const verifySMSCode = async (req, res) => {
       res.status(500).json({ error: "OTP code is not correct" })
     }
   } catch (error) {
-    res.status(error.status || 500).json({ message: error.errors })
+    const err = { message: 'Failed to verify otp for phone number', error: error?.errors || error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -396,7 +422,9 @@ const verifyEmailAddress = async (req, res) => {
       res.status(500).json({ message: "Email is not valid" })
     }
   } catch (error) {
-    res.status(500).json({ message: error })
+    const err = { message: 'Failed to validate email', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -411,12 +439,15 @@ const sentVerificationEmailCode = async (req, res) => {
     const otpDetails = existingToken
       ? await updateOtpDetails(email)
       : await saveOtpDetails(email)
-    await sendMail({
+    const mail = await sendMail({
       user: user,
       subject: "Email Verification Code",
       text: `You requested for a email verification code.`,
       content: `<p>You requested for a email verification. The OTP for your account is ${otpDetails.otp}. These is valid upto 5 min</p>`,
     })
+    if (!mail) {
+      return res.status(401).json({ message: 'Email not sent. Invalid credentials' })
+    }
     await sendNotification({
       user: user,
       message:
@@ -428,24 +459,32 @@ const sentVerificationEmailCode = async (req, res) => {
         message: "Email Verification code sent on registered email",
       })
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = { message: 'Failed to send email verification code', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
 const googleLoginSuccess = async (req, res) => {
-  if (req.user && req.user._id) {
-    const token = createToken(req.user._id)
-    await sendNotification({
-      user: req.user,
-      message: "You have successful logged in for bozzmail.",
-      emailMessage: `<p>You have successful logged in for bozzmail.</p>`,
-      emailSubject: "Login successful in bozzmail",
-    })
-    res
-      .status(200)
-      .json({ message: "User login", data: req.user, token: token })
-  } else {
-    res.status(400).json({ message: "Not authorized" })
+  try {
+    if (req.user && req.user._id) {
+      const token = createToken(req.user._id)
+      await sendNotification({
+        user: req.user,
+        message: "You have successful logged in for bozzmail.",
+        emailMessage: `<p>You have successful logged in for bozzmail.</p>`,
+        emailSubject: "Login successful in bozzmail",
+      })
+      res
+        .status(200)
+        .json({ message: "User login", data: req.user, token: token })
+    } else {
+      res.status(500).json({ message: 'Error signin user with google' })
+    }
+  } catch (error) {
+    const err = { message: 'Error signin user with google', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -486,7 +525,9 @@ const telegramLoginSuccess = async (req, res) => {
     })
     res.status(200).json({ message: "User login", data: newUser, token: token })
   } catch (error) {
-    res.status(error.status || 500).json({ message: error.errors })
+    const err = { message: 'Error login with telegram', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -503,8 +544,10 @@ const logout = async (req, res) => {
       } else {
         res.status(400).json({ message: 'No token provided' });
       }
-    } catch (err) {
-      res.status(500).json({ message: 'Error logging out' });
+    } catch (error) {
+      const err = { message: 'Failed to logout user', error: error }
+      logger.error(err)
+      res.status(error.status || 500).json(err)
     }
   })
 }

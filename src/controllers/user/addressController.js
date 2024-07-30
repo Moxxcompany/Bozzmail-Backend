@@ -9,6 +9,7 @@ const {
 const csvParser = require("csv-parser")
 const fs = require("fs")
 const { sendNotification } = require("../../helper/sendNotification")
+const { logger } = require("../../utils/logger")
 
 const generateNewAddress = async (req, res) => {
   const payload = req.body
@@ -26,9 +27,9 @@ const generateNewAddress = async (req, res) => {
       return res.status(200).json({ data: newAddress })
     }
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: error?.response?.data?.error || error?.response?.data })
+    const err = { message: 'Failed to create a new address', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -39,7 +40,9 @@ const fetchUserAddresses = async (req, res) => {
     const addresses = await getUserAddresses(userId, limit, page)
     res.status(200).json({ addresses })
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = { message: 'Failed to fetch user address list', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -50,7 +53,9 @@ const fetchAddressById = async (req, res) => {
     const address = await getAddressById(id, userId)
     res.status(200).json({ data: address })
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = { message: 'Failed to fetch address details', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -67,7 +72,9 @@ const deleteUserAddress = async (req, res) => {
         .json({ message: "Address data not found. Please check again." })
     }
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = { message: 'Failed to delete address for user', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -100,7 +107,9 @@ const editUserAddressData = async (req, res) => {
       return res.status(500).json({ message: "Failed to update Address data" })
     }
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = { message: 'Failed to update address', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -118,13 +127,18 @@ const verifyAddress = async (req, res) => {
       return res.status(200).json({ data: response.data })
     }
   } catch (error) {
-    res.status(error.status || 500).json({ message: error })
+    const err = { message: 'Failed to validate address', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
 const importAddresses = async (req, res) => {
   const results = []
-  if (!req.file || !req.file.mimetype.includes("text/csv")) {
+  if (!req.file) {
+    return res.status(400).json({ message: "Please upload a csv file/" })
+  }
+  if (!req.file.mimetype.includes("text/csv")) {
     fs.unlinkSync(req.file.path)
     return res.status(400).json({ message: "Please upload a correct csv file" })
   }
@@ -164,9 +178,13 @@ const importAddresses = async (req, res) => {
           .status(200)
           .json({ message: "Addresses imported successfully", data: addresses })
       } catch (error) {
-        res.status(500).json({ message: "Error importing addresses", error })
+        const err = { message: 'Failed  to import new addresses for user from CSV file', error: error }
+        logger.error(err)
+        res.status(error.status || 500).json(err)
       } finally {
-        fs.unlinkSync(req.file.path)
+        if (req.file) {
+          fs.unlinkSync(req.file.path)
+        }
       }
     })
 }

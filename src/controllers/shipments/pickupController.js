@@ -7,6 +7,7 @@ const {
 } = require("../../constant/constants")
 const { savePickupData, fetchPickUpByUserId } = require("../../helper/pickup")
 const { sendNotification } = require("../../helper/sendNotification")
+const { logger } = require("../../utils/logger")
 
 const createNewPickup = async (req, res) => {
   const payload = req.body
@@ -57,12 +58,12 @@ const createNewPickup = async (req, res) => {
     if (response.data) {
       return res.status(200).json({ data: response.data })
     } else {
-      return res.status(500).json({ message: "Failed to create customs" })
+      return res.status(500).json({ message: "Failed to create pick up" })
     }
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: error?.response?.data?.error || error?.response?.data })
+    const err = { message: 'Failed to create a pickup', error: error?.response?.data?.error || error?.response?.data }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
@@ -73,9 +74,9 @@ const getPickup = async (req, res) => {
     const response = await fetchPickUpByUserId(id, service, page, limit)
     return res.status(200).json({ response })
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: error?.response?.data?.error || error?.response?.data })
+    const err = { message: 'Failed to fetch user pickup list', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
   }
 }
 
