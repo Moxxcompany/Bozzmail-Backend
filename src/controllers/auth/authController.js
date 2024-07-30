@@ -53,7 +53,7 @@ const signUp = async (req, res) => {
       return res.status(400).json({ message: "Email Address already in use" })
     }
     const emailVerification = await verifyEmailUsingNeutrino(email)
-    if (!emailVerification || !emailVerification.valid || emailVerification['is-disposable'] || emailVerification['domain-status'] != 'ok') {
+    if (!emailVerification) {
       return res.status(400).json({ message: "Email is not valid" })
     }
     if (phoneNumber && phoneNumber.length) {
@@ -417,7 +417,7 @@ const verifyEmailAddress = async (req, res) => {
       return res.status(400).json({ message: "Email Id is required" })
     }
     const data = await verifyEmailUsingNeutrino(emailId)
-    if (data && data.valid && !data['is-disposable'] && data['domain-status'] == 'ok') {
+    if (data) {
       res
         .status(200)
         .json({ message: "Verification complete", data: data })

@@ -6,14 +6,25 @@ const headers = {
 }
 
 const verifyEmailId = async (emailId) => {
-  const url = `${NEUTRINO_BASE_URL}/email-validate`
+  const url = `${NEUTRINO_BASE_URL}/email-verify`
   try {
     const payload = {
       email: emailId,
       'fix-typos': false
     }
-    const response = await post(url, payload, null, headers)
-    return response.data
+    const { data } = await post(url, payload, null, headers)
+    if (
+      data &&
+      data.verified &&
+      data.valid &&
+      !data['is-disposable'] &&
+      data['domain-status'] == 'ok' &&
+      data['smtp-status'] == 'ok'
+    ) {
+      return data
+    } else {
+      return false
+    }
   } catch (error) {
     throw error
   }
