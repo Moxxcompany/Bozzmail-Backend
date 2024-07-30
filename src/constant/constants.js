@@ -42,6 +42,9 @@ const constants = {
   GOOGLE_ADDRESS_VALIDATION_BASE_URL:
     process.env.GOOGLE_ADDRESS_VALIDATION_BASE_URL,
   GOOGLE_ADDRESS_VALIDATION_KEY: process.env.GOOGLE_ADDRESS_VALIDATION_KEY,
+  NEUTRINO_USER_ID: process.env.NEUTRINO_USER_ID,
+  NEUTRINO_API_KEY: process.env.NEUTRINO_API_KEY,
+  NEUTRINO_BASE_URL: process.env.NEUTRINO_BASE_URL,
   REWARD_POINTS: {
     SIGNUP: {
       message: 'User registered for the first time',
