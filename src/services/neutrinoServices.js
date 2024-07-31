@@ -4,6 +4,7 @@ const headers = {
   'User-ID': NEUTRINO_USER_ID,
   'API-Key': NEUTRINO_API_KEY
 }
+const { logger } = require("../utils/logger")
 
 const verifyEmailId = async (emailId) => {
   const url = `${NEUTRINO_BASE_URL}/email-verify`
@@ -23,6 +24,7 @@ const verifyEmailId = async (emailId) => {
     ) {
       return data
     } else {
+      logger.error({ message: 'Email rejected', error: data })
       return false
     }
   } catch (error) {

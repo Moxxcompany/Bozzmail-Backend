@@ -6,6 +6,7 @@ const {
 } = require("../../constant/constants")
 const { saveNewBatch, fetchBatchData } = require("../../helper/batchShipment")
 const { logger } = require("../../utils/logger")
+const { sendNotification } = require("../../helper/sendNotification")
 
 const createNewBatch = async (req, res) => {
   const payload = req.body

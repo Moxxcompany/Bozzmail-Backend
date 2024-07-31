@@ -87,7 +87,7 @@ const editUserAddressData = async (req, res) => {
     if (!address) {
       return res
         .status(400)
-        .json({ message: "HS code data not found. Please check again." })
+        .json({ message: "Address data not found. Please check again." })
     }
     const newAddress = await updateAddress(userId, id, payload)
     if (newAddress) {
