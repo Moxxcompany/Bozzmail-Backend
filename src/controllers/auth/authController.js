@@ -39,6 +39,7 @@ const { generateUniqueNumber } = require("../../utils/helperFuncs");
 const { addTokenToBlacklist } = require("../../utils/tokenBlacklist");
 const { logger } = require("../../utils/logger")
 const { verifyEmailUsingNeutrino } = require("../../services/neutrinoServices")
+const { verifyPhoneNumberUsingHlrLookup } = require("../../services/hlrLookupservices")
 
 const signUp = async (req, res) => {
   const { email, password, phoneNumber, notify_mobile } = req.body
@@ -60,6 +61,10 @@ const signUp = async (req, res) => {
       const checkUserWithPhoneNum = await fetchUserByPhoneNumber(phoneNumber)
       if (checkUserWithPhoneNum) {
         return res.status(400).json({ message: "Phone Number already in use" })
+      }
+      const phoneVerification = await verifyPhoneNumberUsingHlrLookup(phoneNumber)
+      if (!phoneVerification) {
+        return res.status(400).json({ message: "Phone Number is not valid" })
       }
     }
     const hashedPassword = await bcrypt.hash(password, 10)
@@ -116,7 +121,7 @@ const signInWithPhoneNum = async (req, res) => {
         .json({ message: "OTP is required" })
     }
     const response = await verifySMSOTP(phoneNumber, otp)
-    if (response) {
+    if (response && response.data.response_code === "accepted") {
       const existingUser = await fetchUserByPhoneNumber(phoneNumber)
       if (existingUser) {
         const token = createToken(existingUser._id)
@@ -160,6 +165,8 @@ const signInWithPhoneNum = async (req, res) => {
           res.status(500).json({ message: "Failed to create a new user" })
         }
       }
+    } else {
+      res.status(500).json({ error: "OTP code is not correct" })
     }
   } catch (error) {
     const err = { message: 'Failed to signin user with phone number', error: error }
@@ -219,10 +226,6 @@ const signIn = async (req, res) => {
           return res.status(400).json({ message: "OTP Code is required" })
         }
         const response = await verifySMSOTP(existingUser.phoneNumber, otp)
-        if (!existingUser.is_profile_verified) {
-          existingUser.is_profile_verified = true
-        }
-        await existingUser.save()
         if (response.data && response.data.response_code === "accepted") {
           await sendNotification({
             user: existingUser,
@@ -371,6 +374,10 @@ const sendSMSVerificationCode = async (req, res) => {
     if (!phoneNumber || !phoneNumber.length) {
       return res.status(400).json({ message: "Phone number is required" })
     }
+    const phoneVerification = await verifyPhoneNumberUsingHlrLookup(phoneNumber)
+    if (!phoneVerification) {
+      return res.status(400).json({ message: "Phone Number is not valid" })
+    }
     const response = await sendSMSVerificationOTP(phoneNumber)
     if (response.data) {
       res
@@ -426,6 +433,27 @@ const verifyEmailAddress = async (req, res) => {
     }
   } catch (error) {
     const err = { message: 'Failed to validate email', error: error }
+    logger.error(err)
+    res.status(error.status || 500).json(err)
+  }
+}
+
+const verifyPhoneNumber = async (req, res) => {
+  const { phoneNumber } = req.body
+  try {
+    if (!phoneNumber || !phoneNumber.length) {
+      return res.status(400).json({ message: "Phone Number is required" })
+    }
+    const phoneVerification = await verifyPhoneNumberUsingHlrLookup(phoneNumber)
+    if (phoneVerification) {
+      res
+        .status(200)
+        .json({ message: "Verification complete", data: phoneVerification })
+    } else {
+      res.status(500).json({ message: "Phone Number is not valid" })
+    }
+  } catch (error) {
+    const err = { message: 'Failed to validate phone number', error: error }
     logger.error(err)
     res.status(error.status || 500).json(err)
   }
@@ -566,6 +594,7 @@ module.exports = {
   resetUserPassword,
   sentVerificationEmailCode,
   googleLoginSuccess,
+  verifyPhoneNumber,
   telegramLoginSuccess,
   logout,
 }

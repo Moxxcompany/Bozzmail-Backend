@@ -5,6 +5,7 @@ const {
   fetchUserById,
   fetchUserByPhoneNumber
 } = require("../../helper/user")
+const { verifyPhoneNumberUsingHlrLookup } = require("../../services/hlrLookupservices")
 const { logger } = require("../../utils/logger")
 
 const getUserList = async (req, res) => {
@@ -41,8 +42,12 @@ const updateUserDetails = async (req, res) => {
     }
     if (phoneNumber && phoneNumber.length) {
       const checkUserWithPhoneNum = await fetchUserByPhoneNumber(phoneNumber)
-      if (checkUserWithPhoneNum) {
+      if (checkUserWithPhoneNum && checkUserWithPhoneNum._id != user._id) {
         return res.status(400).json({ message: "Phone Number already in use" })
+      }
+      const phoneVerification = await verifyPhoneNumberUsingHlrLookup(phoneNumber)
+      if (!phoneVerification) {
+        return res.status(400).json({ message: "Phone Number is not valid" })
       }
     }
     user.fullName = fullName ? fullName : user.fullName
@@ -89,7 +94,7 @@ const deleteUserById = async (req, res) => {
 const fetchAllShipments = async (req, res) => {
   const { limit, page } = req.query
   try {
-    const shipments = await fetchShipmentData(null, limit, page)
+    const shipments = await fetchShipmentData(null, page, limit)
     res.status(200).json({ shipments })
   } catch (error) {
     const err = { message: 'Failed to fetch shipment list for admin', error: error }

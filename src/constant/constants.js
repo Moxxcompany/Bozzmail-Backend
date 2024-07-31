@@ -45,6 +45,9 @@ const constants = {
   NEUTRINO_USER_ID: process.env.NEUTRINO_USER_ID,
   NEUTRINO_API_KEY: process.env.NEUTRINO_API_KEY,
   NEUTRINO_BASE_URL: process.env.NEUTRINO_BASE_URL,
+  HLR_LOOKUP_BASE_URL: process.env.HLR_LOOKUP_BASE_URL,
+  HLR_LOOKUP_API_SECRET: process.env.HLR_LOOKUP_API_SECRET,
+  HLR_LOOKUP_API_KEY: process.env.HLR_LOOKUP_API_KEY,
   REWARD_POINTS: {
     SIGNUP: {
       message: 'User registered for the first time',

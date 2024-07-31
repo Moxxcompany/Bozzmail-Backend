@@ -21,7 +21,8 @@ const {
   logout,
   sentVerificationEmailCode,
   telegramLoginSuccess,
-  signInWithPhoneNum
+  signInWithPhoneNum,
+  verifyPhoneNumber
 } = require("../controllers/auth/authController")
 
 router.use(passport.initialize())
@@ -36,6 +37,7 @@ router.post("/forgot-password", emailRequired, sendResetPasswordLink)
 router.post("/reset-password", resetPasswordValidations, resetUserPassword)
 router.post("/verify-otp", verifySMSCode)
 router.post("/verify-email", verifyEmailAddress)
+router.post("/verify-phone-number", verifyPhoneNumber)
 router.post(
   "/telegram/callback",
   telegramSignUpValidations,

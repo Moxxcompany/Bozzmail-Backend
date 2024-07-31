@@ -309,12 +309,10 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:3030/shipments/flavourcloud/trackShipment/:trackingNum",
-									"protocol": "http",
+									"raw": "{{base_url}}/shipments/flavourcloud/trackShipment/:trackingNum",
 									"host": [
-										"localhost"
+										"{{base_url}}"
 									],
-									"port": "3030",
 									"path": [
 										"shipments",
 										"flavourcloud",
@@ -683,6 +681,24 @@
 						"url": "{{base_url}}/auth/verify-email"
 					},
 					"response": []
+				},
+				{
+					"name": "verify phone number",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"phoneNumber\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/auth/verify-phone-number"
+					},
+					"response": []
 				}
 			]
 		},
@@ -835,7 +851,7 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"url": "http://localhost:3030/user/delete-profile-pic"
+						"url": "{{base_url}}/user/delete-profile-pic"
 					},
 					"response": []
 				},
@@ -1028,9 +1044,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "${{base_url}}/pickup/getPickup?service=easypost&page=1&limit=10",
+							"raw": "{{base_url}}/pickup/getPickup?service=easypost&page=1&limit=10",
 							"host": [
-								"${{base_url}}"
+								"{{base_url}}"
 							],
 							"path": [
 								"pickup",
@@ -1141,7 +1157,7 @@
 								}
 							}
 						},
-						"url": "${{base_url}}/hscode"
+						"url": "{{base_url}}/hscode"
 					},
 					"response": []
 				}
@@ -1311,7 +1327,7 @@
 								}
 							]
 						},
-						"url": "${{base_url}}/print-mail/send/letter"
+						"url": "{{base_url}}/print-mail/send/letter"
 					},
 					"response": []
 				},
@@ -1411,7 +1427,7 @@
 								}
 							]
 						},
-						"url": "${{base_url}}/print-mail/send/postcard"
+						"url": "{{base_url}}/print-mail/send/postcard"
 					},
 					"response": []
 				},
@@ -1429,7 +1445,7 @@
 								}
 							}
 						},
-						"url": "${{base_url}}/print-mail/add-webhook"
+						"url": "{{base_url}}/print-mail/add-webhook"
 					},
 					"response": []
 				},
@@ -1448,9 +1464,9 @@
 							}
 						},
 						"url": {
-							"raw": "${{base_url}}/print-mail/:id/cancel",
+							"raw": "{{base_url}}/print-mail/:id/cancel",
 							"host": [
-								"${{base_url}}"
+								"{{base_url}}"
 							],
 							"path": [
 								"print-mail",
@@ -1504,9 +1520,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "${{base_url}}/print-mail/:id",
+							"raw": "{{base_url}}/print-mail/:id",
 							"host": [
-								"${{base_url}}"
+								"{{base_url}}"
 							],
 							"path": [
 								"print-mail",

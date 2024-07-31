@@ -4,6 +4,7 @@ const { fetchUserById, updateUserPassword, fetchUserByPhoneNumber } = require(".
 const { uploadFile, deleteFile, getObjectSignedUrl } = require("../../utils/s3")
 const { sendNotification } = require("../../helper/sendNotification")
 const { logger } = require("../../utils/logger")
+const { verifyPhoneNumberUsingHlrLookup } = require("../../services/hlrLookupservices")
 
 const getUserById = async (req, res) => {
   const id = req.userId
@@ -62,8 +63,12 @@ const updateUserDetails = async (req, res) => {
     }
     if (phoneNumber && phoneNumber.length) {
       const checkUserWithPhoneNum = await fetchUserByPhoneNumber(phoneNumber)
-      if (checkUserWithPhoneNum) {
+      if (checkUserWithPhoneNum && checkUserWithPhoneNum._id != userId) {
         return res.status(400).json({ message: "Phone Number already in use" })
+      }
+      const phoneVerification = await verifyPhoneNumberUsingHlrLookup(phoneNumber)
+      if (!phoneVerification) {
+        return res.status(400).json({ message: "Phone Number is not valid" })
       }
     }
     user.fullName = fullName ? fullName : user.fullName

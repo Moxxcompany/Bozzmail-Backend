@@ -1,5 +1,6 @@
 const { post } = require("../utils/axios")
 const { TELEGRAM_BOT_TOKEN } = require("../constant/constants")
+const { logger } = require("../utils/logger")
 
 const sendTelegramSms = async ({ id, message }) => {
   const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`
@@ -12,8 +13,7 @@ const sendTelegramSms = async ({ id, message }) => {
     return response.data
   } catch (error) {
     const errorMessage = error.response ? error.response.data : error.message
-    const errorStatus = error.response ? error.response.status : 500
-    throw { errors: errorMessage.errors, status: errorStatus }
+    logger.error({ message: 'Failed to send message on telegram', error: errorMessage })
   }
 }
 

@@ -5,6 +5,7 @@ const {
   TELNYX_VERIFIED_PROFILE_ID,
   TELYNX_SEND_MESSAGE_NUMBER,
 } = require("../constant/constants")
+const { logger } = require("../utils/logger")
 const TELNYX_TOKEN = `Bearer ${TELNYX_API_KEY}`
 
 const sendSMSVerificationOTP = async (phoneNumber) => {
@@ -50,7 +51,7 @@ const sendSMS = async ({ phoneNumber, message }) => {
     const response = await post(url, payload, TELNYX_TOKEN)
     return response.data
   } catch (error) {
-    console.log(error)
+    logger.error({ message: 'Failed to send sms to user', error: error })
   }
 }
 
