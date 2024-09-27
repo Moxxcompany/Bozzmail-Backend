@@ -49,6 +49,12 @@ const userSchema = new mongoose.Schema({
   profile_img: {
     type: String,
   },
+  walletToken: {
+    type: String,
+  },
+  walletId: {
+    type: String,
+  },
   telegramId: {
     type: String,
   },
@@ -56,11 +62,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     unique: true,
   },
-  created_at: {
-    type: Date,
-    default: Date.now,
-  },
   address: AddressSchema,
-})
+}, { timestamps: true })
 const User = mongoose.model("User", userSchema)
 module.exports = User

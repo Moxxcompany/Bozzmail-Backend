@@ -9,8 +9,15 @@ const {
   updateUserProfileImg,
   deleteUserProfileImg,
 } = require("../controllers/user/userController")
+const {
+  addUserWalletDetails,
+  addWalletFundsLink,
+  getUserWalletBalance,
+  getUserTransactions,
+  getUserTransactionById
+} = require("../controllers/user/paymentController")
 
-const { changePasswordValidations } = require("../validation/user")
+const { changePasswordValidations, emailRequired } = require("../validation/user")
 const {
   getUserNotification,
   changeNotificationReadStatus,
@@ -30,5 +37,11 @@ router.delete("/delete-profile-pic", deleteUserProfileImg)
 router.post("/update", updateUserDetails)
 router.post("/delete", deleteUser)
 router.post("/change-password", changePasswordValidations, changeUserPassword)
+
+router.post("/payment/register", emailRequired, addUserWalletDetails)
+router.post("/payment/add-wallet-fund", addWalletFundsLink)
+router.get("/payment/wallet-balance", getUserWalletBalance)
+router.get("/payment/transactions", getUserTransactions)
+router.get("/payment/transactions/:transactionId", getUserTransactionById)
 
 module.exports = router

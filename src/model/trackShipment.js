@@ -7,7 +7,7 @@ const ShipmentTrackSchema = new Schema({
   carrier: { type: String },
   trackNumber: { type: String, required: true },
   ShipmentTrackData: { type: Schema.Types.Mixed, required: true },
-})
+}, { timestamps: true })
 
 const ShipmentTracking = mongoose.model("TrackShipment", ShipmentTrackSchema)
 

@@ -3,7 +3,7 @@ const router = express.Router()
 const {
   createNewLabel,
   fetchShipmentRates,
-  purchaseShipment,
+  purchaseShipmentLink,
   getUserShipments,
   trackShipment,
   getShipmentsById,
@@ -11,7 +11,7 @@ const {
 
 router.post("/:service/create-new", createNewLabel)
 router.post("/:service/get-rates", fetchShipmentRates)
-router.post("/:service/purchase", purchaseShipment)
+router.post("/:service/purchase", purchaseShipmentLink)
 router.post("/:service/trackShipment", trackShipment)
 router.get("/:service/trackShipment/:trackNumber", trackShipment)
 router.get("/getUserShippment", getUserShipments)

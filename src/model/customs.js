@@ -6,7 +6,7 @@ const CustomsSchema = new Schema({
   service: { type: String, required: true },
   customId: { type: String, required: true },
   customData: { type: Schema.Types.Mixed, required: true },
-})
+}, { timestamps: true })
 
 const Custom = mongoose.model("Custom", CustomsSchema)
 

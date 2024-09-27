@@ -16,13 +16,14 @@ const post = async (url, payload, token, headers) => {
   }
 }
 
-const get = async (url, token) => {
+const get = async (url, token, headers) => {
   try {
     const response = await axios.get(url, {
       headers: {
         Authorization: token,
         "Content-Type": "application/json",
         Accept: "application/json",
+        ...headers
       },
     })
     return response

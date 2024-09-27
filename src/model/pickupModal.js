@@ -6,7 +6,7 @@ const PickupSchema = new Schema({
   service: { type: String, required: true },
   pickupId: { type: String, required: true },
   PickupData: { type: Schema.Types.Mixed, required: true },
-})
+}, { timestamps: true })
 
 const Pickup = mongoose.model("Pickup", PickupSchema)
 
