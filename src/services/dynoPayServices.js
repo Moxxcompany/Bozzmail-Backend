@@ -36,13 +36,14 @@ const generatePaymentLink = async (amount, redirect_uri, meta_data, walletToken)
   }
 }
 
-const generateAddFundsLink = async (amount, redirect_uri, walletToken) => {
+const generateAddFundsLink = async (amount, redirect_uri, walletToken, meta_data) => {
   const url = `${DYNO_PAY_BASE_URL}/addFunds`
   const token = `Bearer ${walletToken}`
   try {
     const payload = {
       amount,
-      redirect_uri
+      redirect_uri,
+      meta_data
     }
     return await post(url, payload, token, header)
   } catch (error) {

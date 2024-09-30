@@ -1,4 +1,5 @@
 const PaymentTracks = require("../model/paymentTracks")
+const WalletFunds = require("../model/wallletFunds")
 
 const saveNewPaymentTracks = async (data) => {
   try {
@@ -16,7 +17,16 @@ const fetchPaymentTrackById = async (_id) => {
   }
 }
 
+const saveNewWalletFundDetails = async (data) => {
+  try {
+    return await WalletFunds(data).save()
+  } catch (error) {
+    throw error
+  }
+}
+
 module.exports = {
   saveNewPaymentTracks,
-  fetchPaymentTrackById
+  fetchPaymentTrackById,
+  saveNewWalletFundDetails
 }

@@ -58,9 +58,9 @@ const constants = {
       points: 1
     }
   },
-  PAYMENT_STATUS_INPROCESS: 'INPROCESS',
-  PAYMENT_STATUS_SUCCESS: 'SUCCESS',
-  PAYMENT_STATUS_FAILURE: 'FAILED',
+  PAYMENT_STATUS_INPROCESS: 'inprocess',
+  PAYMENT_STATUS_SUCCESS: 'successful',
+  PAYMENT_STATUS_FAILURE: 'failed',
 }
 
 Object.keys(constants).forEach((key) => {

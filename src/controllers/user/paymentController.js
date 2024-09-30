@@ -1,14 +1,14 @@
 const { fetchUserById } = require("../../helper/user")
 const { sendNotification } = require("../../helper/sendNotification")
 const { logger } = require("../../utils/logger")
-const { 
-  registerUserForPayment, 
-  generatePaymentLink, 
+const {
+  registerUserForPayment,
   generateAddFundsLink,
   fetchDynoWalletBalance,
   fetchUserTransactions,
   fetchUserTransactionById
 } = require("../../services/dynoPayServices")
+const { saveNewWalletFundDetails } = require("../../helper/paymentTracks")
 
 const addUserWalletDetails = async (req, res) => {
   const { email, name, mobile } = req.body
@@ -43,17 +43,18 @@ const addUserWalletDetails = async (req, res) => {
 }
 
 const addWalletFundsLink = async (req, res) => {
-  const { amount, redirect_url } = req.body
+  const { amount } = req.body
   const userId = req.userId
   try {
     const userDetails = await fetchUserById(userId, true)
     if (!userDetails.walletToken) {
       return res.status(400).json({ message: "User have to first activate dynopay Wallet" })
     }
-    if (!amount || !redirect_url) {
-      return res.status(400).json({ message: "Amount and redirect URL are required" })
+    if (!amount) {
+      return res.status(400).json({ message: "Amount is required" })
     }
 
+    const redirect_url = `${req.protocol}://${req.get('host')}/webhooks/${userId}/dynopay-addFund`
     const { data } = await generateAddFundsLink(amount, redirect_url, userDetails.walletToken)
     if (data && data.data) {
       return res.status(200).json({ message: 'Your link to add funds', data: data.data })
@@ -123,10 +124,37 @@ const getUserTransactionById = async (req, res) => {
   }
 }
 
+const addFundWalletsHook = async (req, res) => {
+  const { transaction_id, status } = req.query
+  const userId = req.params.userId
+  try {
+    const userDetails = await fetchUserById(userId, true)
+    const { data } = await fetchUserTransactionById(userDetails.walletToken, transaction_id)
+    if (data && data.data) {
+      const newAddFundData = {
+        userId: userId,
+        paymentStatus: data.data.status,
+        transactionId: data.data.id,
+        amount: data.data.base_amount,
+        paymentMode:  data.data.payment_mode,
+        transactionalDetails:  data.data.transaction_details
+      }
+      const addFundData = await saveNewWalletFundDetails(newAddFundData)
+      return res.status(200).json({ data: addFundData })
+    }
+  } catch (error) {
+    const redirectUrl = `${FE_APP_BASE_URL}/payment?dynoPayment=${status === 'successful' ? PAYMENT_STATUS_SUCCESS : PAYMENT_STATUS_FAILURE}`
+    const err = { message: 'Failed to purchase a new shipment', error: error?.response?.data?.error || error?.response?.data || error, paymentTrackId: meta_data.product }
+    logger.error(err)
+    return res.redirect(redirectUrl);
+  }
+}
+
 module.exports = {
   addUserWalletDetails,
   addWalletFundsLink,
   getUserWalletBalance,
   getUserTransactions,
-  getUserTransactionById
+  getUserTransactionById,
+  addFundWalletsHook
 }
