@@ -733,7 +733,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"amount\" : 50,\r\n    \"redirect_url\" : \"http:localhost:3030/webhooks/dynopay\"\r\n}",
+									"raw": "{\r\n    \"amount\" : 50\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
