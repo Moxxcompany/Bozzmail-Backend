@@ -53,12 +53,12 @@ const createNewLabel = async (req, res) => {
         response = await newShipmentShippo(payload)
         break
       case FLAVOURCLOUD_SERVICE:
+        if (!amount) {
+          return res.status(400).json({ message: "Amount is missing for the payment." })
+        }
         const userDetails = await fetchUserById(userId, true)
         if (!userDetails.walletToken) {
           return res.status(400).json({ message: "User have to first activate dynopay Wallet" })
-        }
-        if (!amount) {
-          return res.status(400).json({ message: "Amount is missing for the payment." })
         }
         const paymentTracks = {
           userId: userId,
@@ -152,10 +152,6 @@ const purchaseShipmentLink = async (req, res) => {
   const service = req.params.service
   const userId = req.userId
   try {
-    const userDetails = await fetchUserById(userId, true)
-    if (!userDetails.walletToken) {
-      return res.status(400).json({ message: "User have to first activate dynopay Wallet" })
-    }
     if (!amount) {
       return res.status(400).json({ message: "Amount is missing for the payment." })
     }
@@ -165,8 +161,12 @@ const purchaseShipmentLink = async (req, res) => {
     if (service === EASYPOST_SERVICE && !payload.shipmentId) {
       return res.status(400).json({ message: "Invalid shipmentId" })
     }
-    if (service !== EASYPOST_SERVICE && service !== GOSHIPPO_SERVICE && service !== FLAVOURCLOUD_SERVICE) {
+    if (service !== EASYPOST_SERVICE && service !== GOSHIPPO_SERVICE) {
       return res.status(400).json({ message: "Something went wrong." })
+    }
+    const userDetails = await fetchUserById(userId, true)
+    if (!userDetails.walletToken) {
+      return res.status(400).json({ message: "User have to first activate dynopay Wallet" })
     }
     const paymentTracks = {
       userId: userId,

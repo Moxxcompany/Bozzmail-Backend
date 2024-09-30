@@ -14,12 +14,12 @@ const addUserWalletDetails = async (req, res) => {
   const { email, name, mobile } = req.body
   const userId = req.userId
   try {
+    if (!name) {
+      return res.status(400).json({ message: "Name is required" })
+    }
     const userDetails = await fetchUserById(userId, true)
     if (userDetails.walletToken) {
       return res.status(400).json({ message: "User already activated wallet" })
-    }
-    if (!name) {
-      return res.status(400).json({ message: "Name is required" })
     }
 
     const { data } = await registerUserForPayment(email, name, mobile)
@@ -46,12 +46,12 @@ const addWalletFundsLink = async (req, res) => {
   const { amount } = req.body
   const userId = req.userId
   try {
+    if (!amount) {
+      return res.status(400).json({ message: "Amount is required" })
+    }
     const userDetails = await fetchUserById(userId, true)
     if (!userDetails.walletToken) {
       return res.status(400).json({ message: "User have to first activate dynopay Wallet" })
-    }
-    if (!amount) {
-      return res.status(400).json({ message: "Amount is required" })
     }
 
     const redirect_url = `${req.protocol}://${req.get('host')}/webhooks/${userId}/dynopay-addFund`
