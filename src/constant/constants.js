@@ -7,8 +7,6 @@ const constants = {
   TELNYX_API_KEY: process.env.TELNYX_API_KEY,
   TELNYX_VERIFIED_PROFILE_ID: process.env.TELNYX_VERIFIED_PROFILE_ID,
   TELYNX_SEND_MESSAGE_NUMBER: process.env.TELYNX_SEND_MESSAGE_NUMBER,
-  INFOBIP_BASE_URL: process.env.INFOBIP_BASE_URL,
-  INFOBIP_API_KEY: process.env.INFOBIP_API_KEY,
   GOSHIPPO_BASE_URL: process.env.GOSHIPPO_BASE_URL,
   GOSHIPPO_API_KEY: process.env.GOSHIPPO_API_KEY,
   FLAVOURCLOUD_BASE_URL: process.env.FLAVOURCLOUD_BASE_URL,
@@ -48,6 +46,8 @@ const constants = {
   HLR_LOOKUP_BASE_URL: process.env.HLR_LOOKUP_BASE_URL,
   HLR_LOOKUP_API_SECRET: process.env.HLR_LOOKUP_API_SECRET,
   HLR_LOOKUP_API_KEY: process.env.HLR_LOOKUP_API_KEY,
+  DYNO_PAY_BASE_URL: process.env.DYNO_PAY_BASE_URL,
+  DYNO_PAY_API_KEY: process.env.DYNO_PAY_API_KEY,
   REWARD_POINTS: {
     SIGNUP: {
       message: 'User registered for the first time',
@@ -57,7 +57,10 @@ const constants = {
       message: 'User purchased a standard shipment',
       points: 1
     }
-  }
+  },
+  PAYMENT_STATUS_INPROCESS: 'inprocess',
+  PAYMENT_STATUS_SUCCESS: 'successful',
+  PAYMENT_STATUS_FAILURE: 'failed',
 }
 
 Object.keys(constants).forEach((key) => {

@@ -14,7 +14,7 @@ const AddressBookSchema = new Schema({
   email: { type: String },
   phoneNumber: { type: String },
   is_default: { type: Boolean, default: false },
-})
+}, { timestamps: true })
 
 const AddressBook = mongoose.model("AddressBook", AddressBookSchema)
 

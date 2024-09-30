@@ -6,7 +6,7 @@ const BatchSchema = new Schema({
   service: { type: String, required: true },
   batchId: { type: String, required: true },
   batchData: { type: Schema.Types.Mixed, required: true },
-})
+}, { timestamps: true })
 
 const Batch = mongoose.model("Batch", BatchSchema)
 

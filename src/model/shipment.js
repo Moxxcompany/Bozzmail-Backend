@@ -6,7 +6,7 @@ const ShipmentSchema = new Schema({
   service: { type: String, required: true },
   shipmentId: { type: String, required: true },
   shipmentData: { type: Schema.Types.Mixed, required: true },
-})
+}, { timestamps: true })
 
 const Shipment = mongoose.model("Shipment", ShipmentSchema)
 

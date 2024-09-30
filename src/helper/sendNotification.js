@@ -50,7 +50,7 @@ const fetchUserNotifications = async (userId, page, limit) => {
     const totalDocuments = await NotificationMessage.countDocuments(query)
     if (!limit && !page) {
       return {
-        data: await NotificationMessage.find(query).sort({ created_at: -1 }),
+        data: await NotificationMessage.find(query).sort({ createdAt: -1 }),
         total: totalDocuments,
       }
     }
@@ -58,7 +58,7 @@ const fetchUserNotifications = async (userId, page, limit) => {
     const limitedData = await NotificationMessage.find(query)
       .skip(skip)
       .limit(validLimit)
-      .sort({ created_at: -1 })
+      .sort({ createdAt: -1 })
     return {
       total: totalDocuments,
       data: limitedData,

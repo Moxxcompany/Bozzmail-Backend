@@ -6,7 +6,7 @@ const PrintMailSchema = new Schema({
   mailType: { type: String, required: true },
   mailId: { type: String, required: true },
   mailData: { type: Schema.Types.Mixed, required: true },
-})
+}, { timestamps: true })
 
 const PrintMail = mongoose.model("PrintMail", PrintMailSchema)
 

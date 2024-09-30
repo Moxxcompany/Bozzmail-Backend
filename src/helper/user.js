@@ -38,7 +38,7 @@ const fetchUserById = async (_id, withPassword) => {
     if (withPassword) {
       userData = await User.findOne({ _id })
     } else {
-      userData = await User.findOne({ _id }).select("-password")
+      userData = await User.findOne({ _id }).select("-password -walletId -walletToken")
     }
     return userData
   } catch (error) {
@@ -76,10 +76,10 @@ const fetchUsersList = async (limit, page, isActive) => {
     }
     const totalUsers = await User.countDocuments(query)
     if (!limit && !page) {
-      return { data: await User.find(query).select("-password").sort({ created_at: -1 }), total: totalUsers }
+      return { data: await User.find(query).select("-password").sort({ createdAt: -1 }), total: totalUsers }
     }
     const { validLimit, skip } = paginate(page, limit)
-    const data = await User.find(query).select("-password").limit(validLimit).skip(skip).sort({ created_at: -1 })
+    const data = await User.find(query).select("-password").limit(validLimit).skip(skip).sort({ createdAt: -1 })
     return {
       total: totalUsers,
       data: data,
