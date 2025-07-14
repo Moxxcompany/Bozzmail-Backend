@@ -10,11 +10,11 @@ const getUserNotification = async (req, res) => {
   const { limit, page } = req.query
   try {
     const notifications = await fetchUserNotifications(id, page, limit)
-    res.status(200).json({ notifications })
+    return res.status(200).json({ notifications })
   } catch (error) {
     const err = { message: 'Failed to fetch user notifications', error: error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -28,7 +28,7 @@ const changeNotificationReadStatus = async (req, res) => {
   } catch (error) {
     const err = { message: 'Failed to change notifications status', error: error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -37,11 +37,11 @@ const deleteUserNotifications = async (req, res) => {
   const payload = req.body
   try {
     await deleteNotifications(id, payload.ids)
-    res.status(200).json({ message: "Notifications deleted successfuly." })
+    return res.status(200).json({ message: "Notifications deleted successfuly." })
   } catch (error) {
     const err = { message: 'Failed to delete notifications', error: error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 

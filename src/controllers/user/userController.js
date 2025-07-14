@@ -11,13 +11,13 @@ const getUserById = async (req, res) => {
   try {
     const user = await fetchUserById(id)
     if (!user) {
-      return res.status(400).json({ message: "User not found. Check again" })
+      return return res.status(400).json({ message: "User not found. Check again" })
     }
-    res.status(200).json({ data: user })
+    return res.status(200).json({ data: user })
   } catch (error) {
     const err = { message: 'Failed to fetch user details', error: error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -27,7 +27,7 @@ const changeUserPassword = async (req, res) => {
   try {
     const user = await fetchUserById(id, true)
     if (!user || !user.is_active) {
-      return res.status(400).json({ message: "User not found. Check again" })
+      return return res.status(400).json({ message: "User not found. Check again" })
     }
     if (!user.password) {
       return res
@@ -36,7 +36,7 @@ const changeUserPassword = async (req, res) => {
     }
     const isPasswordMatch = await bcrypt.compare(currentPassword, user.password)
     if (!isPasswordMatch) {
-      return res.status(400).json({ message: "Password is incorrect" })
+      return return res.status(400).json({ message: "Password is incorrect" })
     }
     await updateUserPassword(user._id, newPassword)
     await sendNotification({
@@ -45,11 +45,11 @@ const changeUserPassword = async (req, res) => {
       emailMessage: `<p>Your password for your account has been changed successfully.</p>`,
       emailSubject: "Account Password reset successfuly",
     })
-    res.status(200).json({ message: "Password Changed Successfully" })
+    return res.status(200).json({ message: "Password Changed Successfully" })
   } catch (error) {
     const err = { message: 'Failed to change password for user', error: error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -59,16 +59,16 @@ const updateUserDetails = async (req, res) => {
   try {
     const user = await fetchUserById(userId)
     if (!user) {
-      return res.status(400).json({ message: "User not found. Check again" })
+      return return res.status(400).json({ message: "User not found. Check again" })
     }
     if (phoneNumber && phoneNumber.length) {
       const checkUserWithPhoneNum = await fetchUserByPhoneNumber(phoneNumber)
       if (checkUserWithPhoneNum && checkUserWithPhoneNum._id != userId) {
-        return res.status(400).json({ message: "Phone Number already in use" })
+        return return res.status(400).json({ message: "Phone Number already in use" })
       }
       const phoneVerification = await verifyPhoneNumberUsingHlrLookup(phoneNumber)
       if (!phoneVerification) {
-        return res.status(400).json({ message: "Phone Number is not valid" })
+        return return res.status(400).json({ message: "Phone Number is not valid" })
       }
     }
     user.fullName = fullName ? fullName : user.fullName
@@ -81,11 +81,11 @@ const updateUserDetails = async (req, res) => {
       emailMessage: `<p>Your details for your account has been updated successfully.</p>`,
       emailSubject: "Updated Account Details",
     })
-    res.status(200).json({ message: "User details updated Successfully" })
+    return res.status(200).json({ message: "User details updated Successfully" })
   } catch (error) {
     const err = { message: 'Failed to update user details', error: error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -94,7 +94,7 @@ const deleteUser = async (req, res) => {
   try {
     const user = await fetchUserById(userId)
     if (!user) {
-      return res.status(400).json({ message: "User not found. Check again" })
+      return return res.status(400).json({ message: "User not found. Check again" })
     }
     user.is_active = false
     await user.save()
@@ -104,11 +104,11 @@ const deleteUser = async (req, res) => {
       emailMessage: `<p>Your bozzmail account has been deactivated.</p>`,
       emailSubject: "Bozzmail account deactivation",
     })
-    res.status(200).json({ message: "User data Deleted Successfully" })
+    return res.status(200).json({ message: "User data Deleted Successfully" })
   } catch (error) {
     const err = { message: 'Failed to deactivate user account', error: error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -117,11 +117,11 @@ const updateUserProfileImg = async (req, res) => {
   const file = req.file
   try {
     if (!file || !file.mimetype.startsWith("image")) {
-      return res.status(400).json({ message: "Please upload an image file" })
+      return return res.status(400).json({ message: "Please upload an image file" })
     }
     const user = await fetchUserById(userId)
     if (!user) {
-      return res.status(400).json({ message: "User not found. Check again" })
+      return return res.status(400).json({ message: "User not found. Check again" })
     }
     if (user.profile_img) {
       const parsedUrl = new URL(user.profile_img)
@@ -141,11 +141,11 @@ const updateUserProfileImg = async (req, res) => {
       emailMessage: `<p>Your profile picture for your account has been updated successfully.</p>`,
       emailSubject: "Updated Account Details",
     })
-    res.status(200).json({ message: "Profile Pic updated", data: user })
+    return res.status(200).json({ message: "Profile Pic updated", data: user })
   } catch (error) {
     const err = { message: 'Failed to add/update user profile pic', error: error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -154,7 +154,7 @@ const deleteUserProfileImg = async (req, res) => {
   try {
     const user = await fetchUserById(userId)
     if (!user) {
-      return res.status(400).json({ message: "User not found. Check again" })
+      return return res.status(400).json({ message: "User not found. Check again" })
     }
     if (user.profile_img) {
       const parsedUrl = new URL(user.profile_img)
@@ -171,11 +171,11 @@ const deleteUserProfileImg = async (req, res) => {
       emailMessage: `<p>Your profile picture for your account has been deleted successfully.</p>`,
       emailSubject: "Deleted profile picture",
     })
-    res.status(200).json({ message: "Profile Pic deleted" })
+    return res.status(200).json({ message: "Profile Pic deleted" })
   } catch (error) {
     const err = { message: 'Failed to delete user profile pic', error: error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 

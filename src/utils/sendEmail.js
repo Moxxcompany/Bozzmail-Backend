@@ -49,7 +49,7 @@ const sendMail = async ({ subject, text, content, user, template }) => {
     });
     return true;
   } catch (error) {
-    console.error('Failed to send email:', error.message);
+    logger.error({ message: 'Failed to send email', error: error.message });
     return false;
   }
 };

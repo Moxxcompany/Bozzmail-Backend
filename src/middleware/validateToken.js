@@ -1,5 +1,4 @@
-const jwt = require("jsonwebtoken")
-const { JWT_SECRET_KEY } = require("../constant/constants")
+const { verifyToken } = require("../utils/jwt")
 const { fetchUserById } = require("../helper/user");
 const { isTokenBlacklisted } = require("../utils/tokenBlacklist");
 
@@ -13,7 +12,7 @@ module.exports = async function (req, res, next) {
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET_KEY)
+    const decoded = verifyToken(token)
     req.userId = decoded.userId
     const userDetails = await fetchUserById(decoded.userId)
     if (!userDetails || !userDetails.is_active) {
@@ -25,6 +24,6 @@ module.exports = async function (req, res, next) {
     req.userDetails = userDetails
     next()
   } catch (err) {
-    res.status(401).json({ message: "Token is not valid" })
+    return res.status(401).json({ message: "Token is not valid" })
   }
 }

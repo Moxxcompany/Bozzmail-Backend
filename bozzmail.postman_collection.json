@@ -2015,163 +2015,243 @@
 			"name": "admin",
 			"item": [
 				{
-					"name": "get user list",
+					"name": "Get All Users",
 					"request": {
 						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/admin/users?limit=10&page=1&isActive=true",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"admin",
-								"users"
-							],
-							"query": [
-								{
-									"key": "limit",
-									"value": "10"
-								},
-								{
-									"key": "page",
-									"value": "1"
-								},
-								{
-									"key": "isActive",
-									"value": "true"
-								}
-							]
-						}
-					},
-					"response": []
+						"header": [
+							{ "key": "token", "value": "{{token}}", "type": "text" }
+						],
+						"url": "{{base_url}}/admin/users"
+					}
 				},
 				{
-					"name": "get shipments list",
+					"name": "Get All Shipments",
 					"request": {
 						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/admin/shipments?limit=10&page=1&isActive=true",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"admin",
-								"shipments"
-							],
-							"query": [
-								{
-									"key": "limit",
-									"value": "10"
-								},
-								{
-									"key": "page",
-									"value": "1"
-								},
-								{
-									"key": "isActive",
-									"value": "true"
-								}
-							]
-						}
-					},
-					"response": []
-				},
+						"header": [
+							{ "key": "token", "value": "{{token}}", "type": "text" }
+						],
+						"url": "{{base_url}}/admin/shipments"
+					}
+				}
+			]
+		},
+		{
+			"name": "customs",
+			"item": [
 				{
-					"name": "get single user",
+					"name": "Get Customs",
 					"request": {
 						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/admin/users/:id",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"admin",
-								"users",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": ""
-								}
-							]
-						}
-					},
-					"response": []
+						"header": [
+							{ "key": "token", "value": "{{token}}", "type": "text" }
+						],
+						"url": "{{base_url}}/customs"
+					}
 				},
 				{
-					"name": "update single user",
+					"name": "Create Customs",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{ "key": "token", "value": "{{token}}", "type": "text" },
+							{ "key": "Content-Type", "value": "application/json", "type": "text" }
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"fullName\": \"\",\r\n    \"phoneNumber\": \"\",\r\n    \"address\": {\r\n        \"street1\": \"\",\r\n        \"street2\": \"\",\r\n        \"city\": \"\",\r\n        \"state\": \"\",\r\n        \"country\": \"\",\r\n        \"postalCode\": \"\"\r\n    }\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
+							"raw": "{\n  \"description\": \"\",\n  \"value\": 0\n}"
 						},
-						"url": {
-							"raw": "{{base_url}}/admin/users/update/:id",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"admin",
-								"users",
-								"update",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": ""
-								}
-							]
-						}
-					},
-					"response": []
+						"url": "{{base_url}}/customs"
+					}
 				},
 				{
-					"name": "delete single user",
+					"name": "Edit Customs",
 					"request": {
-						"method": "POST",
-						"header": [],
+						"method": "PUT",
+						"header": [
+							{ "key": "token", "value": "{{token}}", "type": "text" },
+							{ "key": "Content-Type", "value": "application/json", "type": "text" }
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
+							"raw": "{\n  \"description\": \"Updated\",\n  \"value\": 100\n}"
 						},
-						"url": {
-							"raw": "{{base_url}}/admin/users/delete/:id",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"admin",
-								"users",
-								"delete",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": ""
-								}
-							]
-						}
-					},
-					"response": []
+						"url": "{{base_url}}/customs/{{customId}}"
+					}
+				},
+				{
+					"name": "Delete Customs",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{ "key": "token", "value": "{{token}}", "type": "text" }
+						],
+						"url": "{{base_url}}/customs/{{customId}}"
+					}
+				}
+			]
+		},
+		{
+			"name": "batchShipment",
+			"item": [
+				{
+					"name": "Create New Batch",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "token", "value": "{{token}}", "type": "text" },
+							{ "key": "Content-Type", "value": "application/json", "type": "text" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"service\": \"goshippo\",\n  \"payload\": {}\n}"
+						},
+						"url": "{{base_url}}/batchShipment/goshippo/create-new"
+					}
+				},
+				{
+					"name": "Get User Batches",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "token", "value": "{{token}}", "type": "text" }
+						],
+						"url": "{{base_url}}/batchShipment"
+					}
+				}
+			]
+		},
+		{
+			"name": "printMail",
+			"item": [
+				{
+					"name": "Get User Print Mail",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "token", "value": "{{token}}", "type": "text" }
+						],
+						"url": "{{base_url}}/printMail"
+					}
+				},
+				{
+					"name": "Add Webhook",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "token", "value": "{{token}}", "type": "text" },
+							{ "key": "Content-Type", "value": "application/json", "type": "text" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"url\": \"https://webhook.site/your-webhook-url\"\n}"
+						},
+						"url": "{{base_url}}/printMail/add-webhook"
+					}
+				}
+			]
+		},
+		{
+			"name": "hscode",
+			"item": [
+				{
+					"name": "Get HSCode",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "token", "value": "{{token}}", "type": "text" }
+						],
+						"url": "{{base_url}}/hscode"
+					}
+				},
+				{
+					"name": "Create HSCode",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "token", "value": "{{token}}", "type": "text" },
+							{ "key": "Content-Type", "value": "application/json", "type": "text" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"code\": \"\",\n  \"description\": \"\"\n}"
+						},
+						"url": "{{base_url}}/hscode"
+					}
+				},
+				{
+					"name": "Edit HSCode",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{ "key": "token", "value": "{{token}}", "type": "text" },
+							{ "key": "Content-Type", "value": "application/json", "type": "text" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"code\": \"updated\",\n  \"description\": \"updated\"\n}"
+						},
+						"url": "{{base_url}}/hscode/{{hscodeId}}"
+					}
+				},
+				{
+					"name": "Delete HSCode",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{ "key": "token", "value": "{{token}}", "type": "text" }
+						],
+						"url": "{{base_url}}/hscode/{{hscodeId}}"
+					}
+				}
+			]
+		},
+		{
+			"name": "pickup",
+			"item": [
+				{
+					"name": "Create Pickup",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "token", "value": "{{token}}", "type": "text" },
+							{ "key": "Content-Type", "value": "application/json", "type": "text" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"service\": \"goshippo\",\n  \"payload\": {}\n}"
+						},
+						"url": "{{base_url}}/pickup/goshippo/create-new"
+					}
+				},
+				{
+					"name": "Get Pickup",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "token", "value": "{{token}}", "type": "text" }
+						],
+						"url": "{{base_url}}/pickup/getPickup"
+					}
+				}
+			]
+		},
+		{
+			"name": "webhooks",
+			"item": [
+				{
+					"name": "Print Mail Webhook",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json", "type": "text" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"event\": \"test\",\n  \"data\": {}\n}"
+						},
+						"url": "{{base_url}}/webhooks/print-mail"
+					}
 				}
 			]
 		}

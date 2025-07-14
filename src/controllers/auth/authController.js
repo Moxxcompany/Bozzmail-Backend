@@ -44,27 +44,27 @@ const { verifyPhoneNumberUsingHlrLookup } = require("../../services/hlrLookupser
 const signUp = async (req, res) => {
   const { email, password, phoneNumber, notify_mobile } = req.body
   try {
-    if (notify_mobile && !phoneNumber && !phoneNumber.length) {
+    if (notify_mobile && (!phoneNumber || !phoneNumber.length)) {
       return res
         .status(400)
         .json({ message: "Phone Number is required for notifications." })
     }
     const existingUser = await fetchUserByEmail(email)
     if (existingUser) {
-      return res.status(400).json({ message: "Email Address already in use" })
+      return return res.status(400).json({ message: "Email Address already in use" })
     }
     const emailVerification = await verifyEmailUsingNeutrino(email)
     if (!emailVerification) {
-      return res.status(400).json({ message: "Email is not valid" })
+      return return res.status(400).json({ message: "Email is not valid" })
     }
     if (phoneNumber && phoneNumber.length) {
       const checkUserWithPhoneNum = await fetchUserByPhoneNumber(phoneNumber)
       if (checkUserWithPhoneNum) {
-        return res.status(400).json({ message: "Phone Number already in use" })
+        return return res.status(400).json({ message: "Phone Number already in use" })
       }
       const phoneVerification = await verifyPhoneNumberUsingHlrLookup(phoneNumber)
       if (!phoneVerification) {
-        return res.status(400).json({ message: "Phone Number is not valid" })
+        return return res.status(400).json({ message: "Phone Number is not valid" })
       }
     }
     const hashedPassword = await bcrypt.hash(password, 10)
@@ -98,24 +98,24 @@ const signUp = async (req, res) => {
         .status(200)
         .json({ message: "User created Successfully", data: userData })
     } else {
-      res.status(500).json({ message: "Failed to create a new user" })
+      return res.status(500).json({ message: "Failed to create a new user" })
     }
   } catch (error) {
     const err = { message: 'Failed to signup new user', error: error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return return res.status(error.status || 500).json(err)
   }
 }
 
 const signInWithPhoneNum = async (req, res) => {
   const { otp, phoneNumber } = req.body
   try {
-    if (!phoneNumber && !phoneNumber.length) {
+    if (!phoneNumber || !phoneNumber.length) {
       return res
         .status(400)
         .json({ message: "Phone Number is required" })
     }
-    if (!otp && !otp.length) {
+    if (!otp || !otp.length) {
       return res
         .status(400)
         .json({ message: "OTP is required" })
@@ -162,16 +162,16 @@ const signInWithPhoneNum = async (req, res) => {
             .status(200)
             .json({ message: "User created Successfully", data: user, token: userToken })
         } else {
-          res.status(500).json({ message: "Failed to create a new user" })
+          return res.status(500).json({ message: "Failed to create a new user" })
         }
       }
     } else {
-      res.status(500).json({ error: "OTP code is not correct" })
+      return return res.status(500).json({ error: "OTP code is not correct" })
     }
   } catch (error) {
     const err = { message: 'Failed to signin user with phone number', error: error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return return res.status(error.status || 500).json(err)
   }
 }
 
@@ -181,17 +181,17 @@ const signIn = async (req, res) => {
   try {
     const existingUser = await fetchUserByEmail(email, true)
     if (!existingUser || !existingUser.is_active) {
-      return res.status(400).json({ message: "Email is incorrect" })
+      return return res.status(400).json({ message: "Email is incorrect" })
     }
     const token = createToken(existingUser._id)
     const userData = await getUserData(existingUser)
     switch (action) {
       case "request": // to prompt user details for login methods available to the user
-        res.status(200).json({ data: userData })
+        return res.status(200).json({ data: userData })
         break
       case "password": // to login with password
         if (!password || !password.length) {
-          return res.status(400).json({ message: "Password is required" })
+          return return res.status(400).json({ message: "Password is required" })
         }
         if (!existingUser.password) {
           return res
@@ -223,7 +223,7 @@ const signIn = async (req, res) => {
         break
       case "otp": // to login with the SMS OTP after providing email
         if (!otp || !otp.length) {
-          return res.status(400).json({ message: "OTP Code is required" })
+          return return res.status(400).json({ message: "OTP Code is required" })
         }
         const response = await verifySMSOTP(existingUser.phoneNumber, otp)
         if (response.data && response.data.response_code === "accepted") {
@@ -241,7 +241,7 @@ const signIn = async (req, res) => {
               token: token,
             })
         } else {
-          res.status(500).json({ message: "OTP is not correct" })
+          return res.status(500).json({ message: "OTP is not correct" })
         }
         break
       case "email": // to login with email verification code
@@ -276,12 +276,12 @@ const signIn = async (req, res) => {
         }
         break
       default:
-        res.status(500).json({ message: "Something went wrong." })
+        return res.status(500).json({ message: "Something went wrong." })
     }
   } catch (error) {
     const err = { message: 'Failed to signin user', error: error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -290,7 +290,7 @@ const sendResetPasswordLink = async (req, res) => {
   try {
     const existingUser = await fetchUserByEmail(email)
     if (!existingUser || !existingUser.is_active) {
-      return res.status(400).json({ message: "Email is incorrect" })
+      return return res.status(400).json({ message: "Email is incorrect" })
     }
     const existingToken = await fetchTokenByUserId(existingUser._id)
     const token = crypto.randomBytes(32).toString("hex")
@@ -329,7 +329,7 @@ const sendResetPasswordLink = async (req, res) => {
   } catch (error) {
     const err = { message: 'Failed to send user password reset link', error: error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -338,7 +338,7 @@ const resetUserPassword = async (req, res) => {
   try {
     const tokenData = await fetchPasswordToken(token)
     if (!tokenData) {
-      return res.status(400).json({ message: "Token is not Valid or expired" })
+      return return res.status(400).json({ message: "Token is not Valid or expired" })
     }
     if (tokenData.expiresAt < new Date().toISOString()) {
       await deleteToken(tokenData._id)
@@ -360,11 +360,11 @@ const resetUserPassword = async (req, res) => {
       emailMessage: `<p>Your password for your account has been reset successfully.</p>`,
       emailSubject: "Account Password reset successfuly",
     })
-    res.status(200).json({ message: "Password reset successfully" })
+    return res.status(200).json({ message: "Password reset successfully" })
   } catch (error) {
     const err = { message: 'Failed to reset user password', error: error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -372,11 +372,11 @@ const sendSMSVerificationCode = async (req, res) => {
   const { phoneNumber } = req.body
   try {
     if (!phoneNumber || !phoneNumber.length) {
-      return res.status(400).json({ message: "Phone number is required" })
+      return return res.status(400).json({ message: "Phone number is required" })
     }
     const phoneVerification = await verifyPhoneNumberUsingHlrLookup(phoneNumber)
     if (!phoneVerification) {
-      return res.status(400).json({ message: "Phone Number is not valid" })
+      return return res.status(400).json({ message: "Phone Number is not valid" })
     }
     const response = await sendSMSVerificationOTP(phoneNumber)
     if (response.data) {
@@ -384,12 +384,12 @@ const sendSMSVerificationCode = async (req, res) => {
         .status(200)
         .json({ message: "Verification code sent", data: response.data })
     } else {
-      res.status(500).json({ message: "Failed to send verification code" })
+      return res.status(500).json({ message: "Failed to send verification code" })
     }
   } catch (error) {
     const err = { message: 'Failed to send otp for phone number', error: error?.errors || error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -397,10 +397,10 @@ const verifySMSCode = async (req, res) => {
   const { phoneNumber, otp } = req.body
   try {
     if (!phoneNumber || !phoneNumber.length) {
-      return res.status(400).json({ message: "Phone number is required" })
+      return return res.status(400).json({ message: "Phone number is required" })
     }
     if (!otp || !otp.length) {
-      return res.status(400).json({ message: "OTP Code is required" })
+      return return res.status(400).json({ message: "OTP Code is required" })
     }
     const response = await verifySMSOTP(phoneNumber, otp)
     if (response.data && response.data.response_code === "accepted") {
@@ -408,12 +408,12 @@ const verifySMSCode = async (req, res) => {
         .status(200)
         .json({ message: "Verification Complete", data: response.data })
     } else {
-      res.status(500).json({ error: "OTP code is not correct" })
+      return return res.status(500).json({ error: "OTP code is not correct" })
     }
   } catch (error) {
     const err = { message: 'Failed to verify otp for phone number', error: error?.errors || error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -421,7 +421,7 @@ const verifyEmailAddress = async (req, res) => {
   const { emailId } = req.body
   try {
     if (!emailId || !emailId.length) {
-      return res.status(400).json({ message: "Email Id is required" })
+      return return res.status(400).json({ message: "Email Id is required" })
     }
     const emailVerification = await verifyEmailUsingNeutrino(emailId)
     if (emailVerification) {
@@ -429,12 +429,12 @@ const verifyEmailAddress = async (req, res) => {
         .status(200)
         .json({ message: "Verification complete", data: emailVerification })
     } else {
-      res.status(500).json({ message: "Email is not valid" })
+      return res.status(500).json({ message: "Email is not valid" })
     }
   } catch (error) {
     const err = { message: 'Failed to validate email', error: error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -442,7 +442,7 @@ const verifyPhoneNumber = async (req, res) => {
   const { phoneNumber } = req.body
   try {
     if (!phoneNumber || !phoneNumber.length) {
-      return res.status(400).json({ message: "Phone Number is required" })
+      return return res.status(400).json({ message: "Phone Number is required" })
     }
     const phoneVerification = await verifyPhoneNumberUsingHlrLookup(phoneNumber)
     if (phoneVerification) {
@@ -450,12 +450,12 @@ const verifyPhoneNumber = async (req, res) => {
         .status(200)
         .json({ message: "Verification complete", data: phoneVerification })
     } else {
-      res.status(500).json({ message: "Phone Number is not valid" })
+      return res.status(500).json({ message: "Phone Number is not valid" })
     }
   } catch (error) {
     const err = { message: 'Failed to validate phone number', error: error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -464,7 +464,7 @@ const sentVerificationEmailCode = async (req, res) => {
   try {
     const user = await fetchUserByEmail(email)
     if (!user) {
-      return res.status(400).json({ message: "Email Address not found" })
+      return return res.status(400).json({ message: "Email Address not found" })
     }
     const existingToken = await fetchOtp(email)
     const otpDetails = existingToken
@@ -492,7 +492,7 @@ const sentVerificationEmailCode = async (req, res) => {
   } catch (error) {
     const err = { message: 'Failed to send email verification code', error: error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -510,12 +510,12 @@ const googleLoginSuccess = async (req, res) => {
         .status(200)
         .json({ message: "User login", data: req.user, token: token })
     } else {
-      res.status(500).json({ message: 'Error signin user with google' })
+      return res.status(500).json({ message: 'Error signin user with google' })
     }
   } catch (error) {
     const err = { message: 'Error signin user with google', error: error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -529,7 +529,7 @@ const telegramLoginSuccess = async (req, res) => {
         user: user,
         message: "Welcome to bozzmail. Your have successfuly logged in.",
       })
-      return res.status(200).json({ message: "User login", data: user, token: token })
+      return return res.status(200).json({ message: "User login", data: user, token: token })
     }
     const data = {
       telegramId: id,
@@ -554,11 +554,11 @@ const telegramLoginSuccess = async (req, res) => {
       message:
         "Welcome to bozzmail. Your account has been created successfully.",
     })
-    res.status(200).json({ message: "User login", data: newUser, token: token })
+    return res.status(200).json({ message: "User login", data: newUser, token: token })
   } catch (error) {
     const err = { message: 'Error login with telegram', error: error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -571,14 +571,14 @@ const logout = async (req, res) => {
       const token = req.headers.token
       if (token) {
         addTokenToBlacklist(token);
-        res.status(200).json({ message: 'Logged out successfully' });
+        return res.status(200).json({ message: 'Logged out successfully' });
       } else {
-        res.status(400).json({ message: 'No token provided' });
+        return res.status(400).json({ message: 'No token provided' });
       }
     } catch (error) {
       const err = { message: 'Failed to logout user', error: error }
       logger.error(err)
-      res.status(error.status || 500).json(err)
+      return res.status(error.status || 500).json(err)
     }
   })
 }

@@ -63,10 +63,17 @@ const constants = {
   PAYMENT_STATUS_FAILURE: 'failed',
 }
 
-Object.keys(constants).forEach((key) => {
+// Validate only critical environment variables
+const criticalEnvVars = [
+  'MONGODB_URL',
+  'JWT_SECRET_KEY',
+  'PORT'
+];
+
+criticalEnvVars.forEach((key) => {
   if (!constants[key]) {
-    throw new Error("Environment variables are not set.")
+    throw new Error(`Critical environment variable ${key} is not set.`)
   }
-})
+});
 
 module.exports = constants

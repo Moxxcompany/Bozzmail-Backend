@@ -29,15 +29,15 @@ const generateNewHscode = async (req, res) => {
           emailMessage: `<p>Your hs code genreated successfully.</p>`,
           emailSubject: "Your hashcode",
         })
-        return res.status(200).json({ data: hscode })
+        return return res.status(200).json({ data: hscode })
       }
     } else {
-      return res.status(500).json({ message: "Failed to create HS Code" })
+      return return res.status(500).json({ message: "Failed to create HS Code" })
     }
   } catch (error) {
     const err = { message: 'Failed to create a HS code', error: error?.response?.data?.error || error?.response?.data }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return return res.status(error.status || 500).json(err)
   }
 }
 
@@ -46,11 +46,11 @@ const fetchUserHscode = async (req, res) => {
   const { page, limit } = req.query
   try {
     const hscodeData = await findUserHscode(userId, page, limit)
-    res.status(200).json({ hscodeData })
+    return res.status(200).json({ hscodeData })
   } catch (error) {
     const err = { message: 'Failed to fetch HS code list', error: error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return return res.status(error.status || 500).json(err)
   }
 }
 
@@ -70,11 +70,11 @@ const deleteHscodeData = async (req, res) => {
       emailMessage: `<p>HS Code data deleted succesfully.</p>`,
       emailSubject: "Hs code",
     })
-    res.status(200).json({ message: "HS Code data deleted succesfully." })
+    return res.status(200).json({ message: "HS Code data deleted succesfully." })
   } catch (error) {
     const err = { message: 'Failed to delete a HS code', error: error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return return res.status(error.status || 500).json(err)
   }
 }
 
@@ -109,12 +109,12 @@ const editHscodeData = async (req, res) => {
           data: hscodeData,
         })
     } else {
-      return res.status(500).json({ message: "Failed to update HS Code" })
+      return return res.status(500).json({ message: "Failed to update HS Code" })
     }
   } catch (error) {
     const err = { message: 'Failed to update a HS code', error: error?.response?.data?.error || error?.response?.data || error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return return res.status(error.status || 500).json(err)
   }
 }
 

@@ -24,12 +24,12 @@ const generateNewAddress = async (req, res) => {
         emailMessage: `<p>Your address generated succesfully</p>`,
         emailSubject: "Address",
       })
-      return res.status(200).json({ data: newAddress })
+      return return res.status(200).json({ data: newAddress })
     }
   } catch (error) {
     const err = { message: 'Failed to create a new address', error: error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -38,11 +38,11 @@ const fetchUserAddresses = async (req, res) => {
   const { limit, page } = req.query
   try {
     const addresses = await getUserAddresses(userId, limit, page)
-    res.status(200).json({ addresses })
+    return res.status(200).json({ addresses })
   } catch (error) {
     const err = { message: 'Failed to fetch user address list', error: error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -51,11 +51,11 @@ const fetchAddressById = async (req, res) => {
   const userId = req.userId
   try {
     const address = await getAddressById(id, userId)
-    res.status(200).json({ data: address })
+    return res.status(200).json({ data: address })
   } catch (error) {
     const err = { message: 'Failed to fetch address details', error: error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -65,7 +65,7 @@ const deleteUserAddress = async (req, res) => {
   try {
     const address = await deleteAddress(userId, id)
     if (address) {
-      res.status(200).json({ message: "Address deleted successfully." })
+      return res.status(200).json({ message: "Address deleted successfully." })
     } else {
       return res
         .status(400)
@@ -74,7 +74,7 @@ const deleteUserAddress = async (req, res) => {
   } catch (error) {
     const err = { message: 'Failed to delete address for user', error: error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -104,12 +104,12 @@ const editUserAddressData = async (req, res) => {
           data: newAddress,
         })
     } else {
-      return res.status(500).json({ message: "Failed to update Address data" })
+      return return res.status(500).json({ message: "Failed to update Address data" })
     }
   } catch (error) {
     const err = { message: 'Failed to update address', error: error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -124,23 +124,23 @@ const verifyAddress = async (req, res) => {
         emailMessage: `<p>Address verified succesfully.</p>`,
         emailSubject: "Address verification",
       })
-      return res.status(200).json({ data: response.data })
+      return return res.status(200).json({ data: response.data })
     }
   } catch (error) {
     const err = { message: 'Failed to validate address', error: error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
 const importAddresses = async (req, res) => {
   const results = []
   if (!req.file) {
-    return res.status(400).json({ message: "Please upload a csv file/" })
+    return return res.status(400).json({ message: "Please upload a csv file/" })
   }
   if (!req.file.mimetype.includes("text/csv")) {
     fs.unlinkSync(req.file.path)
-    return res.status(400).json({ message: "Please upload a correct csv file" })
+    return return res.status(400).json({ message: "Please upload a correct csv file" })
   }
   fs.createReadStream(req.file.path)
     .pipe(csvParser())
@@ -180,7 +180,7 @@ const importAddresses = async (req, res) => {
       } catch (error) {
         const err = { message: 'Failed  to import new addresses for user from CSV file', error: error }
         logger.error(err)
-        res.status(error.status || 500).json(err)
+        return res.status(error.status || 500).json(err)
       } finally {
         if (req.file) {
           fs.unlinkSync(req.file.path)

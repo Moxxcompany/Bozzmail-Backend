@@ -55,12 +55,12 @@ const sendNewPrintMail = async (req, res) => {
         return res.status(200).json({ data: printmail })
       }
     } else {
-      return res.status(500).json({ message: `Failed to send ${printType}` })
+      return return res.status(500).json({ message: `Failed to send ${printType}` })
     }
   } catch (error) {
     const err = { message: 'Failed to send letter/postcard', error: error?.response?.data?.error || error?.response?.data }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   } finally {
     if (req.file) {
       fs.unlinkSync(req.file.path)
@@ -75,7 +75,7 @@ const cancelMail = async (req, res) => {
   try {
     const mailData = await fetchPrintMailById(id, userId)
     if (!mailData) {
-      return res.status(400).json({ message: "Mail data not found" })
+      return return res.status(400).json({ message: "Mail data not found" })
     }
     const cancelledMail = await cancelPostGridMail(payload, mailData)
     mailData.mailData = cancelledMail.data
@@ -86,11 +86,11 @@ const cancelMail = async (req, res) => {
       emailMessage: `<p>Cancel mail.</p>`,
       emailSubject: "Cancel mail",
     })
-    return res.status(200).json({ data: mailData })
+    return return res.status(200).json({ data: mailData })
   } catch (error) {
     const err = { message: 'Failed to cancel letter/postcard', error: error?.response?.data?.error || error?.response?.data }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -106,14 +106,14 @@ const createWebHook = async (req, res) => {
         emailMessage: `<p>Mail.</p>`,
         emailSubject: "Mail",
       })
-      return res.status(200).json({ data: response.data })
+      return return res.status(200).json({ data: response.data })
     } else {
-      return res.status(500).json({ message: `Failed to send ${printType}` })
+      return return res.status(500).json({ message: `Failed to send ${printType}` })
     }
   } catch (error) {
     const err = { message: 'Failed to add webhook for postgrid', error: error?.response?.data?.error || error?.response?.data }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -123,7 +123,7 @@ const listenWebhookevents = async (req, res) => {
     let payload = {}
     jwt.verify(token, POSTGRID_SECRET_KEY, (err, decoded) => {
       if (err) {
-        console.error("Failed to authenticate token:", err.message)
+        logger.error({ message: "Failed to authenticate token", error: err.message })
       } else {
         payload = decoded
       }
@@ -140,7 +140,7 @@ const listenWebhookevents = async (req, res) => {
   } catch (error) {
     const err = { message: 'Failed to listen webhook for postgrid', error: error?.response?.data?.error || error?.response?.data }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -149,11 +149,11 @@ const fetchUserPrintMail = async (req, res) => {
   const { mailType, limit, page } = req.query
   try {
     const data = await fetchPrintMailByUserId(userId, mailType, limit, page)
-    res.status(200).json({ data })
+    return res.status(200).json({ data })
   } catch (error) {
     const err = { message: 'Failed to fetch mail list', error: error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -161,11 +161,11 @@ const fetchMailById = async (req, res) => {
   const id = req.params.id
   try {
     const data = await fetchPrintMailByMailId(id)
-    res.status(200).json({ data: data })
+    return res.status(200).json({ data: data })
   } catch (error) {
     const err = { message: 'Failed to fetch letter/postcard details', error: error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 

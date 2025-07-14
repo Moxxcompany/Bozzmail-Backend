@@ -1,4 +1,5 @@
 const axios = require("axios")
+const { logger } = require("./logger")
 
 const post = async (url, payload, token, headers) => {
   try {
@@ -9,9 +10,11 @@ const post = async (url, payload, token, headers) => {
         Accept: "application/json",
         ...headers,
       },
+      timeout: 30000, // 30 second timeout
     })
     return response
   } catch (error) {
+    logger.error(`POST request failed to ${url}: ${error.message}`)
     throw error
   }
 }
@@ -25,9 +28,11 @@ const get = async (url, token, headers) => {
         Accept: "application/json",
         ...headers
       },
+      timeout: 30000, // 30 second timeout
     })
     return response
   } catch (error) {
+    logger.error(`GET request failed to ${url}: ${error.message}`)
     throw error
   }
 }

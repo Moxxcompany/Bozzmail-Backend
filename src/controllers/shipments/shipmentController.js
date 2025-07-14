@@ -54,11 +54,11 @@ const createNewLabel = async (req, res) => {
         break
       case FLAVOURCLOUD_SERVICE:
         if (!amount) {
-          return res.status(400).json({ message: "Amount is missing for the payment." })
+          return return res.status(400).json({ message: "Amount is missing for the payment." })
         }
         const userDetails = await fetchUserById(userId, true)
         if (!userDetails.walletToken) {
-          return res.status(400).json({ message: "User have to first activate dynopay Wallet" })
+          return return res.status(400).json({ message: "User have to first activate dynopay Wallet" })
         }
         const paymentTracks = {
           userId: userId,
@@ -75,12 +75,12 @@ const createNewLabel = async (req, res) => {
         const redirect_url = `${req.protocol}://${req.get('host')}/webhooks/dynopay-purchase`
         const { data } = await generatePaymentLink(amount, redirect_url, meta_data, userDetails.walletToken)
         if (data && data.data) {
-          return res.status(200).json({ message: 'Your payment link', data: data.data })
+          return return res.status(200).json({ message: 'Your payment link', data: data.data })
         }
         break
       case EASYPOST_SERVICE:
         if (payload.to_address.country != payload.from_address.country) {
-          return res.status(400).json({
+          return return res.status(400).json({
             message:
               "Easypost service does not provide international shipping.",
           })
@@ -88,7 +88,7 @@ const createNewLabel = async (req, res) => {
         response = await newEasypostShipment(payload)
         break
       default:
-        return res.status(500).json({ message: "Something went wrong." })
+        return return res.status(500).json({ message: "Something went wrong." })
     }
     if (response.data) {
       let shipmentData = {
@@ -105,15 +105,15 @@ const createNewLabel = async (req, res) => {
           emailMessage: `<p>Shipments Created Successfully.</p>`,
           emailSubject: "Shipments",
         })
-        return res.status(200).json({ data: shipment })
+        return return res.status(200).json({ data: shipment })
       }
     } else {
-      return res.status(500).json({ message: "Failed to create shipment" })
+      return return res.status(500).json({ message: "Failed to create shipment" })
     }
   } catch (error) {
     const err = { message: 'Failed to create a new shipment', error: error?.response?.data?.error || error?.response?.data || error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -127,7 +127,7 @@ const fetchShipmentRates = async (req, res) => {
         response = await getRatesFlavourCloud(payload)
         break
       default:
-        return res.status(500).json({ message: "Something went wrong." })
+        return return res.status(500).json({ message: "Something went wrong." })
     }
     if (response.data) {
       await sendNotification({
@@ -136,14 +136,14 @@ const fetchShipmentRates = async (req, res) => {
         emailMessage: `<p>Shipments Rates.</p>`,
         emailSubject: "Shipments",
       })
-      return res.status(200).json({ data: response.data })
+      return return res.status(200).json({ data: response.data })
     } else {
-      return res.status(500).json({ message: "Failed to create shipment" })
+      return return res.status(500).json({ message: "Failed to create shipment" })
     }
   } catch (error) {
     const err = { message: 'Failed to fetch rates for a shipment', error: error?.response?.data?.error || error?.response?.data || error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -153,20 +153,20 @@ const purchaseShipmentLink = async (req, res) => {
   const userId = req.userId
   try {
     if (!amount) {
-      return res.status(400).json({ message: "Amount is missing for the payment." })
+      return return res.status(400).json({ message: "Amount is missing for the payment." })
     }
     if (!payload.rateId) {
-      return res.status(400).json({ message: "Invalid rateId" })
+      return return res.status(400).json({ message: "Invalid rateId" })
     }
     if (service === EASYPOST_SERVICE && !payload.shipmentId) {
-      return res.status(400).json({ message: "Invalid shipmentId" })
+      return return res.status(400).json({ message: "Invalid shipmentId" })
     }
     if (service !== EASYPOST_SERVICE && service !== GOSHIPPO_SERVICE) {
-      return res.status(400).json({ message: "Something went wrong." })
+      return return res.status(400).json({ message: "Something went wrong." })
     }
     const userDetails = await fetchUserById(userId, true)
     if (!userDetails.walletToken) {
-      return res.status(400).json({ message: "User have to first activate dynopay Wallet" })
+      return return res.status(400).json({ message: "User have to first activate dynopay Wallet" })
     }
     const paymentTracks = {
       userId: userId,
@@ -183,12 +183,12 @@ const purchaseShipmentLink = async (req, res) => {
     const redirect_url = `${req.protocol}://${req.get('host')}/webhooks/dynopay-purchase`
     const { data } = await generatePaymentLink(amount, redirect_url, meta_data, userDetails.walletToken)
     if (data && data.data) {
-      return res.status(200).json({ message: 'Your payment link', data: data.data })
+      return return res.status(200).json({ message: 'Your payment link', data: data.data })
     }
   } catch (error) {
     const err = { message: "Failed to create  payment link", error: error.data }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -199,31 +199,31 @@ const getUserShipments = async (req, res) => {
   try {
     const result = await fetchShipmentData(userId, page, limit)
 
-    return res.status(200).json({
+    return return res.status(200).json({
       total: result.total,
       data: result.data,
     })
   } catch (error) {
     const err = { message: 'Failed to fetch user shipments', error: error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
 const getShipmentsById = async (req, res) => {
   const { shipmentId } = req.params
   if (!shipmentId) {
-    return res.status(500).json({ message: "Please enter a shipment id" })
+    return return res.status(500).json({ message: "Please enter a shipment id" })
   }
   try {
     const result = await fetchShipmentPurchaseById(shipmentId)
-    return res.status(200).json({
+    return return res.status(200).json({
       result,
     })
   } catch (error) {
     const err = { message: 'Failed to fetch shipment details', error: error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -237,7 +237,7 @@ const trackShipment = async (req, res) => {
     switch (service) {
       case GOSHIPPO_SERVICE:
         if (!payload.carrier || !payload.tracking_number) {
-          return res.status(400).json({ message: "Invalid carrier or tracking number" })
+          return return res.status(400).json({ message: "Invalid carrier or tracking number" })
         }
         response = await fetchGoShippoTrackShipment(payload)
         if (response.data) {
@@ -258,7 +258,7 @@ const trackShipment = async (req, res) => {
               emailMessage: `<p>Your order status.</p>`,
               emailSubject: "Status",
             })
-            return res.status(200).json({
+            return return res.status(200).json({
               data: shipmentTrackingData,
             })
           }
@@ -266,7 +266,7 @@ const trackShipment = async (req, res) => {
         break
       case EASYPOST_SERVICE:
         if (!payload.carrier || !payload.tracking_code) {
-          return res.status(400).json({ message: "Invalid carrier or tracking code" })
+          return return res.status(400).json({ message: "Invalid carrier or tracking code" })
         }
         response = await fetchEasyPostTrackShipment(payload)
         if (response.data) {
@@ -287,7 +287,7 @@ const trackShipment = async (req, res) => {
               emailMessage: `<p>Your order status.</p>`,
               emailSubject: "Status",
             })
-            return res.status(200).json({
+            return return res.status(200).json({
               data: shipmentTrackingData,
             })
           }
@@ -307,19 +307,19 @@ const trackShipment = async (req, res) => {
             shipmentData
           )
           if (shipmentTrackingData) {
-            return res.status(200).json({
+            return return res.status(200).json({
               data: shipmentTrackingData,
             })
           }
         }
         break
       default:
-        return res.status(500).json({ message: "Something went wrong." })
+        return return res.status(500).json({ message: "Something went wrong." })
     }
   } catch (error) {
     const err = { message: 'Failed to track a shipment', error: error?.response?.data?.error || error?.response?.data || error }
     logger.error(err)
-    res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -371,7 +371,7 @@ const purchaseShipment = async (req, res) => {
               emailMessage: `<p>Shipment purchase.</p>`,
               emailSubject: "Shipments Purchase details",
             })
-            return res.status(200).json({ data: shipment })
+            return return res.status(200).json({ data: shipment })
           }
         }
         break
@@ -403,7 +403,7 @@ const purchaseShipment = async (req, res) => {
               emailMessage: `<p>Shipment purchase.</p>`,
               emailSubject: "Shipments Purchase details",
             })
-            return res.status(200).json({ data: shipment })
+            return return res.status(200).json({ data: shipment })
           }
         }
         break
@@ -430,12 +430,12 @@ const purchaseShipment = async (req, res) => {
               emailMessage: `<p>Shipments Created Successfully.</p>`,
               emailSubject: "Shipments",
             })
-            return res.status(200).json({ data: shipmentPurchase })
+            return return res.status(200).json({ data: shipmentPurchase })
           }
         }
         break
       default:
-        return res.status(500).json({ message: "Something went wrong." })
+        return return res.status(500).json({ message: "Something went wrong." })
     }
   } catch (error) {
     const redirectUrl = `${FE_APP_BASE_URL}/payment?dynoPayment=${status === 'successful' ? PAYMENT_STATUS_SUCCESS : PAYMENT_STATUS_FAILURE}&shipmentPayment=${PAYMENT_STATUS_FAILURE}`

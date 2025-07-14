@@ -11,6 +11,15 @@ const createToken = (id) => {
   return token
 }
 
+const verifyToken = (token) => {
+  try {
+    return jwt.verify(token, JWT_SECRET_KEY)
+  } catch (error) {
+    throw new Error('Invalid or expired token')
+  }
+}
+
 module.exports = {
   createToken,
+  verifyToken,
 }
