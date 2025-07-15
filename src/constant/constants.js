@@ -25,7 +25,7 @@ const constants = {
   NODEMAILER_FROM_EMAIL_PASSWORD: process.env.NODEMAILER_FROM_EMAIL_PASSWORD,
   FE_APP_BASE_URL: process.env.FE_APP_BASE_URL,
   TELEGRAM_BOT_TOKEN: process.env.TELEGRAM_BOT_TOKEN,
-  CORS_ORIGIN: "http://localhost:3000",
+  CORS_ORIGIN: process.env.CORS_ORIGIN,
   PASSWORD_RESET_TOKEN_EXPIRE_TIME: 1, // Token expires in 1 hour
   OTP_EXPIRE_TIME: 10, // OTP expires in 10 minutes
   JWT_TOKEN_EXPIRE_TIME: 3600, //JWT token expires in 1hr

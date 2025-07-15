@@ -28,7 +28,7 @@ const createNewCustom = async (req, res) => {
         response = await newEasypostCustom(payload)
         break
       default:
-        return return res.status(500).json({ message: "Something went wrong." })
+        return res.status(500).json({ message: "Something went wrong." })
     }
     if (response.data) {
       let customsData = {
@@ -45,15 +45,15 @@ const createNewCustom = async (req, res) => {
           emailMessage: `<p>Your custom created successfully.</p>`,
           emailSubject: "Your custom status",
         })
-        return return res.status(200).json({ data: customs })
+        return res.status(200).json({ data: customs })
       }
     } else {
-      return return res.status(500).json({ message: "Failed to create customs" })
+      return res.status(500).json({ message: "Failed to create customs" })
     }
   } catch (error) {
     const err = { message: 'Failed to create custom form', error: error?.response?.data?.error || error?.response?.data }
     logger.error(err)
-    return return res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -68,7 +68,7 @@ const fetchUserCustoms = async (req, res) => {
   } catch (error) {
     const err = { message: 'Failed to fetch custom form list', error: error }
     logger.error(err)
-    return return res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -86,7 +86,7 @@ const deleteCustomData = async (req, res) => {
   } catch (error) {
     const err = { message: 'Failed to delete a custom form', error: error }
     logger.error(err)
-    return return res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -110,7 +110,7 @@ const editCustomData = async (req, res) => {
         response = await newEasypostCustom(payload)
         break
       default:
-        return return res.status(500).json({ message: "Something went wrong." })
+        return res.status(500).json({ message: "Something went wrong." })
     }
     if (response.data) {
       customData.customData = response.data
@@ -120,12 +120,12 @@ const editCustomData = async (req, res) => {
         .status(200)
         .json({ message: "Custom data updated succesfully.", data: customData })
     } else {
-      return return res.status(500).json({ message: "Failed to update customs" })
+      return res.status(500).json({ message: "Failed to update customs" })
     }
   } catch (error) {
     const err = { message: 'Failed to update a custom form', error: error }
     logger.error(err)
-    return return res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 

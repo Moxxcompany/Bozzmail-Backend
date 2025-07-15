@@ -38,16 +38,16 @@ const updateUserDetails = async (req, res) => {
   try {
     const user = await fetchUserById(userId)
     if (!user) {
-      return return res.status(400).json({ message: "User not found. Check again" })
+      return res.status(400).json({ message: "User not found. Check again" })
     }
     if (phoneNumber && phoneNumber.length) {
       const checkUserWithPhoneNum = await fetchUserByPhoneNumber(phoneNumber)
       if (checkUserWithPhoneNum && checkUserWithPhoneNum._id != user._id) {
-        return return res.status(400).json({ message: "Phone Number already in use" })
+        return res.status(400).json({ message: "Phone Number already in use" })
       }
       const phoneVerification = await verifyPhoneNumberUsingHlrLookup(phoneNumber)
       if (!phoneVerification) {
-        return return res.status(400).json({ message: "Phone Number is not valid" })
+        return res.status(400).json({ message: "Phone Number is not valid" })
       }
     }
     user.fullName = fullName ? fullName : user.fullName
@@ -73,7 +73,7 @@ const deleteUserById = async (req, res) => {
   try {
     const user = await fetchUserById(userId)
     if (!user && !user.is_active) {
-      return return res.status(400).json({ message: "User not found. Check again" })
+      return res.status(400).json({ message: "User not found. Check again" })
     }
     user.is_active = false
     await user.save()

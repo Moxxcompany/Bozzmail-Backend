@@ -24,7 +24,7 @@ const generateNewAddress = async (req, res) => {
         emailMessage: `<p>Your address generated succesfully</p>`,
         emailSubject: "Address",
       })
-      return return res.status(200).json({ data: newAddress })
+      return res.status(200).json({ data: newAddress })
     }
   } catch (error) {
     const err = { message: 'Failed to create a new address', error: error }
@@ -104,7 +104,7 @@ const editUserAddressData = async (req, res) => {
           data: newAddress,
         })
     } else {
-      return return res.status(500).json({ message: "Failed to update Address data" })
+      return res.status(500).json({ message: "Failed to update Address data" })
     }
   } catch (error) {
     const err = { message: 'Failed to update address', error: error }
@@ -124,7 +124,7 @@ const verifyAddress = async (req, res) => {
         emailMessage: `<p>Address verified succesfully.</p>`,
         emailSubject: "Address verification",
       })
-      return return res.status(200).json({ data: response.data })
+      return res.status(200).json({ data: response.data })
     }
   } catch (error) {
     const err = { message: 'Failed to validate address', error: error }
@@ -136,11 +136,11 @@ const verifyAddress = async (req, res) => {
 const importAddresses = async (req, res) => {
   const results = []
   if (!req.file) {
-    return return res.status(400).json({ message: "Please upload a csv file/" })
+    return res.status(400).json({ message: "Please upload a csv file/" })
   }
   if (!req.file.mimetype.includes("text/csv")) {
     fs.unlinkSync(req.file.path)
-    return return res.status(400).json({ message: "Please upload a correct csv file" })
+    return res.status(400).json({ message: "Please upload a correct csv file" })
   }
   fs.createReadStream(req.file.path)
     .pipe(csvParser())

@@ -15,11 +15,11 @@ const addUserWalletDetails = async (req, res) => {
   const userId = req.userId
   try {
     if (!name) {
-      return return res.status(400).json({ message: "Name is required" })
+      return res.status(400).json({ message: "Name is required" })
     }
     const userDetails = await fetchUserById(userId, true)
     if (userDetails.walletToken) {
-      return return res.status(400).json({ message: "User already activated wallet" })
+      return res.status(400).json({ message: "User already activated wallet" })
     }
 
     const { data } = await registerUserForPayment(email, name, mobile)
@@ -34,7 +34,7 @@ const addUserWalletDetails = async (req, res) => {
         emailSubject: "Wallet activated",
       })
     }
-    return return res.status(200).json({ message: 'You have successfully activated your wallet.' })
+    return res.status(200).json({ message: 'You have successfully activated your wallet.' })
   } catch (error) {
     const err = { message: "Failed to activate user wallet", error: error.data }
     logger.error(err)
@@ -47,22 +47,22 @@ const addWalletFundsLink = async (req, res) => {
   const userId = req.userId
   try {
     if (!amount) {
-      return return res.status(400).json({ message: "Amount is required" })
+      return res.status(400).json({ message: "Amount is required" })
     }
     const userDetails = await fetchUserById(userId, true)
     if (!userDetails.walletToken) {
-      return return res.status(400).json({ message: "User have to first activate dynopay Wallet" })
+      return res.status(400).json({ message: "User have to first activate dynopay Wallet" })
     }
 
     const redirect_url = `${req.protocol}://${req.get('host')}/webhooks/${userId}/dynopay-addFund`
     const { data } = await generateAddFundsLink(amount, redirect_url, userDetails.walletToken)
     if (data && data.data) {
-      return return res.status(200).json({ message: 'Your link to add funds', data: data.data })
+      return res.status(200).json({ message: 'Your link to add funds', data: data.data })
     }
   } catch (error) {
     const err = { message: "Failed to create link to add funds", error: error?.data || error }
     logger.error(err)
-    return return res.status(500).json(err)
+    return res.status(500).json(err)
   }
 }
 
@@ -71,17 +71,17 @@ const getUserWalletBalance = async (req, res) => {
   try {
     const userDetails = await fetchUserById(userId, true)
     if (!userDetails.walletToken) {
-      return return res.status(400).json({ message: "User have to first activate dynopay Wallet" })
+      return res.status(400).json({ message: "User have to first activate dynopay Wallet" })
     }
 
     const { data } = await fetchDynoWalletBalance(userDetails.walletToken)
     if (data && data.data) {
-      return return res.status(200).json({ message: 'Your dynopay wallet balance is fetched successfully', data: data.data })
+      return res.status(200).json({ message: 'Your dynopay wallet balance is fetched successfully', data: data.data })
     }
   } catch (error) {
     const err = { message: "Failed to fetch wallet Balance", error: error?.data || error }
     logger.error(err)
-    return return res.status(500).json(err)
+    return res.status(500).json(err)
   }
 }
 
@@ -90,17 +90,17 @@ const getUserTransactions = async (req, res) => {
   try {
     const userDetails = await fetchUserById(userId, true)
     if (!userDetails.walletToken) {
-      return return res.status(400).json({ message: "User have to first activate dynopay Wallet" })
+      return res.status(400).json({ message: "User have to first activate dynopay Wallet" })
     }
 
     const { data } = await fetchUserTransactions(userDetails.walletToken)
     if (data && data.data) {
-      return return res.status(200).json({ data: data.data })
+      return res.status(200).json({ data: data.data })
     }
   } catch (error) {
     const err = { message: "Failed to fetch user transactions", error: error?.data || error }
     logger.error(err)
-    return return res.status(500).json(err)
+    return res.status(500).json(err)
   }
 }
 
@@ -110,17 +110,17 @@ const getUserTransactionById = async (req, res) => {
   try {
     const userDetails = await fetchUserById(userId, true)
     if (!userDetails.walletToken) {
-      return return res.status(400).json({ message: "User have to first activate dynopay Wallet" })
+      return res.status(400).json({ message: "User have to first activate dynopay Wallet" })
     }
 
     const { data } = await fetchUserTransactionById(userDetails.walletToken, transactionId)
     if (data && data.data) {
-      return return res.status(200).json({ data: data.data })
+      return res.status(200).json({ data: data.data })
     }
   } catch (error) {
     const err = { message: "Failed to fetch transaction details", error: error?.data || error }
     logger.error(err)
-    return return res.status(500).json(err)
+    return res.status(500).json(err)
   }
 }
 
@@ -140,7 +140,7 @@ const addFundWalletsHook = async (req, res) => {
         transactionalDetails:  data.data.transaction_details
       }
       const addFundData = await saveNewWalletFundDetails(newAddFundData)
-      return return res.status(200).json({ data: addFundData })
+      return res.status(200).json({ data: addFundData })
     }
   } catch (error) {
     const redirectUrl = `${FE_APP_BASE_URL}/payment?dynoPayment=${status === 'successful' ? PAYMENT_STATUS_SUCCESS : PAYMENT_STATUS_FAILURE}`

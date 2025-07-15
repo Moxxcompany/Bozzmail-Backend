@@ -11,7 +11,7 @@ const getUserById = async (req, res) => {
   try {
     const user = await fetchUserById(id)
     if (!user) {
-      return return res.status(400).json({ message: "User not found. Check again" })
+      return res.status(400).json({ message: "User not found. Check again" })
     }
     return res.status(200).json({ data: user })
   } catch (error) {
@@ -27,7 +27,7 @@ const changeUserPassword = async (req, res) => {
   try {
     const user = await fetchUserById(id, true)
     if (!user || !user.is_active) {
-      return return res.status(400).json({ message: "User not found. Check again" })
+      return res.status(400).json({ message: "User not found. Check again" })
     }
     if (!user.password) {
       return res
@@ -36,7 +36,7 @@ const changeUserPassword = async (req, res) => {
     }
     const isPasswordMatch = await bcrypt.compare(currentPassword, user.password)
     if (!isPasswordMatch) {
-      return return res.status(400).json({ message: "Password is incorrect" })
+      return res.status(400).json({ message: "Password is incorrect" })
     }
     await updateUserPassword(user._id, newPassword)
     await sendNotification({
@@ -59,16 +59,16 @@ const updateUserDetails = async (req, res) => {
   try {
     const user = await fetchUserById(userId)
     if (!user) {
-      return return res.status(400).json({ message: "User not found. Check again" })
+      return res.status(400).json({ message: "User not found. Check again" })
     }
     if (phoneNumber && phoneNumber.length) {
       const checkUserWithPhoneNum = await fetchUserByPhoneNumber(phoneNumber)
       if (checkUserWithPhoneNum && checkUserWithPhoneNum._id != userId) {
-        return return res.status(400).json({ message: "Phone Number already in use" })
+        return res.status(400).json({ message: "Phone Number already in use" })
       }
       const phoneVerification = await verifyPhoneNumberUsingHlrLookup(phoneNumber)
       if (!phoneVerification) {
-        return return res.status(400).json({ message: "Phone Number is not valid" })
+        return res.status(400).json({ message: "Phone Number is not valid" })
       }
     }
     user.fullName = fullName ? fullName : user.fullName
@@ -94,7 +94,7 @@ const deleteUser = async (req, res) => {
   try {
     const user = await fetchUserById(userId)
     if (!user) {
-      return return res.status(400).json({ message: "User not found. Check again" })
+      return res.status(400).json({ message: "User not found. Check again" })
     }
     user.is_active = false
     await user.save()
@@ -117,11 +117,11 @@ const updateUserProfileImg = async (req, res) => {
   const file = req.file
   try {
     if (!file || !file.mimetype.startsWith("image")) {
-      return return res.status(400).json({ message: "Please upload an image file" })
+      return res.status(400).json({ message: "Please upload an image file" })
     }
     const user = await fetchUserById(userId)
     if (!user) {
-      return return res.status(400).json({ message: "User not found. Check again" })
+      return res.status(400).json({ message: "User not found. Check again" })
     }
     if (user.profile_img) {
       const parsedUrl = new URL(user.profile_img)
@@ -154,7 +154,7 @@ const deleteUserProfileImg = async (req, res) => {
   try {
     const user = await fetchUserById(userId)
     if (!user) {
-      return return res.status(400).json({ message: "User not found. Check again" })
+      return res.status(400).json({ message: "User not found. Check again" })
     }
     if (user.profile_img) {
       const parsedUrl = new URL(user.profile_img)

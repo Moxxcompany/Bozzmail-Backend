@@ -55,7 +55,7 @@ const sendNewPrintMail = async (req, res) => {
         return res.status(200).json({ data: printmail })
       }
     } else {
-      return return res.status(500).json({ message: `Failed to send ${printType}` })
+      return res.status(500).json({ message: `Failed to send ${printType}` })
     }
   } catch (error) {
     const err = { message: 'Failed to send letter/postcard', error: error?.response?.data?.error || error?.response?.data }
@@ -75,7 +75,7 @@ const cancelMail = async (req, res) => {
   try {
     const mailData = await fetchPrintMailById(id, userId)
     if (!mailData) {
-      return return res.status(400).json({ message: "Mail data not found" })
+      return res.status(400).json({ message: "Mail data not found" })
     }
     const cancelledMail = await cancelPostGridMail(payload, mailData)
     mailData.mailData = cancelledMail.data
@@ -86,7 +86,7 @@ const cancelMail = async (req, res) => {
       emailMessage: `<p>Cancel mail.</p>`,
       emailSubject: "Cancel mail",
     })
-    return return res.status(200).json({ data: mailData })
+    return res.status(200).json({ data: mailData })
   } catch (error) {
     const err = { message: 'Failed to cancel letter/postcard', error: error?.response?.data?.error || error?.response?.data }
     logger.error(err)
@@ -106,9 +106,9 @@ const createWebHook = async (req, res) => {
         emailMessage: `<p>Mail.</p>`,
         emailSubject: "Mail",
       })
-      return return res.status(200).json({ data: response.data })
+      return res.status(200).json({ data: response.data })
     } else {
-      return return res.status(500).json({ message: `Failed to send ${printType}` })
+      return res.status(500).json({ message: `Failed to send ${printType}` })
     }
   } catch (error) {
     const err = { message: 'Failed to add webhook for postgrid', error: error?.response?.data?.error || error?.response?.data }

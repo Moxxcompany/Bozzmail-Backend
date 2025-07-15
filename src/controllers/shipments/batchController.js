@@ -22,7 +22,7 @@ const createNewBatch = async (req, res) => {
         response = await newBatchEasypost(payload)
         break
       default:
-        return return res.status(500).json({ message: "Something went wrong." })
+        return res.status(500).json({ message: "Something went wrong." })
     }
     if (response.data) {
       let batchData = {
@@ -39,15 +39,15 @@ const createNewBatch = async (req, res) => {
           emailMessage: `<p>Batch Created Successfully.</p>`,
           emailSubject: "Batch creation",
         })
-        return return res.status(200).json({ data: batch })
+        return res.status(200).json({ data: batch })
       }
     } else {
-      return return res.status(500).json({ message: "Failed to create batch" })
+      return res.status(500).json({ message: "Failed to create batch" })
     }
   } catch (error) {
     const err = { message: 'Failed to create a batch shipment', error: error?.response?.data?.error || error?.response?.data }
     logger.error(err)
-    return return res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -58,13 +58,13 @@ const getUserBatches = async (req, res) => {
   try {
     const result = await fetchBatchData(userId, page, limit)
 
-    return return res.status(200).json({
+    return res.status(200).json({
       result,
     })
   } catch (error) {
     const err = { message: 'Failed to fetch batch list', error: error }
     logger.error(err)
-    return return res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 

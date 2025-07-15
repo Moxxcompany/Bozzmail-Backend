@@ -33,7 +33,7 @@ const createNewPickup = async (req, res) => {
               emailMessage: `<p>Your pickup created successfully.</p>`,
               emailSubject: "Congrats",
             })
-            return return res.status(200).json({ data: pickup })
+            return res.status(200).json({ data: pickup })
           }
         }
         break
@@ -48,17 +48,17 @@ const createNewPickup = async (req, res) => {
           }
           const pickup = await savePickupData(pickupData)
           if (pickup) {
-            return return res.status(200).json({ data: pickup })
+            return res.status(200).json({ data: pickup })
           }
         }
         break
       default:
-        return return res.status(500).json({ message: "Something went wrong." })
+        return res.status(500).json({ message: "Something went wrong." })
     }
     if (response.data) {
-      return return res.status(200).json({ data: response.data })
+      return res.status(200).json({ data: response.data })
     } else {
-      return return res.status(500).json({ message: "Failed to create pick up" })
+      return res.status(500).json({ message: "Failed to create pick up" })
     }
   } catch (error) {
     const err = { message: 'Failed to create a pickup', error: error?.response?.data?.error || error?.response?.data }
@@ -72,7 +72,7 @@ const getPickup = async (req, res) => {
     const id = req.userId
     const { service, page, limit } = req.query
     const response = await fetchPickUpByUserId(id, service, page, limit)
-    return return res.status(200).json({ response })
+    return res.status(200).json({ response })
   } catch (error) {
     const err = { message: 'Failed to fetch user pickup list', error: error }
     logger.error(err)

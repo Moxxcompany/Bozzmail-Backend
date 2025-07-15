@@ -29,15 +29,15 @@ const generateNewHscode = async (req, res) => {
           emailMessage: `<p>Your hs code genreated successfully.</p>`,
           emailSubject: "Your hashcode",
         })
-        return return res.status(200).json({ data: hscode })
+        return res.status(200).json({ data: hscode })
       }
     } else {
-      return return res.status(500).json({ message: "Failed to create HS Code" })
+      return res.status(500).json({ message: "Failed to create HS Code" })
     }
   } catch (error) {
     const err = { message: 'Failed to create a HS code', error: error?.response?.data?.error || error?.response?.data }
     logger.error(err)
-    return return res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -50,7 +50,7 @@ const fetchUserHscode = async (req, res) => {
   } catch (error) {
     const err = { message: 'Failed to fetch HS code list', error: error }
     logger.error(err)
-    return return res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -74,7 +74,7 @@ const deleteHscodeData = async (req, res) => {
   } catch (error) {
     const err = { message: 'Failed to delete a HS code', error: error }
     logger.error(err)
-    return return res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
@@ -109,12 +109,12 @@ const editHscodeData = async (req, res) => {
           data: hscodeData,
         })
     } else {
-      return return res.status(500).json({ message: "Failed to update HS Code" })
+      return res.status(500).json({ message: "Failed to update HS Code" })
     }
   } catch (error) {
     const err = { message: 'Failed to update a HS code', error: error?.response?.data?.error || error?.response?.data || error }
     logger.error(err)
-    return return res.status(error.status || 500).json(err)
+    return res.status(error.status || 500).json(err)
   }
 }
 
