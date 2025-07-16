@@ -42,7 +42,7 @@ const { verifyEmailUsingNeutrino } = require("../../services/neutrinoServices")
 const { verifyPhoneNumberUsingHlrLookup } = require("../../services/hlrLookupservices")
 
 const signUp = async (req, res) => {
-  const { fullName ,email, password, phoneNumber, notify_mobile } = req.body
+  const { fullName, email, password, phoneNumber, notify_mobile } = req.body
   try {
     if (notify_mobile && (!phoneNumber || !phoneNumber.length)) {
       return res
@@ -53,26 +53,26 @@ const signUp = async (req, res) => {
     if (existingUser) {
       return res.status(400).json({ message: "Email Address already in use" })
     }
-    
+
     // Temporarily disabled external API calls due to missing API keys
     // const emailVerification = await verifyEmailUsingNeutrino(email)
     // if (!emailVerification) {
     //   return res.status(400).json({ message: "Email is not valid" })
     // }
-    
+
     if (phoneNumber && phoneNumber.length) {
       const checkUserWithPhoneNum = await fetchUserByPhoneNumber(phoneNumber)
       if (checkUserWithPhoneNum) {
         return res.status(400).json({ message: "Phone Number already in use" })
       }
-      
+
       // Temporarily disabled external API calls due to missing API keys
       // const phoneVerification = await verifyPhoneNumberUsingHlrLookup(phoneNumber)
       // if (!phoneVerification) {
       //   return res.status(400).json({ message: "Phone Number is not valid" })
       // }
     }
-    
+
     const hashedPassword = await bcrypt.hash(password, 10)
     const data = {
       fullName,
@@ -130,13 +130,14 @@ const signInWithPhoneNum = async (req, res) => {
     // Temporarily disabled external API calls due to missing API keys
     // const response = await verifySMSOTP(phoneNumber, otp)
     // if (response && response.data.response_code === "accepted") {
-    
+
     // Temporary response for testing - accept any OTP for demo
     const response = { data: { response_code: "accepted" } }
     if (response && response.data.response_code === "accepted") {
       const existingUser = await fetchUserByPhoneNumber(phoneNumber)
       if (existingUser) {
-        const token = createToken(existingUser._id)
+        const token = createToken(existingUser._id);
+        console.log('token while sign in user: ', token);
         await sendNotification({
           user: existingUser,
           message:
@@ -240,7 +241,7 @@ const signIn = async (req, res) => {
         // Temporarily disabled external API calls due to missing API keys
         // const response = await verifySMSOTP(existingUser.phoneNumber, otp)
         // if (response.data && response.data.response_code === "accepted") {
-        
+
         // Temporary response for testing - accept any OTP for demo
         const response = { data: { response_code: "accepted" } }
         if (response.data && response.data.response_code === "accepted") {
@@ -310,6 +311,7 @@ const sendResetPasswordLink = async (req, res) => {
       return res.status(400).json({ message: "Email is incorrect" })
     }
     const existingToken = await fetchTokenByUserId(existingUser._id)
+    console.log('existingToken token: ', existingToken)
     const token = crypto.randomBytes(32).toString("hex")
     let expiresAt = moment().utc().add(PASSWORD_RESET_TOKEN_EXPIRE_TIME, "hour")
     if (existingToken) {
@@ -317,14 +319,16 @@ const sendResetPasswordLink = async (req, res) => {
       existingToken.expiresAt = expiresAt
       existingToken.save()
     } else {
-      const data = {
+      let data = {
         userId: existingUser._id,
         token: token,
         expiresAt: expiresAt,
       }
       await createPasswordReset(data)
     }
-    const resetLink = `${FE_APP_BASE_URL}/verify-reset-password/${token}`
+    // const resetLink = `${FE_APP_BASE_URL}/verify-reset-password/${token}`
+    const resetLink = `${FE_APP_BASE_URL}/forgot-password/${token}`
+
     const mail = await sendMail({
       user: existingUser,
       subject: "Password Reset",
@@ -353,7 +357,8 @@ const sendResetPasswordLink = async (req, res) => {
 const resetUserPassword = async (req, res) => {
   const { token, newPassword } = req.body
   try {
-    const tokenData = await fetchPasswordToken(token)
+    const tokenData = await fetchPasswordToken(token);
+    console.log('Token Data: ', tokenData)
     if (!tokenData) {
       return res.status(400).json({ message: "Token is not Valid or expired" })
     }
@@ -391,13 +396,13 @@ const sendSMSVerificationCode = async (req, res) => {
     if (!phoneNumber || !phoneNumber.length) {
       return res.status(400).json({ message: "Phone number is required" })
     }
-    
+
     // Temporarily disabled external API calls due to missing API keys
     // const phoneVerification = await verifyPhoneNumberUsingHlrLookup(phoneNumber)
     // if (!phoneVerification) {
     //   return res.status(400).json({ message: "Phone Number is not valid" })
     // }
-    
+
     // Temporarily disabled SMS sending due to missing API keys
     // const response = await sendSMSVerificationOTP(phoneNumber)
     // if (response.data) {
@@ -407,7 +412,7 @@ const sendSMSVerificationCode = async (req, res) => {
     // } else {
     //   return res.status(500).json({ message: "Failed to send verification code" })
     // }
-    
+
     // Temporary response for testing
     res.status(200).json({ message: "Verification code sent (demo mode)", data: { demo: true } })
   } catch (error) {
@@ -426,7 +431,7 @@ const verifySMSCode = async (req, res) => {
     if (!otp || !otp.length) {
       return res.status(400).json({ message: "OTP Code is required" })
     }
-    
+
     // Temporarily disabled external API calls due to missing API keys
     // const response = await verifySMSOTP(phoneNumber, otp)
     // if (response.data && response.data.response_code === "accepted") {
@@ -436,7 +441,7 @@ const verifySMSCode = async (req, res) => {
     // } else {
     //   return res.status(500).json({ error: "OTP code is not correct" })
     // }
-    
+
     // Temporary response for testing - accept any OTP for demo
     res.status(200).json({ message: "Verification Complete (demo mode)", data: { demo: true } })
   } catch (error) {
@@ -452,7 +457,7 @@ const verifyEmailAddress = async (req, res) => {
     if (!emailId || !emailId.length) {
       return res.status(400).json({ message: "Email Id is required" })
     }
-    
+
     // Temporarily disabled external API calls due to missing API keys
     // const emailVerification = await verifyEmailUsingNeutrino(emailId)
     // if (emailVerification) {
@@ -462,7 +467,7 @@ const verifyEmailAddress = async (req, res) => {
     // } else {
     //   return res.status(500).json({ message: "Email is not valid" })
     // }
-    
+
     // Temporary response for testing
     res.status(200).json({ message: "Verification complete (demo mode)", data: { demo: true } })
   } catch (error) {
@@ -478,7 +483,7 @@ const verifyPhoneNumber = async (req, res) => {
     if (!phoneNumber || !phoneNumber.length) {
       return res.status(400).json({ message: "Phone Number is required" })
     }
-    
+
     // Temporarily disabled external API calls due to missing API keys
     // const phoneVerification = await verifyPhoneNumberUsingHlrLookup(phoneNumber)
     // if (phoneVerification) {
@@ -488,7 +493,7 @@ const verifyPhoneNumber = async (req, res) => {
     // } else {
     //   return res.status(500).json({ message: "Phone Number is not valid" })
     // }
-    
+
     // Temporary response for testing
     res.status(200).json({ message: "Verification complete (demo mode)", data: { demo: true } })
   } catch (error) {
