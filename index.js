@@ -15,6 +15,7 @@ const printMailRoutes = require("./src/routes/printMail")
 const webhookRoutes = require("./src/routes/webhooks")
 const addressRoutes = require("./src/routes/address")
 const adminRoutes = require("./src/routes/admin")
+const subscriptionRoutes = require("./src/routes/subscription")
 
 const jwtMiddlewareValidation = require("./src/middleware/validateToken")
 const {
@@ -65,6 +66,7 @@ const startServer = async () => {
     app.use("/print-mail", jwtMiddlewareValidation, printMailRoutes)
     app.use("/address", jwtMiddlewareValidation, addressRoutes)
     app.use("/admin", jwtMiddlewareValidation, adminRoutes)
+    app.use("/subscriptions", jwtMiddlewareValidation, subscriptionRoutes)
     app.use("/webhooks", webhookRoutes)
     const port = PORT || "3001"
     app.listen(port, () => {

@@ -24,6 +24,13 @@ const {
   deleteUserNotifications,
 } = require("../controllers/user/notificationController")
 
+// Dashboard endpoints
+const {
+  getDashboardStats,
+  getRecentShipments,
+  getUserProfileSummary,
+} = require("../controllers/user/dashboardController")
+
 router.get("/details", getUserById)
 router.get("/notifications", getUserNotification)
 router.post("/notifications/mark-read", changeNotificationReadStatus)
@@ -43,5 +50,10 @@ router.post("/payment/add-wallet-fund", addWalletFundsLink)
 router.get("/payment/wallet-balance", getUserWalletBalance)
 router.get("/payment/transactions", getUserTransactions)
 router.get("/payment/transactions/:transactionId", getUserTransactionById)
+
+// Dashboard routes
+router.get("/dashboard/stats", getDashboardStats)
+router.get("/shipments/recent", getRecentShipments)
+router.get("/profile/summary", getUserProfileSummary)
 
 module.exports = router

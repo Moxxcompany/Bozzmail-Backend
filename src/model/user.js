@@ -62,6 +62,28 @@ const userSchema = new mongoose.Schema({
     type: String,
     unique: true,
   },
+  // Subscription fields
+  subscriptionPlan: {
+    type: String,
+    enum: ['starter', 'growth', 'professional'],
+    default: 'starter'
+  },
+  subscriptionStatus: {
+    type: String,
+    enum: ['active', 'cancelled', 'expired'],
+    default: 'active'
+  },
+  billingCycle: {
+    type: String,
+    enum: ['monthly', 'yearly'],
+    default: 'monthly'
+  },
+  subscriptionUpdatedAt: {
+    type: Date
+  },
+  subscriptionCancelledAt: {
+    type: Date
+  },
   address: AddressSchema,
 }, { timestamps: true })
 const User = mongoose.model("User", userSchema)

@@ -14,8 +14,7 @@ const transporter = nodemailer.createTransport({
     user: NODEMAILER_FROM_EMAIL_ID,
     pass: NODEMAILER_FROM_EMAIL_PASSWORD,
   },
-
-  // For the Devlopment and Testing phase...
+    // For the Devlopment and Testing phase...
   tls: {
     rejectUnauthorized: false
   }
