@@ -43,11 +43,11 @@ const startServer = async () => {
       cors({
         origin: CORS_ORIGIN,
         methods: "GET,POST,PUT,DELETE",
-        allowedHeaders: "Content-Type,Authorization",
+        allowedHeaders: "Content-Type,Authorization,token",
         credentials: true,
       })
     )
-    app.use(
+    app.use(  
       session({
         secret: PASSPORT_SESSION_SECRET,
         resave: false,
