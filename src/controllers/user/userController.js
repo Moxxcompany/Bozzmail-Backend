@@ -58,6 +58,7 @@ const updateUserDetails = async (req, res) => {
   const { fullName, phoneNumber, address } = req.body
   try {
     const user = await fetchUserById(userId)
+    // console.log('user details: ',user);
     if (!user) {
       return res.status(400).json({ message: "User not found. Check again" })
     }
@@ -66,10 +67,11 @@ const updateUserDetails = async (req, res) => {
       if (checkUserWithPhoneNum && checkUserWithPhoneNum._id != userId) {
         return res.status(400).json({ message: "Phone Number already in use" })
       }
-      const phoneVerification = await verifyPhoneNumberUsingHlrLookup(phoneNumber)
-      if (!phoneVerification) {
-        return res.status(400).json({ message: "Phone Number is not valid" })
-      }
+      // Temporarily disabled external API calls due to missing API keys
+      // const phoneVerification = await verifyPhoneNumberUsingHlrLookup(phoneNumber)
+      // if (!phoneVerification) {
+      //   return res.status(400).json({ message: "Phone Number is not valid" })
+      // }
     }
     user.fullName = fullName ? fullName : user.fullName
     user.phoneNumber = phoneNumber && phoneNumber.length ? phoneNumber : user.phoneNumber

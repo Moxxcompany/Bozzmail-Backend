@@ -85,6 +85,7 @@ const signUp = async (req, res) => {
     }
     const user = await createNewUser(data)
     const userData = await getUserData(user)
+    const token = createToken(user._id);
     if (user) {
       let rewardPoints = {
         userId: user._id,
@@ -103,7 +104,7 @@ const signUp = async (req, res) => {
       })
       res
         .status(200)
-        .json({ message: "User created Successfully", data: userData })
+        .json({ message: "User created Successfully", data: userData,token:token })
     } else {
       return res.status(500).json({ message: "Failed to create a new user" })
     }
