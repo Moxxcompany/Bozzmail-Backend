@@ -14,6 +14,6 @@ router.post("/:service/get-rates", fetchShipmentRates)
 router.post("/:service/purchase", purchaseShipmentLink)
 router.post("/:service/trackShipment", trackShipment)
 router.get("/:service/trackShipment/:trackNumber", trackShipment)
-router.get("/getUserShippment", getUserShipments)
+router.get("/getUserShipment", getUserShipments)
 router.get("/getShipment/:shipmentId", getShipmentsById)
 module.exports = router
